@@ -1,0 +1,4 @@
+sceneSetups:
+- path: Assets/Saves/Kansei_Dorifto2.unity
+  isLoaded: 1
+  isActive: 1
