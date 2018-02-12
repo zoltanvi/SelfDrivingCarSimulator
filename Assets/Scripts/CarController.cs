@@ -67,7 +67,7 @@ public class CarController : MonoBehaviour {
 
          // Debug.Log("The speed is: " + wheelColliders[0].motorTorque);
 
-          // maximum fordulasi szog : 45 fok
+          // maximum fordulasi szog
           float finalAngle = steer * m_carStats.turnAngle;
 
           // az elso kerekek megkapjak a fordulasi szoget
