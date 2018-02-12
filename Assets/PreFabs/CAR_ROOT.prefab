@@ -462,7 +462,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1954008003040784}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 10.7, y: 0.31, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4834016087565728}
@@ -867,8 +867,8 @@ BoxCollider:
   m_IsTrigger: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Size: {x: 1, y: 1, z: 1}
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Size: {x: 1, y: 0.89976263, z: 1}
+  m_Center: {x: 0, y: 0.050118662, z: 0}
 --- !u!65 &65378845640190544
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -892,19 +892,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d0b480c2b6f9c4fa5ba89a5d8a1d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Downforce: 1000
   m_carStats:
-    turnAngle: 55
-    maxTorque: 1000
-    spring: 20000
+    turnAngle: 60
+    maxTorque: 800
+    spring: 10000
     forwardSwiftness: 1
     sidewaysSwiftness: 1.3
-  centerOfMass: {fileID: 4087171190521606}
-  wheelColliders:
+  m_CenterOfMass: {fileID: 4087171190521606}
+  m_WheelColliders:
   - {fileID: 146488191492311512}
   - {fileID: 146826927695410040}
   - {fileID: 146566128265551532}
   - {fileID: 146655372171994078}
-  wheelMeshes:
+  m_WheelMeshes:
   - {fileID: 4967665404002114}
   - {fileID: 4266944939828808}
   - {fileID: 4418005467305298}
@@ -918,7 +919,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 10000
+    spring: 2000
     damper: 5000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
@@ -947,7 +948,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 10000
+    spring: 2000
     damper: 5000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
@@ -976,7 +977,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 10000
+    spring: 2000
     damper: 5000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3
@@ -1005,7 +1006,7 @@ WheelCollider:
   m_Center: {x: 0, y: 0, z: 0}
   m_Radius: 0.5
   m_SuspensionSpring:
-    spring: 10000
+    spring: 2000
     damper: 5000
     targetPosition: 0.5
   m_SuspensionDistance: 0.3

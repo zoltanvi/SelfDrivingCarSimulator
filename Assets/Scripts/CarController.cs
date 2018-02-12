@@ -2,12 +2,12 @@
 
 public class CarController : MonoBehaviour {
 
-     //maximum nyomatek
-     public CarStats m_carStats;
-     public Transform centerOfMass;
-     public WheelCollider[] wheelColliders = new WheelCollider[4];
-     public Transform[] wheelMeshes = new Transform[4];
-     private Rigidbody m_rigidbody;
+     [SerializeField] private float m_Downforce = 100.0f;
+     [SerializeField] private CarStats m_carStats;
+     [SerializeField] private Transform m_CenterOfMass;
+     [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];
+     [SerializeField] private Transform[] m_WheelMeshes = new Transform[4];
+     [SerializeField] private Rigidbody m_Rigidbody;
 
      // wheelColliders / wheelMeshes [0] : Front Left
      // wheelColliders / wheelMeshes [1] : Front Right
@@ -28,28 +28,28 @@ public class CarController : MonoBehaviour {
           {
 
                // rugo beallitasa
-               suspensions[i] = wheelColliders[i].suspensionSpring;
+               suspensions[i] = m_WheelColliders[i].suspensionSpring;
                suspensions[i].spring = m_carStats.spring;
 
                // Forward Friction - swiftness beallitasa
-               wheelFrictionCurveForward[i] = wheelColliders[i].forwardFriction;
+               wheelFrictionCurveForward[i] = m_WheelColliders[i].forwardFriction;
                wheelFrictionCurveForward[i].stiffness = m_carStats.forwardSwiftness;
 
                // Sideways Friction - swiftness beallitasa
-               wheelFrictionCurveSideways[i] = wheelColliders[i].sidewaysFriction;
+               wheelFrictionCurveSideways[i] = m_WheelColliders[i].sidewaysFriction;
                wheelFrictionCurveSideways[i].stiffness = m_carStats.sidewaysSwiftness;
 
-               wheelColliders[i].suspensionSpring = suspensions[i];
-               wheelColliders[i].forwardFriction = wheelFrictionCurveForward[i];
-               wheelColliders[i].sidewaysFriction = wheelFrictionCurveSideways[i];
+               m_WheelColliders[i].suspensionSpring = suspensions[i];
+               m_WheelColliders[i].forwardFriction = wheelFrictionCurveForward[i];
+               m_WheelColliders[i].sidewaysFriction = wheelFrictionCurveSideways[i];
 
 
           }
 
 
           // megadjuk az auto tomegkozeppontjat
-          m_rigidbody = GetComponent<Rigidbody>();
-          m_rigidbody.centerOfMass = centerOfMass.localPosition;
+          m_Rigidbody = GetComponent<Rigidbody>();
+          m_Rigidbody.centerOfMass = m_CenterOfMass.localPosition;
      }
 
      void FixedUpdate()
@@ -62,17 +62,19 @@ public class CarController : MonoBehaviour {
           for (int i = 0; i < 4; i++)
           {
                //a motor nyomatéka = max nyomatek * gyorsulas
-               wheelColliders[i].motorTorque = m_carStats.maxTorque * accelerate;
+               m_WheelColliders[i].motorTorque = m_carStats.maxTorque * accelerate;
           }
 
-         // Debug.Log("The speed is: " + wheelColliders[0].motorTorque);
+          m_WheelColliders[0].attachedRigidbody.AddForce(-transform.up * m_Downforce * m_WheelColliders[0].attachedRigidbody.velocity.magnitude);
+
+          // Debug.Log("The speed is: " + wheelColliders[0].motorTorque);
 
           // maximum fordulasi szog
           float finalAngle = steer * m_carStats.turnAngle;
 
           // az elso kerekek megkapjak a fordulasi szoget
-          wheelColliders[0].steerAngle = finalAngle;
-          wheelColliders[1].steerAngle = finalAngle;
+          m_WheelColliders[0].steerAngle = finalAngle;
+          m_WheelColliders[1].steerAngle = finalAngle;
 
           UpdateMeshes();
      }
@@ -86,12 +88,14 @@ public class CarController : MonoBehaviour {
                // a kerek forgasi szoge
                Quaternion quat;
 
-               wheelColliders[i].GetWorldPose(out pos, out quat);
+               m_WheelColliders[i].GetWorldPose(out pos, out quat);
                
-               wheelMeshes[i].position = pos;
-               wheelMeshes[i].rotation = quat;
+               m_WheelMeshes[i].position = pos;
+               m_WheelMeshes[i].rotation = quat;
 
           }
      }
+
+
 
 }
