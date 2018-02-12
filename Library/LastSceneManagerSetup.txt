@@ -1,4 +1,4 @@
 sceneSetups:
-- path: Assets/Saves/Kansei_Dorifto2.unity
+- path: Assets/Saves/CarGame_1.unity
   isLoaded: 1
   isActive: 1
