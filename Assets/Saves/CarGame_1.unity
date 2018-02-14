@@ -118,24 +118,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4350465756756534, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
     type: 2}
   m_PrefabInternal: {fileID: 1117063418}
---- !u!1 &53325351 stripped
-GameObject:
-  m_PrefabParentObject: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
-    type: 2}
-  m_PrefabInternal: {fileID: 1117063418}
---- !u!114 &53325352
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 53325351}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f9ce490c8966944cb6581ed076cfe07, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  m_RayOrigin: {fileID: 330435567}
-  lineDistance: 4
 --- !u!1 &135359833
 GameObject:
   m_ObjectHideFlags: 0
@@ -148,7 +130,7 @@ GameObject:
   - component: {fileID: 135359836}
   - component: {fileID: 135359835}
   m_Layer: 0
-  m_Name: Cube
+  m_Name: Wall01
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -161,7 +143,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 135359833}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.99, y: 0.25, z: 0}
+  m_LocalPosition: {x: -1.44, y: 0.25, z: -0.78}
   m_LocalScale: {x: 0.1, y: 0.5, z: 2.5}
   m_Children: []
   m_Father: {fileID: 357911800}
@@ -283,34 +265,6 @@ Transform:
   m_PrefabParentObject: {fileID: 4825403596677916, guid: 4da8aae1e7346184a8776e56daa871b2,
     type: 2}
   m_PrefabInternal: {fileID: 294022007}
---- !u!1 &330435566
-GameObject:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 330435567}
-  m_Layer: 0
-  m_Name: RayOrigin
-  m_TagString: Untagged
-  m_Icon: {fileID: -4087464717476244675, guid: 0000000000000000d000000000000000, type: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &330435567
-Transform:
-  m_ObjectHideFlags: 0
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 0}
-  m_GameObject: {fileID: 330435566}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.5}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_Children: []
-  m_Father: {fileID: 50242846}
-  m_RootOrder: 4
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &357911799
 GameObject:
   m_ObjectHideFlags: 0
@@ -458,7 +412,7 @@ GameObject:
   - component: {fileID: 508539017}
   - component: {fileID: 508539016}
   m_Layer: 0
-  m_Name: Cube (5)
+  m_Name: This is not a wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -470,13 +424,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 508539014}
-  m_LocalRotation: {x: -0, y: 0.8421391, z: -0, w: 0.5392603}
-  m_LocalPosition: {x: 3.93, y: 0.25, z: 2.83}
+  m_LocalRotation: {x: -0, y: 0.9999807, z: -0, w: 0.0062211687}
+  m_LocalPosition: {x: 6.14, y: 0.25, z: 2.63}
   m_LocalScale: {x: 0.099999994, y: 0.5, z: 2.5000005}
   m_Children: []
   m_Father: {fileID: 357911800}
   m_RootOrder: 5
-  m_LocalEulerAnglesHint: {x: 0, y: 114.733, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 179.287, z: 0}
 --- !u!23 &508539016
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -662,7 +616,7 @@ GameObject:
   - component: {fileID: 752640839}
   - component: {fileID: 752640838}
   m_Layer: 0
-  m_Name: Cube (1)
+  m_Name: Wall02
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -674,13 +628,13 @@ Transform:
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 752640836}
-  m_LocalRotation: {x: -0, y: 0.38447225, z: -0, w: 0.9231366}
-  m_LocalPosition: {x: -0.17, y: 0.25, z: 1.92}
+  m_LocalRotation: {x: -0, y: 0.22259477, z: -0, w: 0.9749111}
+  m_LocalPosition: {x: -0.88, y: 0.25, z: 1.58}
   m_LocalScale: {x: 0.099999994, y: 0.5, z: 2.5}
   m_Children: []
   m_Father: {fileID: 357911800}
   m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 45.222004, z: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 25.723001, z: 0}
 --- !u!23 &752640838
 MeshRenderer:
   m_ObjectHideFlags: 0
@@ -821,8 +775,8 @@ Light:
   m_Enabled: 1
   serializedVersion: 8
   m_Type: 1
-  m_Color: {r: 0.5441177, g: 0.5441177, b: 0.5441177, a: 1}
-  m_Intensity: 1
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Intensity: 0.59
   m_Range: 10
   m_SpotAngle: 30
   m_CookieSize: 10
@@ -883,7 +837,7 @@ GameObject:
   - component: {fileID: 906890311}
   - component: {fileID: 906890310}
   m_Layer: 0
-  m_Name: Cube (4)
+  m_Name: Wall05
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1089,70 +1043,7 @@ Prefab:
       propertyPath: m_RootOrder
       value: 2
       objectReference: {fileID: 0}
-    - target: {fileID: 114069088919800350, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
-        type: 2}
-      propertyPath: m_carStats.turnAngle
-      value: 50
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834016087565728, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -0.61
-      objectReference: {fileID: 0}
-    - target: {fileID: 4834016087565728, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4229706627447162, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 4172187216957588, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: 146655372171994078, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
-        type: 2}
-      propertyPath: m_SuspensionDistance
-      value: 0.17
-      objectReference: {fileID: 0}
-    - target: {fileID: 146826927695410040, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
-        type: 2}
-      propertyPath: m_SuspensionDistance
-      value: 0.17
-      objectReference: {fileID: 0}
-    - target: {fileID: 146488191492311512, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
-        type: 2}
-      propertyPath: m_SuspensionDistance
-      value: 0.17
-      objectReference: {fileID: 0}
-    - target: {fileID: 146566128265551532, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
-        type: 2}
-      propertyPath: m_SuspensionDistance
-      value: 0.17
-      objectReference: {fileID: 0}
-    - target: {fileID: 4087171190521606, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.y
-      value: -0.022
-      objectReference: {fileID: 0}
-    - target: {fileID: 4087171190521606, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -0.003
-      objectReference: {fileID: 0}
-    - target: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_Icon
-      value: 
-      objectReference: {fileID: -2349822300998112484, guid: 0000000000000000d000000000000000,
-        type: 0}
-    - target: {fileID: 4172187216957588, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -0.61
-      objectReference: {fileID: 0}
-    - target: {fileID: 4229706627447162, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
-      propertyPath: m_LocalPosition.x
-      value: -0.61
-      objectReference: {fileID: 0}
-    m_RemovedComponents:
-    - {fileID: 114130898100574876, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
+    m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
   m_IsPrefabParent: 0
 --- !u!4 &1128017045 stripped
@@ -1272,7 +1163,7 @@ GameObject:
   - component: {fileID: 1318017247}
   - component: {fileID: 1318017246}
   m_Layer: 0
-  m_Name: Cube (3)
+  m_Name: Wall04
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1356,7 +1247,7 @@ GameObject:
   - component: {fileID: 1341399487}
   - component: {fileID: 1341399486}
   m_Layer: 0
-  m_Name: Cube (2)
+  m_Name: Wall03
   m_TagString: Wall
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1369,7 +1260,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1341399484}
   m_LocalRotation: {x: -0, y: 0.6158721, z: -0, w: 0.7878462}
-  m_LocalPosition: {x: 1.82, y: 0.25, z: 2.98}
+  m_LocalPosition: {x: 0.83, y: 0.25, z: 3.01}
   m_LocalScale: {x: 0.099999994, y: 0.5, z: 2.5}
   m_Children: []
   m_Father: {fileID: 357911800}
