@@ -354,7 +354,7 @@ GameObject:
   - component: {fileID: 114069088919800350}
   - component: {fileID: 114749130403178722}
   m_Layer: 0
-  m_Name: CAR_ROOT
+  m_Name: CAR
   m_TagString: Untagged
   m_Icon: {fileID: -2349822300998112484, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
@@ -953,7 +953,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_RayOrigin: {fileID: 4837871962500276}
-  lineDistance: 4
+  lineDistance: 5
   rayQuantity: 2
   sensorTag: Wall
 --- !u!146 &146488191492311512
