@@ -54,7 +54,7 @@ public class WallSensor : MonoBehaviour {
                {
                     if (raycastHit[i-1].collider.tag == m_sensorTag)
                     {
-                         Debug.Log(i + ". sensor: " + raycastHit[i-1].distance);
+                       //  Debug.Log(i + ". sensor: " + raycastHit[i-1].distance);
                     }
                }
 
@@ -63,7 +63,7 @@ public class WallSensor : MonoBehaviour {
                {
                     if (raycastHit[j].collider.tag == m_sensorTag)
                     {
-                         Debug.Log("The " + (j+1) + ". ray hit something! Distance: " + raycastHit[j].distance);
+                         //Debug.Log((j+1) + ". sensor: " + raycastHit[j].distance);
                     }
                }
           }
@@ -76,7 +76,7 @@ public class WallSensor : MonoBehaviour {
           {
                if (raycastHit[quantity].collider.tag == m_sensorTag)
                {
-                    Debug.Log("The " + (quantity + 1) + ". ray hit something! Distance: " + raycastHit[quantity].distance);
+                //    Debug.Log((quantity + 1) + ". sensor: " + raycastHit[quantity].distance);
                }
           }
 
