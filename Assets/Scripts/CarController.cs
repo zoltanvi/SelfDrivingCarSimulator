@@ -7,15 +7,15 @@ public class CarController : MonoBehaviour {
      [SerializeField] private Transform m_CenterOfMass;
      [SerializeField] private WheelCollider[] m_WheelColliders = new WheelCollider[4];
      [SerializeField] private Transform[] m_WheelMeshes = new Transform[4];
-     [SerializeField] private Rigidbody m_Rigidbody;
+     private Rigidbody m_Rigidbody;
 
-     // wheelColliders / wheelMeshes [0] : Front Left
-     // wheelColliders / wheelMeshes [1] : Front Right
-     // wheelColliders / wheelMeshes [2] : Back Left
-     // wheelColliders / wheelMeshes [3] : Back Right
+	// wheelColliders / wheelMeshes [0] : Front Left
+	// wheelColliders / wheelMeshes [1] : Front Right
+	// wheelColliders / wheelMeshes [2] : Back Left
+	// wheelColliders / wheelMeshes [3] : Back Right
 
 
-     void Start()
+	void Start()
      {
 
           // felfuggeszteseket beallitjuk a carStats-bol
@@ -24,9 +24,9 @@ public class CarController : MonoBehaviour {
           WheelFrictionCurve[] wheelFrictionCurveForward = new WheelFrictionCurve[4];
           WheelFrictionCurve[] wheelFrictionCurveSideways = new WheelFrictionCurve[4];
 
-          for (int i = 0; i < 4; i++)
+		#region Setting 4 wheels
+		for (int i = 0; i < 4; i++)
           {
-
                // rugo beallitasa
                suspensions[i] = m_WheelColliders[i].suspensionSpring;
                suspensions[i].spring = m_carStats.spring;
@@ -42,13 +42,11 @@ public class CarController : MonoBehaviour {
                m_WheelColliders[i].suspensionSpring = suspensions[i];
                m_WheelColliders[i].forwardFriction = wheelFrictionCurveForward[i];
                m_WheelColliders[i].sidewaysFriction = wheelFrictionCurveSideways[i];
-
-
           }
+		#endregion
 
-
-          // megadjuk az auto tomegkozeppontjat
-          m_Rigidbody = GetComponent<Rigidbody>();
+		// megadjuk az auto tomegkozeppontjat
+		m_Rigidbody = GetComponent<Rigidbody>();
           m_Rigidbody.centerOfMass = m_CenterOfMass.localPosition;
      }
 
