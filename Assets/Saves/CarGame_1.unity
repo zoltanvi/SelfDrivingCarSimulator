@@ -1273,6 +1273,80 @@ Transform:
   m_PrefabParentObject: {fileID: 4825403596677916, guid: 4da8aae1e7346184a8776e56daa871b2,
     type: 2}
   m_PrefabInternal: {fileID: 294022007}
+--- !u!1 &331224707
+GameObject:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 331224708}
+  - component: {fileID: 331224710}
+  - component: {fileID: 331224709}
+  m_Layer: 5
+  m_Name: fitnessData
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &331224708
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 331224707}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 0.99999994, y: 0.99999994, z: 0.99999994}
+  m_Children: []
+  m_Father: {fileID: 1986340790}
+  m_RootOrder: 3
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0, y: 1}
+  m_AnchorMax: {x: 0, y: 1}
+  m_AnchoredPosition: {x: 20, y: -140}
+  m_SizeDelta: {x: 125, y: 20.3}
+  m_Pivot: {x: 0, y: 1}
+--- !u!114 &331224709
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 331224707}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 708705254, guid: f70555f144d8491a825f0804e09c671c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0.9264706, g: 0.9264706, b: 0.9264706, a: 1}
+  m_RaycastTarget: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+    m_TypeName: UnityEngine.UI.MaskableGraphic+CullStateChangedEvent, UnityEngine.UI,
+      Version=1.0.0.0, Culture=neutral, PublicKeyToken=null
+  m_FontData:
+    m_Font: {fileID: 12800000, guid: fc4bfae42f9155c42a90ca00811bedb0, type: 3}
+    m_FontSize: 12
+    m_FontStyle: 3
+    m_BestFit: 0
+    m_MinSize: 1
+    m_MaxSize: 40
+    m_Alignment: 0
+    m_AlignByGeometry: 0
+    m_RichText: 1
+    m_HorizontalOverflow: 0
+    m_VerticalOverflow: 0
+    m_LineSpacing: 1
+  m_Text: fitness data
+--- !u!222 &331224710
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 331224707}
 --- !u!1 &363554186
 GameObject:
   m_ObjectHideFlags: 0
@@ -3217,7 +3291,7 @@ RectTransform:
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
   m_AnchoredPosition: {x: 20, y: -26}
-  m_SizeDelta: {x: 125, y: 180}
+  m_SizeDelta: {x: 125, y: 130}
   m_Pivot: {x: 0, y: 1}
 --- !u!114 &1036359112
 MonoBehaviour:
@@ -5192,6 +5266,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2a0270c0cc2757342980eff64737e3da, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Checkpoints: {fileID: 1227141246}
+  m_fitnessText: {fileID: 331224709}
 --- !u!1 &1477701785
 GameObject:
   m_ObjectHideFlags: 0
@@ -6342,6 +6418,7 @@ RectTransform:
   - {fileID: 1925152066}
   - {fileID: 1102055582}
   - {fileID: 1036359111}
+  - {fileID: 331224708}
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

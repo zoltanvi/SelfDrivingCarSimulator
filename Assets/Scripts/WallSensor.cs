@@ -9,7 +9,7 @@ public class WallSensor : MonoBehaviour
 	[SerializeField] private int m_rayQuantity = 2;
 	[SerializeField] private string m_rayLayerName = "Environment";
 	[SerializeField] private Text m_sensorText;
-	private string m_raycastText;
+	private string m_raycastText = "";
 
 	// raycastHit-ben vannak a sugarak adatai tarolva
 	private RaycastHit[] raycastHit;
@@ -17,7 +17,6 @@ public class WallSensor : MonoBehaviour
 	void Start()
 	{
 		raycastHit = new RaycastHit[m_rayQuantity + 1];
-		m_raycastText = "";
 	}
 
 
