@@ -1,94 +1,94 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
-public class FitnessMeter : MonoBehaviour
-{
-	/*
+public class FitnessMeter : MonoBehaviour {
+
 	#region Variables
-	[SerializeField] private Transform car;
-	[SerializeField] private Transform m_Checkpoints;
-	private Transform[] m_CheckpointTransforms;
-	private Transform[] m_CheckpointStack = new Transform[3];
-	[SerializeField] private Text m_fitnessText;
-	private Dictionary<string, int> m_CheckpointDictionary;
-	private string m_Layername = "Checkpoints";
-	//private Stack<string> m_CheckpointStack = new Stack<string>();
-	private float m_fitness = 0f;
-	private int i = 0;
+	[SerializeField] Transform waypointsRoot;
+	[SerializeField] Transform car;
+	[SerializeField] Text text;
+	Transform[] waypoints;
+	Transform prevPoint, centerPoint, nextPoint;
+
+	int next = 1;
+
+	double fitness = 0;
+	double relativeFitness = 0;
+	double savedFitness = 0;
 	#endregion
 
 	#region Unity Methods
 
-	void Start()
+	
+	void Start () 
 	{
-		m_CheckpointTransforms = new Transform[m_Checkpoints.childCount];
-		m_CheckpointDictionary = new Dictionary<string, int>();
-		foreach (Transform checkpoint in m_Checkpoints)
+		waypoints = new Transform[waypointsRoot.childCount];
+		int i = 0;
+		foreach (Transform wp in waypointsRoot)
 		{
-			m_CheckpointTransforms[i] = checkpoint;
-			m_CheckpointDictionary.Add(checkpoint.name, i++);
+			waypoints[i++] = wp;
+		}
+		prevPoint = waypoints[waypoints.Length - 1];
+		centerPoint = waypoints[0];
+		nextPoint = waypoints[1];
+	}
+
+	void NextPoints()
+	{
+		next = (next + 1) > waypoints.Length - 1 ? 0 : (next + 1);
+
+		prevPoint = centerPoint;
+		centerPoint = nextPoint;
+		nextPoint = waypoints[next];
+		
+	}
+
+	void PrevPoints()
+	{
+		int prev = (next - 3) < 0 ? (((next - 3) + waypoints.Length) % waypoints.Length) : (next - 3);
+		next = (next - 1) < 0 ? (((next - 1) + waypoints.Length) % waypoints.Length) : (next - 1);
+
+		nextPoint = centerPoint;
+		centerPoint = prevPoint;
+		prevPoint = waypoints[prev];
+
+	}
+
+	void Update () 
+	{
+		relativeFitness = Vector3.Distance(centerPoint.position, car.position);
+
+
+		double centerCarDistance = Vector3.Distance(centerPoint.position, car.position);
+		double prevCenterDistance = Vector3.Distance(prevPoint.position, centerPoint.position);
+		double centerNextDistance = Vector3.Distance(centerPoint.position, nextPoint.position);
+		double prevCarDistance = Vector3.Distance(prevPoint.position, car.position);
+		double nextCarDistance = Vector3.Distance(car.position, nextPoint.position);
+
+		
+
+		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
+		{
+			relativeFitness *= -1;
 		}
 
-		--i;
+		if (centerCarDistance > centerNextDistance && nextCarDistance < prevCarDistance)
+		{
+			savedFitness += centerNextDistance;
+			NextPoints();
+		}
 
+		if (centerCarDistance > prevCenterDistance && prevCarDistance < nextCarDistance)
+		{
+			savedFitness -= prevCenterDistance;
+			PrevPoints();
+		}
+
+
+		fitness = savedFitness + relativeFitness;
+		text.text = "Fitness: " + string.Format("{0:0.000}", fitness);
 	}
 
-	#region trigger
-	//void OnTriggerExit(Collider other)
-	//{
-
-
-	//	string triggeredCheckpointName = other.gameObject.name;
-
-	//	// ha athaladt a checkpointon az auto
-	//	if (other.gameObject.layer == LayerMask.NameToLayer(m_Layername))
-	//	{
-
-	//		if (m_CheckpointStack[2] == null)
-	//		{
-	//			m_CheckpointStack[2] = other.transform;
-	//		}
-	//		else
-	//		{
-	//			m_CheckpointStack[0] = m_CheckpointStack[1];
-	//			m_CheckpointStack[1] = m_CheckpointStack[2];
-	//			m_CheckpointStack[2] = other.transform;
-	//		}
-
-	//		int? a = m_CheckpointDictionary[m_CheckpointStack[0].name];
-	//		int? b = m_CheckpointDictionary[m_CheckpointStack[1].name];
-	//		int? c = m_CheckpointDictionary[m_CheckpointStack[2].name];
-
-	//		if (b == 0 && c == i)	// ha a rajttól hátra fele mentünk 1 cp-t 
-	//		{
-	//			m_fitness -= Vector3.Distance(m_CheckpointStack[1].position, m_CheckpointStack[2].position);
-	//		}
-	//		else if (b == 0 && c > b)	// ha a rajttól előre fele mentünk 1 cp-t
-	//		{
-	//			m_fitness += Vector3.Distance(m_CheckpointStack[1].position, m_CheckpointStack[2].position);
-	//		}
-
-
-
-
-
-	//		m_fitness += Vector3.Distance(m_CheckpointStack[0].position, m_CheckpointStack[1].position);
-
-	//	}
-	//}
 	#endregion
-
-	void FixedUpdate()
-	{
-		
-		m_fitness = Time.deltaTime;
-		m_fitnessText.text = "fitness: " + m_fitness;
-	}
-
-
-	#endregion
-
-
-	*/
+	
 }

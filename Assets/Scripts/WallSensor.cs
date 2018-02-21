@@ -28,7 +28,7 @@ public class WallSensor : MonoBehaviour
 		m_raycastText = "";
 		for (int i = 0; i < raycastHit.Length; i++)
 		{
-			m_raycastText += (i + 1) + ". sensor: " + raycastHit[i].distance.ToString() + "\n";
+			m_raycastText += (i + 1) + ". sensor: " + string.Format("{0:0.000}", raycastHit[i].distance) + "\n";
 			//m_raycastText += raycastHit[i].distance.ToString() + "\n";
 		}
 		m_sensorText.text = m_raycastText;
