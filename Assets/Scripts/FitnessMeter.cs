@@ -7,6 +7,7 @@ public class FitnessMeter : MonoBehaviour {
 	[SerializeField] Transform waypointsRoot;
 	[SerializeField] Transform car;
 	[SerializeField] Text text;
+	[SerializeField] Text wrongwayText;
 	Transform[] waypoints;
 	Transform prevPoint, centerPoint, nextPoint;
 
@@ -86,6 +87,14 @@ public class FitnessMeter : MonoBehaviour {
 
 
 		fitness = savedFitness + relativeFitness;
+		if(fitness < 0)
+		{
+			wrongwayText.text = "WRONG WAY";
+		} else 
+		{
+			wrongwayText.text = "";
+		}
+
 		text.text = "Fitness: " + string.Format("{0:0.000}", fitness);
 	}
 
