@@ -11,22 +11,6 @@ Prefab:
   m_ParentPrefab: {fileID: 0}
   m_RootGameObject: {fileID: 1954008003040784}
   m_IsPrefabParent: 1
---- !u!1 &1029310530234274
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4333855795317052}
-  - component: {fileID: 65610405259296470}
-  m_Layer: 11
-  m_Name: trigger2
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1069942878638116
 GameObject:
   m_ObjectHideFlags: 0
@@ -373,22 +357,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!1 &1941694605871014
-GameObject:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  serializedVersion: 5
-  m_Component:
-  - component: {fileID: 4457986740687950}
-  - component: {fileID: 65904764707625424}
-  m_Layer: 11
-  m_Name: BodyColliderTrigger
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
 --- !u!1 &1954008003040784
 GameObject:
   m_ObjectHideFlags: 0
@@ -532,19 +500,6 @@ Transform:
   m_Father: {fileID: 4967665404002114}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
---- !u!4 &4333855795317052
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1029310530234274}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.6, y: 0.8, z: 0}
-  m_LocalScale: {x: 0, y: 0, z: 0}
-  m_Children: []
-  m_Father: {fileID: 4834016087565728}
-  m_RootOrder: 3
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4350465756756534
 Transform:
   m_ObjectHideFlags: 1
@@ -634,19 +589,6 @@ Transform:
   m_Father: {fileID: 4172187216957588}
   m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!4 &4457986740687950
-Transform:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1941694605871014}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.612, y: 0.906, z: 1.898}
-  m_LocalScale: {x: 1.83391, y: 1.1915799, z: 0.3600352}
-  m_Children: []
-  m_Father: {fileID: 4834016087565728}
-  m_RootOrder: 1
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4469170510556596
 Transform:
   m_ObjectHideFlags: 1
@@ -667,8 +609,8 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1598452398483698}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0.612, y: 0.906, z: -0.296}
-  m_LocalScale: {x: 1.8339145, y: 1.191581, z: 4.8004603}
+  m_LocalPosition: {x: 0.612, y: 0.757, z: -0.296}
+  m_LocalScale: {x: 1.8339145, y: 0.8341066, z: 4.8004603}
   m_Children: []
   m_Father: {fileID: 4834016087565728}
   m_RootOrder: 0
@@ -698,7 +640,7 @@ Transform:
   m_LocalScale: {x: 1.7456392, y: 1, z: 2.9686725}
   m_Children: []
   m_Father: {fileID: 4834016087565728}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4834016087565728
 Transform:
@@ -711,9 +653,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children:
   - {fileID: 4480517192677452}
-  - {fileID: 4457986740687950}
   - {fileID: 4786001414006150}
-  - {fileID: 4333855795317052}
   m_Father: {fileID: 4350465756756534}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -976,7 +916,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 0
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!65 &65229055363528424
 BoxCollider:
   m_ObjectHideFlags: 1
@@ -996,35 +936,11 @@ BoxCollider:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1637282429720468}
   m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
+  m_IsTrigger: 0
+  m_Enabled: 1
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!65 &65610405259296470
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1029310530234274}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 0
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.89976263, z: 1}
-  m_Center: {x: 0, y: 0.050118662, z: 0}
---- !u!65 &65904764707625424
-BoxCollider:
-  m_ObjectHideFlags: 1
-  m_PrefabParentObject: {fileID: 0}
-  m_PrefabInternal: {fileID: 100100000}
-  m_GameObject: {fileID: 1941694605871014}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1, y: 0.89976263, z: 1}
-  m_Center: {x: 0, y: 0.050118662, z: 0}
 --- !u!114 &114033591220110584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1037,8 +953,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   waypointsRoot: {fileID: 0}
-  car: {fileID: 4097969882064458}
-  text: {fileID: 0}
+  carCenterPoint: {fileID: 4097969882064458}
+  fitnessText: {fileID: 0}
+  wrongwayText: {fileID: 0}
 --- !u!114 &114069088919800350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1050,20 +967,20 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d0b480c2b6f9c4fa5ba89a5d8a1d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_Downforce: 100
-  m_carStats:
-    turnAngle: 50
-    maxTorque: 600
-    spring: 70000
+  downforce: 100
+  carStats:
+    turnAngle: 55
+    maxTorque: 700
+    spring: 10000
     forwardSwiftness: 1
     sidewaysSwiftness: 1.7
-  m_CenterOfMass: {fileID: 4087171190521606}
-  m_WheelColliders:
+  centerOfMass: {fileID: 4087171190521606}
+  wheelColliders:
   - {fileID: 146488191492311512}
   - {fileID: 146826927695410040}
   - {fileID: 146566128265551532}
   - {fileID: 146655372171994078}
-  m_WheelMeshes:
+  wheelMeshes:
   - {fileID: 4967665404002114}
   - {fileID: 4266944939828808}
   - {fileID: 4418005467305298}
@@ -1079,11 +996,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7f9ce490c8966944cb6581ed076cfe07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_RayOrigin: {fileID: 4837871962500276}
-  m_lineDistance: 5
-  m_rayQuantity: 2
-  m_rayLayerName: Environment
-  m_sensorText: {fileID: 0}
+  rayOriginPoint: {fileID: 4837871962500276}
+  lineDistance: 5
+  rayQuantity: 3
+  rayLayerName: Environment
+  sensorText: {fileID: 0}
 --- !u!146 &146488191492311512
 WheelCollider:
   m_ObjectHideFlags: 1

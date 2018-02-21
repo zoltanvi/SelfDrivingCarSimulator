@@ -4,62 +4,58 @@ using UnityEngine.UI;
 public class WallSensor : MonoBehaviour
 {
 
-	[SerializeField] private Transform m_RayOrigin;
-	[SerializeField] private float m_lineDistance = 4f;
-	[SerializeField] private int m_rayQuantity = 2;
-	[SerializeField] private string m_rayLayerName = "Environment";
-	[SerializeField] private Text m_sensorText;
-	private string m_raycastText = "";
+	[SerializeField] private Transform rayOriginPoint;
+	[SerializeField] private float lineDistance = 4f;
+	[SerializeField] private int rayQuantity = 2;
+	[SerializeField] private string rayLayerName = "Environment";
+	[SerializeField] private Text sensorText;
+	private string rawSensorText = "";
 
-	// raycastHit-ben vannak a sugarak adatai tarolva
+	// A raycastHit-ben vannak a sugarak adatai tarolva.
 	private RaycastHit[] raycastHit;
 
 	void Start()
 	{
-		raycastHit = new RaycastHit[m_rayQuantity + 1];
+		raycastHit = new RaycastHit[rayQuantity + 1];
 	}
 
-
-	// Update is called once per frame
 	void FixedUpdate()
 	{
-		CreateRays(m_rayQuantity);
+		CreateRays(rayQuantity);
 
-		m_raycastText = "";
+		rawSensorText = "";
 		for (int i = 0; i < raycastHit.Length; i++)
 		{
-			m_raycastText += (i + 1) + ". sensor: " + string.Format("{0:0.000}", raycastHit[i].distance) + "\n";
-			//m_raycastText += raycastHit[i].distance.ToString() + "\n";
+			rawSensorText += (i + 1) + ". sensor: " + string.Format("{0:0.0000}", raycastHit[i].distance) + "\n";
 		}
-		m_sensorText.text = m_raycastText;
+		sensorText.text = rawSensorText;
 	}
 
-	// Mindket oldalra quantity-1 db sugarat fog vetni, + kozepre egyet.
+	// Mindket oldalra (quantity - 1) db sugarat fog vetni, + kozepre egyet.
 	void CreateRays(int quantity)
 	{
-		// angleBase = a sugarak kozotti szog nagysaga
+		// Az angleBase = a sugarak kozotti szog nagysaga.
 		float angleBase = 90f / quantity;
 		for (int i = 1, j = (quantity - 1); i < (quantity); i++, j--)
 		{
-			// A szogek jobb es bal oldalra novekednek / csokkennek, angleBase-enkent
-			Quaternion rightRot = Quaternion.AngleAxis(angleBase * i, m_RayOrigin.up);
-			Quaternion leftRot = Quaternion.AngleAxis(-angleBase * i, m_RayOrigin.up);
+			// A szogek jobb es bal oldalra novekednek / csokkennek, angleBase-enkent.
+			Quaternion rightRot = Quaternion.AngleAxis(angleBase * i, rayOriginPoint.up);
+			Quaternion leftRot = Quaternion.AngleAxis(-angleBase * i, rayOriginPoint.up);
 
-			// Megrajzolja a bal es jobb oldali sugarakat
-			Debug.DrawRay(m_RayOrigin.position, rightRot * m_RayOrigin.forward * m_lineDistance, Color.yellow);
-			Debug.DrawRay(m_RayOrigin.position, leftRot * m_RayOrigin.forward * m_lineDistance, Color.yellow);
+			// Megrajzolja a bal es jobb oldali sugarakat.
+			Debug.DrawRay(rayOriginPoint.position, rightRot * rayOriginPoint.forward * lineDistance, Color.yellow);
+			Debug.DrawRay(rayOriginPoint.position, leftRot * rayOriginPoint.forward * lineDistance, Color.yellow);
 
-			// Letrehozza a bal es jobb oldali sugarakat
-			Physics.Raycast(m_RayOrigin.position, rightRot * m_RayOrigin.forward, out raycastHit[i - 1], m_lineDistance, LayerMask.GetMask(m_rayLayerName));
-			Physics.Raycast(m_RayOrigin.position, leftRot * m_RayOrigin.forward, out raycastHit[j], m_lineDistance, LayerMask.GetMask(m_rayLayerName));
-			
+			// Letrehozza a bal es jobb oldali sugarakat.
+			Physics.Raycast(rayOriginPoint.position, rightRot * rayOriginPoint.forward, out raycastHit[i - 1], lineDistance, LayerMask.GetMask(rayLayerName));
+			Physics.Raycast(rayOriginPoint.position, leftRot * rayOriginPoint.forward, out raycastHit[j], lineDistance, LayerMask.GetMask(rayLayerName));
+
 		}
 
-		// Megrajzolja a kozepso sugarat
-		Debug.DrawRay(m_RayOrigin.position, m_RayOrigin.forward * m_lineDistance, Color.yellow);
-		// Letrehozza a kozepso sugarat
-		Physics.Raycast(m_RayOrigin.position, m_RayOrigin.forward, out raycastHit[quantity], m_lineDistance, LayerMask.GetMask(m_rayLayerName));
-	
+		// Megrajzolja a kozepso sugarat.
+		Debug.DrawRay(rayOriginPoint.position, rayOriginPoint.forward * lineDistance, Color.yellow);
+		// Letrehozza a kozepso sugarat.
+		Physics.Raycast(rayOriginPoint.position, rayOriginPoint.forward, out raycastHit[quantity], lineDistance, LayerMask.GetMask(rayLayerName));
 
 	}
 

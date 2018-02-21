@@ -24,7 +24,6 @@ public class FollowCar : MonoBehaviour
           //Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
           //transform.rotation = curRot;
 
-
      }
 
 }
