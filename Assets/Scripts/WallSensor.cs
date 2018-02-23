@@ -4,60 +4,75 @@ using UnityEngine.UI;
 public class WallSensor : MonoBehaviour
 {
 
-	[SerializeField] private Transform rayOriginPoint;
-	[SerializeField] private float lineDistance = 4f;
-	[SerializeField] private int rayQuantity = 2;
-	[SerializeField] private string rayLayerName = "Environment";
-	[SerializeField] private Text sensorText;
-	private string rawSensorText = "";
+    [SerializeField] private Transform rayOriginPoint;
+    [SerializeField] private float lineDistance = 5f;
+    [SerializeField] private int rayQuantity = 3;
+    [SerializeField] private string rayLayerName = "Environment";
+    [SerializeField] private Text sensorText;
+    private string rawSensorText = "";
+    GameObject[] rayHolders;
 
-	// A raycastHit-ben vannak a sugarak adatai tarolva.
-	private RaycastHit[] raycastHit;
 
-	void Start()
-	{
-		raycastHit = new RaycastHit[rayQuantity + 1];
-	}
+    // A raycastHit-ben vannak a sugarak adatai tarolva.
+    private RaycastHit[] raycastHit;
 
-	void FixedUpdate()
-	{
-		CreateRays(rayQuantity);
+    void Start()
+    {
+        raycastHit = new RaycastHit[rayQuantity];
+        rayHolders = new GameObject[rayQuantity];
 
-		rawSensorText = "";
-		for (int i = 0; i < raycastHit.Length; i++)
-		{
-			rawSensorText += (i + 1) + ". sensor: " + string.Format("{0:0.0000}", raycastHit[i].distance) + "\n";
-		}
-		sensorText.text = rawSensorText;
-	}
+        InitializeLines();
+    }
 
-	// Mindket oldalra (quantity - 1) db sugarat fog vetni, + kozepre egyet.
-	void CreateRays(int quantity)
-	{
-		// Az angleBase = a sugarak kozotti szog nagysaga.
-		float angleBase = 90f / quantity;
-		for (int i = 1, j = (quantity - 1); i < (quantity); i++, j--)
-		{
-			// A szogek jobb es bal oldalra novekednek / csokkennek, angleBase-enkent.
-			Quaternion rightRot = Quaternion.AngleAxis(angleBase * i, rayOriginPoint.up);
-			Quaternion leftRot = Quaternion.AngleAxis(-angleBase * i, rayOriginPoint.up);
+    void FixedUpdate()
+    {
+        CreateRays(rayQuantity);
 
-			// Megrajzolja a bal es jobb oldali sugarakat.
-			Debug.DrawRay(rayOriginPoint.position, rightRot * rayOriginPoint.forward * lineDistance, Color.yellow);
-			Debug.DrawRay(rayOriginPoint.position, leftRot * rayOriginPoint.forward * lineDistance, Color.yellow);
+        rawSensorText = "";
+        for (int i = 0; i < raycastHit.Length; i++)
+        {
+            rawSensorText += (i + 1) + ". sensor: " + string.Format("{0:0.0000}", raycastHit[i].distance) + "\n";
+        }
+        sensorText.text = rawSensorText;
+    }
 
-			// Letrehozza a bal es jobb oldali sugarakat.
-			Physics.Raycast(rayOriginPoint.position, rightRot * rayOriginPoint.forward, out raycastHit[i - 1], lineDistance, LayerMask.GetMask(rayLayerName));
-			Physics.Raycast(rayOriginPoint.position, leftRot * rayOriginPoint.forward, out raycastHit[j], lineDistance, LayerMask.GetMask(rayLayerName));
+    // Letrehozza az erzekelo sugarakat.
+    void CreateRays(int quantity)
+    {
+        // Az angleBase = a sugarak kozotti szog nagysaga.
+        float angleBase = 180f / (quantity + 1);
+        for (int i = 1; i < (quantity + 1); i++)
+        {
+            // A jelenlegi sugar szoge balrol jobbra szamitva.
+            Quaternion lineRotation = Quaternion.AngleAxis((angleBase * i), (rayOriginPoint.up));
 
-		}
+            // Letrehozza a sugarat.
+            Physics.Raycast(rayOriginPoint.position, lineRotation * (-rayOriginPoint.right), out raycastHit[i - 1], lineDistance, LayerMask.GetMask(rayLayerName));
 
-		// Megrajzolja a kozepso sugarat.
-		Debug.DrawRay(rayOriginPoint.position, rayOriginPoint.forward * lineDistance, Color.yellow);
-		// Letrehozza a kozepso sugarat.
-		Physics.Raycast(rayOriginPoint.position, rayOriginPoint.forward, out raycastHit[quantity], lineDistance, LayerMask.GetMask(rayLayerName));
+            // Megrajzolja a sugarat.
+            rayHolders[i - 1].GetComponent<LineRenderer>().SetPosition(0, rayOriginPoint.position);
+            rayHolders[i - 1].GetComponent<LineRenderer>().SetPosition(1, rayOriginPoint.position + lineRotation * (-rayOriginPoint.right) * lineDistance);
+        }
+    }
 
-	}
+    private void InitializeLines()
+    {
+        Material lineMat = new Material(Shader.Find("Sprites/Default"));
 
+        for (int i = 0; i < rayHolders.Length; i++)
+        {
+            rayHolders[i] = new GameObject();
+            rayHolders[i].AddComponent<LineRenderer>();
+            rayHolders[i].GetComponent<LineRenderer>().positionCount = 2;
+            rayHolders[i].GetComponent<LineRenderer>().numCapVertices = 5;
+            rayHolders[i].GetComponent<LineRenderer>().startWidth = 0.08f;
+            rayHolders[i].GetComponent<LineRenderer>().endWidth = 0.08f;
+            rayHolders[i].GetComponent<LineRenderer>().useWorldSpace = false;
+            rayHolders[i].GetComponent<LineRenderer>().material = lineMat;
+            rayHolders[i].GetComponent<LineRenderer>().startColor = Color.red;
+            rayHolders[i].GetComponent<LineRenderer>().endColor = Color.white;
+
+        }
+    }
 
 }

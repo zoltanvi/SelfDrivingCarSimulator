@@ -970,7 +970,7 @@ MonoBehaviour:
   downforce: 100
   carStats:
     turnAngle: 55
-    maxTorque: 700
+    maxTorque: 600
     spring: 10000
     forwardSwiftness: 1
     sidewaysSwiftness: 1.7
@@ -998,7 +998,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayOriginPoint: {fileID: 4837871962500276}
   lineDistance: 5
-  rayQuantity: 3
+  rayQuantity: 2
   rayLayerName: Environment
   sensorText: {fileID: 0}
 --- !u!146 &146488191492311512

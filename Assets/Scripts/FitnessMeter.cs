@@ -50,7 +50,18 @@ public class FitnessMeter : MonoBehaviour
 
 		prevPoint = currentPoint;
 		currentPoint = nextPoint;
+		
 		nextPoint = waypoints[nextIndex];
+
+		double prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
+		double nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
+		double centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
+
+		relativeFitness = centerCarDistance;
+		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
+		{
+			relativeFitness *= -1;
+		}
 
 	}
 
@@ -65,6 +76,15 @@ public class FitnessMeter : MonoBehaviour
 		currentPoint = prevPoint;
 		prevPoint = waypoints[prevIndex];
 
+		double prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
+		double nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
+		double centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
+
+		relativeFitness = centerCarDistance;
+		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
+		{
+			relativeFitness *= -1;
+		}
 	}
 
 	void Update()
