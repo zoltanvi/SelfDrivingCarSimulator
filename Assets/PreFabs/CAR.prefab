@@ -241,7 +241,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4786001414006150}
   - component: {fileID: 65378845640190544}
-  m_Layer: 1
+  m_Layer: 9
   m_Name: BodyCollider02
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -998,7 +998,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayOriginPoint: {fileID: 4837871962500276}
   lineDistance: 5
-  rayQuantity: 2
+  rayQuantity: 4
   rayLayerName: Environment
   sensorText: {fileID: 0}
 --- !u!146 &146488191492311512

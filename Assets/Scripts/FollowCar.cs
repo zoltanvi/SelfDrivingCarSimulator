@@ -20,9 +20,10 @@ public class FollowCar : MonoBehaviour
           transform.rotation = smoothedRotation;
           transform.LookAt(targetCar);
 
-          //Quaternion toRot = Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
-          //Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
-          //transform.rotation = curRot;
+        //Quaternion toRot = Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
+        //Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
+        //transform.rotation = curRot;
+
 
      }
 

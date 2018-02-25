@@ -53,8 +53,9 @@ public class CarController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		// Kanyarodas (balra jobbra).
-		float steer = Input.GetAxis("Horizontal");
+
+        // Kanyarodas (balra jobbra).
+        float steer = Input.GetAxis("Horizontal");
 		// Gyorsulas (fel le).
 		float accelerate = Input.GetAxis("Vertical");
 
