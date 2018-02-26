@@ -53,8 +53,10 @@
   <ItemGroup>
      <Compile Include="Assets\Scripts\CarController.cs" />
      <Compile Include="Assets\Scripts\CarStats.cs" />
+     <Compile Include="Assets\Scripts\FitnessInfo.cs" />
      <Compile Include="Assets\Scripts\FitnessMeter.cs" />
      <Compile Include="Assets\Scripts\FollowCar.cs" />
+     <Compile Include="Assets\Scripts\Perceptron.cs" />
      <Compile Include="Assets\Scripts\WallSensor.cs" />
  <Reference Include="UnityEngine.UI">
  <HintPath>F:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>

@@ -3129,6 +3129,11 @@ Prefab:
       propertyPath: m_RootOrder
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 114749130403178722, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
+        type: 2}
+      propertyPath: sensorText
+      value: 
+      objectReference: {fileID: 1036359112}
     - target: {fileID: 114033591220110584, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
         type: 2}
       propertyPath: waypointsRoot
@@ -3146,9 +3151,9 @@ Prefab:
       objectReference: {fileID: 863109288}
     - target: {fileID: 114749130403178722, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
         type: 2}
-      propertyPath: sensorText
-      value: 
-      objectReference: {fileID: 1036359112}
+      propertyPath: rayQuantity
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
   m_IsPrefabParent: 0
@@ -5961,6 +5966,14 @@ Prefab:
     - target: {fileID: 4029649856779426, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
       propertyPath: m_RootOrder
       value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4296837241509984, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
+      propertyPath: m_LocalScale.y
+      value: 0.00001
+      objectReference: {fileID: 0}
+    - target: {fileID: 4296837241509984, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
+      propertyPath: m_LocalPosition.y
+      value: 0.001
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}

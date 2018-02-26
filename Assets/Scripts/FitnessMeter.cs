@@ -4,142 +4,137 @@ using UnityEngine.UI;
 public class FitnessMeter : MonoBehaviour
 {
 
-    [SerializeField] Transform waypointsRoot;
-    [SerializeField] Transform carCenterPoint;
-    [SerializeField] Text fitnessText;
-    [SerializeField] Text wrongwayText;
+	[SerializeField] Transform waypointsRoot;
+	[SerializeField] Transform carCenterPoint;
+	[SerializeField] Text fitnessText;
+	[SerializeField] Text wrongwayText;
 
-    Transform[] waypoints;
-    Transform prevPoint, currentPoint, nextPoint;
+	Transform[] waypoints;
+	Transform prevPoint, currentPoint, nextPoint;
+	public static FitnessInfo fitnessInfo = new FitnessInfo();
 
-    int nextIndex = 1;
+	int nextIndex = 1;
 
-    // AbsoluteFitness: a palyahoz viszonyitott fitness.
-    private double absoluteFitness = 0;
-    // RelativeFitness: a currentPointhoz viszonyitott tavolsag.
-    double relativeFitness = 0;
-    // SavedFitness: a mar elhagyott waypointok tavolsaganak osszege.
-    double savedFitness = 0;
+	// AbsoluteFitness: a palyahoz viszonyitott fitness.
+	//--- private double absoluteFitness = 0;
 
-    public double Fitness
-    {
-        get
-        {
-            return absoluteFitness;
-        }
-    }
+	// RelativeFitness: a currentPointhoz viszonyitott tavolsag.
+	double relativeFitness = 0;
+	// SavedFitness: a mar elhagyott waypointok tavolsaganak osszege.
+	double savedFitness = 0;
 
 
-    void Start()
-    {
-        waypoints = new Transform[waypointsRoot.childCount];
+	void Start()
+	{
+		waypoints = new Transform[waypointsRoot.childCount];
 
-        int index = 0;
-        foreach (Transform wp in waypointsRoot)
-        {
-            waypoints[index++] = wp;
-        }
-        
-        // Szamon tartjuk az autohoz legkozelebbi 3 wayPoint-ot.
-        prevPoint = waypoints[waypoints.Length - 1];
-        currentPoint = waypoints[0];
-        nextPoint = waypoints[1];
-    }
+		int index = 0;
+		foreach (Transform wp in waypointsRoot)
+		{
+			waypoints[index++] = wp;
+		}
 
-    void CheckNegativeFitness()
-    {
-        double prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
-        double nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
-        double centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
+		// Szamon tartjuk az autohoz legkozelebbi 3 wayPoint-ot.
+		prevPoint = waypoints[waypoints.Length - 1];
+		currentPoint = waypoints[0];
+		nextPoint = waypoints[1];
+	}
 
-        relativeFitness = centerCarDistance;
-        if (prevCarDistance < nextCarDistance && relativeFitness > 0)
-        {
-            relativeFitness *= -1;
-        }
-    }
+	void CheckNegativeFitness()
+	{
+		double prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
+		double nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
+		double centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
 
-    // Eggyel elore lepteti a kornyezo pontok indexet.
-    void FollowingPoints()
-    {
-        // Ha az index tulfutna a waypointok szaman, akkor az elejetol kezdi (kor a palya).
-        nextIndex = (nextIndex + 1) > waypoints.Length - 1 ? 0 : (nextIndex + 1);
+		relativeFitness = centerCarDistance;
+		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
+		{
+			relativeFitness *= -1;
+		}
+	}
 
-        prevPoint = currentPoint;
-        currentPoint = nextPoint;
-        nextPoint = waypoints[nextIndex];
+	// Eggyel elore lepteti a kornyezo pontok indexet.
+	void FollowingPoints()
+	{
+		// Ha az index tulfutna a waypointok szaman, akkor az elejetol kezdi (kor a palya).
+		nextIndex = (nextIndex + 1) > waypoints.Length - 1 ? 0 : (nextIndex + 1);
 
-        CheckNegativeFitness();
-    }
+		prevPoint = currentPoint;
+		currentPoint = nextPoint;
+		nextPoint = waypoints[nextIndex];
 
-    // Eggyel vissza lepteti a kornyezo pontok indexet.
-    void PreviousPoints()
-    {
-        // Ha az index tul alacsony lenne, akkor a vegerol kezdi (kor a palya).
-        int prevIndex = (nextIndex - 3) < 0 ? (((nextIndex - 3) + waypoints.Length) % waypoints.Length) : (nextIndex - 3);
-        nextIndex = (nextIndex - 1) < 0 ? (((nextIndex - 1) + waypoints.Length) % waypoints.Length) : (nextIndex - 1);
+		CheckNegativeFitness();
+	}
 
-        nextPoint = currentPoint;
-        currentPoint = prevPoint;
-        prevPoint = waypoints[prevIndex];
+	// Eggyel vissza lepteti a kornyezo pontok indexet.
+	void PreviousPoints()
+	{
+		// Ha az index tul alacsony lenne, akkor a vegerol kezdi (kor a palya).
+		int prevIndex = (nextIndex - 3) < 0 ? (((nextIndex - 3) + waypoints.Length) % waypoints.Length) : (nextIndex - 3);
+		nextIndex = (nextIndex - 1) < 0 ? (((nextIndex - 1) + waypoints.Length) % waypoints.Length) : (nextIndex - 1);
 
-        CheckNegativeFitness();
-    }
+		nextPoint = currentPoint;
+		currentPoint = prevPoint;
+		prevPoint = waypoints[prevIndex];
 
-    void Update()
-    {
-        CalculateFitness();
-        Debug.Log(this.transform.name + "\'s fitness is: " + Fitness);
-        fitnessText.text = "Fitness: " + string.Format("{0:0.0000}", absoluteFitness);
-    }
+		CheckNegativeFitness();
+	}
 
-    // Kiszamolja az auto fitness-et.
-    private void CalculateFitness()
-    {
-        double centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
-        double prevCenterDistance = Vector3.Distance(prevPoint.position, currentPoint.position);
-        double centerNextDistance = Vector3.Distance(currentPoint.position, nextPoint.position);
-        double prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
-        double nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
+	void Update()
+	{
+		CalculateFitness();
+		// Debug.Log(this.transform.name + "\'s fitness is: " + Fitness);
+		fitnessText.text = "Fitness: " + string.Format("{0:0.0000}", fitnessInfo.FitnessValue);
+	}
 
-        relativeFitness = centerCarDistance;
+	// Kiszamolja az auto fitness-et.
+	private void CalculateFitness()
+	{
+		double centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
+		double prevCenterDistance = Vector3.Distance(prevPoint.position, currentPoint.position);
+		double centerNextDistance = Vector3.Distance(currentPoint.position, nextPoint.position);
+		double prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
+		double nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
 
-        // Ha a prevPointhoz van kozelebb az auto, akkor visszafele halad.
-        if (prevCarDistance < nextCarDistance && relativeFitness > 0)
-        {
-            relativeFitness *= -1;
-        }
+		relativeFitness = centerCarDistance;
 
-        // Ha a currentPoint es a nextPoint tavolsa kisebb, mint a
-        // currentPoint es a carCenterPoint tavolsaga,
-        // es a nextPointhoz van kozelebb az auto, akkor az atment a nextPointon.
-        if (centerCarDistance > centerNextDistance && nextCarDistance < prevCarDistance)
-        {
-            savedFitness += centerNextDistance;
-            FollowingPoints();
-        }
+		// Ha a prevPointhoz van kozelebb az auto, akkor visszafele halad.
+		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
+		{
+			relativeFitness *= -1;
+		}
 
-        // Ha a currentPoint es a prevPoint tavolsa kisebb, mint a
-        // currentPoint es a carCenterPoint tavolsaga,
-        // es a prevPointhoz van kozelebb az auto, akkor az atment a prevPointon.
-        if (centerCarDistance > prevCenterDistance && prevCarDistance < nextCarDistance)
-        {
-            savedFitness -= prevCenterDistance;
-            PreviousPoints();
-        }
+		// Ha a currentPoint es a nextPoint tavolsa kisebb, mint a
+		// currentPoint es a carCenterPoint tavolsaga,
+		// es a nextPointhoz van kozelebb az auto, akkor az atment a nextPointon.
+		if (centerCarDistance > centerNextDistance && nextCarDistance < prevCarDistance)
+		{
+			savedFitness += centerNextDistance;
+			FollowingPoints();
+		}
 
-        // Az autonak a palyahoz viszonyitott elorehaladasa.
-        absoluteFitness = savedFitness + relativeFitness;
+		// Ha a currentPoint es a prevPoint tavolsa kisebb, mint a
+		// currentPoint es a carCenterPoint tavolsaga,
+		// es a prevPointhoz van kozelebb az auto, akkor az atment a prevPointon.
+		if (centerCarDistance > prevCenterDistance && prevCarDistance < nextCarDistance)
+		{
+			savedFitness -= prevCenterDistance;
+			PreviousPoints();
+		}
 
-        // Ha a rajttol visszafele megy az auto, megjelenik a WRONG WAY felirat.
-        if (absoluteFitness < 0)
-        {
-            wrongwayText.text = "WRONG WAY";
-        }
-        else
-        {
-            wrongwayText.text = "";
-        }
-    }
+		// Az autonak a palyahoz viszonyitott elorehaladasa.
+		fitnessInfo.FitnessValue = savedFitness + relativeFitness;
+		//--- absoluteFitness = savedFitness + relativeFitness;
+
+		// Ha a rajttol visszafele megy az auto, megjelenik a WRONG WAY felirat.
+		if (fitnessInfo.FitnessValue < 0)
+		{
+			wrongwayText.text = "WRONG WAY";
+		}
+		else
+		{
+			wrongwayText.text = "";
+		}
+	}
 
 }
