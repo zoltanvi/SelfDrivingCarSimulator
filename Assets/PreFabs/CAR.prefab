@@ -956,6 +956,7 @@ MonoBehaviour:
   carCenterPoint: {fileID: 4097969882064458}
   fitnessText: {fileID: 0}
   wrongwayText: {fileID: 0}
+  absoluteFitness: 0
 --- !u!114 &114069088919800350
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -967,7 +968,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d0b480c2b6f9c4fa5ba89a5d8a1d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  downforce: 100
+  downForce: 100
   carStats:
     turnAngle: 55
     maxTorque: 600
@@ -985,6 +986,7 @@ MonoBehaviour:
   - {fileID: 4266944939828808}
   - {fileID: 4418005467305298}
   - {fileID: 4777262355996256}
+  customControl: 0
 --- !u!114 &114749130403178722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -998,9 +1000,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   rayOriginPoint: {fileID: 4837871962500276}
   lineDistance: 5
-  rayQuantity: 4
+  rayQuantity: 3
   rayLayerName: Environment
   sensorText: {fileID: 0}
+  fitnessMeter: {fileID: 114033591220110584}
 --- !u!146 &146488191492311512
 WheelCollider:
   m_ObjectHideFlags: 1

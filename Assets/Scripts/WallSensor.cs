@@ -9,10 +9,12 @@ public class WallSensor : MonoBehaviour
 	[SerializeField] private int rayQuantity = 3;
 	[SerializeField] private string rayLayerName = "Environment";
 	[SerializeField] private Text sensorText;
+	[SerializeField] private FitnessMeter fitnessMeter;
+
 	private string rawSensorText = "";
-	GameObject[] rayHolders;
-	Perceptron perceptron;
-	double[] raysAndFitness;
+	private GameObject[] rayHolders;
+	private Perceptron perceptron;
+	private double[] raysAndFitness;
 
 	// A raycastHit-ben vannak a sugarak adatai tarolva.
 	private RaycastHit[] raycastHit;
@@ -47,16 +49,16 @@ public class WallSensor : MonoBehaviour
 		sensorText.text = rawSensorText;
 
 		// A perceptron utolso inputja az auto fitnesse.
-		raysAndFitness[raysAndFitness.Length - 1] = FitnessMeter.fitnessInfo.FitnessValue;
+		raysAndFitness[raysAndFitness.Length - 1] = fitnessMeter.absoluteFitness;
 
 		#endregion
 
 
-		for (int i = 0; i < raysAndFitness.Length; i++)
-		{
-			Debug.Log("rAF[" + i + "] = " + raysAndFitness[i]);
-		}
-		Debug.Log("A perceptron által generált adat: " + perceptron.GenerateOutput(raysAndFitness));
+		//for (int i = 0; i < raysAndFitness.Length; i++)
+		//{
+		//	Debug.Log("rAF[" + i + "] = " + raysAndFitness[i]);
+		//}
+		Debug.Log(this.transform.name +  " f : " + perceptron.FeedForward(raysAndFitness));
 	}
 
 	// Letrehozza az erzekelo sugarakat.

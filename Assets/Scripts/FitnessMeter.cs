@@ -4,20 +4,20 @@ using UnityEngine.UI;
 public class FitnessMeter : MonoBehaviour
 {
 
-	[SerializeField] Transform waypointsRoot;
-	[SerializeField] Transform carCenterPoint;
-	[SerializeField] Text fitnessText;
-	[SerializeField] Text wrongwayText;
+	[SerializeField] private Transform waypointsRoot;
+	[SerializeField] private Transform carCenterPoint;
+	[SerializeField] private Text fitnessText;
+	[SerializeField] private Text wrongwayText;
 
-	Transform[] waypoints;
-	Transform prevPoint, currentPoint, nextPoint;
-	public static FitnessInfo fitnessInfo = new FitnessInfo();
+	private Transform[] waypoints;
+	private Transform prevPoint, currentPoint, nextPoint;
+	
 
-	int nextIndex = 1;
+	int nextPointIndex = 1;
 
 	// AbsoluteFitness: a palyahoz viszonyitott fitness.
-	//--- private double absoluteFitness = 0;
-
+	[HideInInspector]
+	public double absoluteFitness = 0;
 	// RelativeFitness: a currentPointhoz viszonyitott tavolsag.
 	double relativeFitness = 0;
 	// SavedFitness: a mar elhagyott waypointok tavolsaganak osszege.
@@ -57,11 +57,11 @@ public class FitnessMeter : MonoBehaviour
 	void FollowingPoints()
 	{
 		// Ha az index tulfutna a waypointok szaman, akkor az elejetol kezdi (kor a palya).
-		nextIndex = (nextIndex + 1) > waypoints.Length - 1 ? 0 : (nextIndex + 1);
+		nextPointIndex = (nextPointIndex + 1) > waypoints.Length - 1 ? 0 : (nextPointIndex + 1);
 
 		prevPoint = currentPoint;
 		currentPoint = nextPoint;
-		nextPoint = waypoints[nextIndex];
+		nextPoint = waypoints[nextPointIndex];
 
 		CheckNegativeFitness();
 	}
@@ -70,8 +70,8 @@ public class FitnessMeter : MonoBehaviour
 	void PreviousPoints()
 	{
 		// Ha az index tul alacsony lenne, akkor a vegerol kezdi (kor a palya).
-		int prevIndex = (nextIndex - 3) < 0 ? (((nextIndex - 3) + waypoints.Length) % waypoints.Length) : (nextIndex - 3);
-		nextIndex = (nextIndex - 1) < 0 ? (((nextIndex - 1) + waypoints.Length) % waypoints.Length) : (nextIndex - 1);
+		int prevIndex = (nextPointIndex - 3) < 0 ? (((nextPointIndex - 3) + waypoints.Length) % waypoints.Length) : (nextPointIndex - 3);
+		nextPointIndex = (nextPointIndex - 1) < 0 ? (((nextPointIndex - 1) + waypoints.Length) % waypoints.Length) : (nextPointIndex - 1);
 
 		nextPoint = currentPoint;
 		currentPoint = prevPoint;
@@ -84,7 +84,7 @@ public class FitnessMeter : MonoBehaviour
 	{
 		CalculateFitness();
 		// Debug.Log(this.transform.name + "\'s fitness is: " + Fitness);
-		fitnessText.text = "Fitness: " + string.Format("{0:0.0000}", fitnessInfo.FitnessValue);
+		fitnessText.text = "Fitness: " + string.Format("{0:0.0000}", absoluteFitness);
 	}
 
 	// Kiszamolja az auto fitness-et.
@@ -123,13 +123,12 @@ public class FitnessMeter : MonoBehaviour
 		}
 
 		// Az autonak a palyahoz viszonyitott elorehaladasa.
-		fitnessInfo.FitnessValue = savedFitness + relativeFitness;
-		//--- absoluteFitness = savedFitness + relativeFitness;
+		absoluteFitness = savedFitness + relativeFitness;
 
 		// Ha a rajttol visszafele megy az auto, megjelenik a WRONG WAY felirat.
-		if (fitnessInfo.FitnessValue < 0)
+		if (absoluteFitness < 0)
 		{
-			wrongwayText.text = "WRONG WAY";
+			wrongwayText.text = "NEGATIVE DISTANCE :(";
 		}
 		else
 		{

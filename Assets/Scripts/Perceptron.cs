@@ -1,6 +1,8 @@
 ﻿using System;
+
 public class Perceptron
 {
+
 	private double[] weights;
 
 	/// <param name="n">Az inputok szama.</param>
@@ -9,11 +11,12 @@ public class Perceptron
 		weights = new double[n];
 		for (int i = 0; i < weights.Length; i++)
 		{
-			weights[i] = 0.2d;
+			weights[i] = 0.1d;
 		}
 	}
 
-	public double GenerateOutput(double[] inputs)
+
+	public double FeedForward(double[] inputs)
 	{
 		double sum = 0d;
 		for (int i = 0; i < weights.Length; i++)
@@ -23,6 +26,7 @@ public class Perceptron
 
 		return Sigmoid(sum);
 	}
+
 
 	private double Sigmoid(double x)
 	{
