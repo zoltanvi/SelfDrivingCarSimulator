@@ -14,8 +14,8 @@ public class CarController : MonoBehaviour
 	[SerializeField] private bool customControl;
 	[SerializeField] private string wallLayerName = "Environment";
 
-	private float steer;
-	private float accelerate;
+	public double steer;
+	public double accelerate;
 
 	private Rigidbody carRigidbody;
 
@@ -62,33 +62,33 @@ public class CarController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		if (customControl)
-		{
-			// Kanyarodas (balra jobbra).
-			steer = Input.GetAxis("TurnAngle");
-			// Gyorsulas (fel le).
-			accelerate = Input.GetAxis("Speed");
-		}
-		else
-		{
-			// Kanyarodas (balra jobbra).
-			steer = Input.GetAxis("Horizontal");
-			// Gyorsulas (fel le).
-			accelerate = Input.GetAxis("Vertical");
-		}
+		//if (customControl)
+		//{
+		//	// Kanyarodas (balra jobbra).
+		//	steer = Input.GetAxis("TurnAngle");
+		//	// Gyorsulas (fel le).
+		//	accelerate = Input.GetAxis("Speed");
+		//}
+		//else
+		//{
+		//	// Kanyarodas (balra jobbra).
+		//	steer = Input.GetAxis("Horizontal");
+		//	// Gyorsulas (fel le).
+		//	accelerate = Input.GetAxis("Vertical");
+		//}
 
 
 		for (int i = 0; i < 4; i++)
 		{
 			// A motor nyomateka = max nyomatek * gyorsulas.
-			wheelColliders[i].motorTorque = carStats.maxTorque * accelerate;
+			wheelColliders[i].motorTorque = carStats.maxTorque * (float)accelerate;
 		}
 
 		wheelColliders[0].attachedRigidbody.AddForce(
 			(-transform.up) * downForce * wheelColliders[0].attachedRigidbody.velocity.magnitude);
 
 		// Elso kerekek maximum fordulasi szoge.
-		float finalAngle = steer * carStats.turnAngle;
+		float finalAngle = (float)steer * carStats.turnAngle;
 
 		// Az elso kerekek megkapjak a fordulasi szoget.
 		wheelColliders[0].steerAngle = finalAngle;

@@ -1030,6 +1030,8 @@ MonoBehaviour:
   - {fileID: 4777262355996256}
   customControl: 0
   wallLayerName: Environment
+  steer: 0
+  accelerate: 0
 --- !u!114 &114749130403178722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -1047,6 +1049,8 @@ MonoBehaviour:
   rayLayerName: Environment
   sensorText: {fileID: 0}
   fitnessMeter: {fileID: 114033591220110584}
+  carRigidbody: {fileID: 54672947877242660}
+  carController: {fileID: 114069088919800350}
 --- !u!146 &146488191492311512
 WheelCollider:
   m_ObjectHideFlags: 1

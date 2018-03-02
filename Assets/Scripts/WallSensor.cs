@@ -11,11 +11,17 @@ public class WallSensor : MonoBehaviour
 	[SerializeField] private string rayLayerName = "Environment";
 	[SerializeField] private TextMeshProUGUI sensorText;
 	[SerializeField] private FitnessMeter fitnessMeter;
+	[SerializeField] private Rigidbody carRigidbody;
+	[SerializeField] private CarController carController;
 
 	private string rawSensorText = "";
 	private GameObject[] rayHolders;
+	private NeuronLayer neuronLayer1, neuronLayer2;
+	private double[] tempNeuronData;
 
-	private Perceptron perceptron;
+	double[] control = new double[2];
+	
+
 	// A perceptron inputjai.
 	private double[] raysAndFitness;
 	// A raycastHit-ben vannak a sugarak adatai tarolva.
@@ -24,7 +30,11 @@ public class WallSensor : MonoBehaviour
 
 	void Start()
 	{
-		perceptron = new Perceptron(numberOfRays + 1);
+
+		neuronLayer1 = new NeuronLayer(4, numberOfRays + 1);
+		tempNeuronData = new double[4];
+		neuronLayer2 = new NeuronLayer(2, 4);
+
 		raysAndFitness = new double[numberOfRays + 1];
 
 		raycastHit = new RaycastHit[numberOfRays];
@@ -32,6 +42,8 @@ public class WallSensor : MonoBehaviour
 
 		InitializeLines();
 
+		Debug.Log(neuronLayer1.msg);
+		Debug.Log(neuronLayer2.msg);
 	}
 
 	void FixedUpdate()
@@ -39,6 +51,7 @@ public class WallSensor : MonoBehaviour
 		CreateRays(numberOfRays);
 
 		#region perceptron es fitness
+
 		rawSensorText = "";
 		for (int i = 0; i < raysAndFitness.Length - 1; i++)
 		{
@@ -51,12 +64,23 @@ public class WallSensor : MonoBehaviour
 		}
 		sensorText.text = rawSensorText;
 
-		// A perceptron utolso inputja az auto fitnesse.
-		raysAndFitness[raysAndFitness.Length - 1] = fitnessMeter.absoluteFitness;
+		raysAndFitness[raysAndFitness.Length - 1] = carRigidbody.velocity.magnitude;
+
+		tempNeuronData = neuronLayer1.CalculateLayer(raysAndFitness);
+		control = neuronLayer2.CalculateLayer(tempNeuronData);
+
+		//Debug.Log(control[0] + " : kanyarodas,  " + control[1] + " : gyorsulas");
+
+
+		carController.steer = control[0];
+		carController.accelerate = control[1];
+
 
 		#endregion
 
-		Debug.Log(this.transform.name + "\'s perceptron : " + perceptron.CalculateOutput(raysAndFitness));
+
+
+		//Debug.Log(this.transform.name + "\'s perceptron : " + perceptron.CalculateOutput(raysAndFitness));
 	}
 
 	// Letrehozza az erzekelo sugarakat.
