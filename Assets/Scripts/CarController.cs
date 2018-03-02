@@ -3,12 +3,17 @@
 public class CarController : MonoBehaviour
 {
 
+	[Header("The grip of the car")]
 	[SerializeField] private float downForce = 100.0f;
 	[SerializeField] private CarStats carStats;
+	[Header("The car's center of mass")]
 	[SerializeField] private Transform centerOfMass;
 	[SerializeField] private WheelCollider[] wheelColliders = new WheelCollider[4];
 	[SerializeField] private Transform[] wheelMeshes = new Transform[4];
+	[Header("Custom control on/off [i,j,k,l]")]
 	[SerializeField] private bool customControl;
+	[SerializeField] private string wallLayerName = "Environment";
+
 	private float steer;
 	private float accelerate;
 
@@ -23,9 +28,9 @@ public class CarController : MonoBehaviour
 	void Start()
 	{
 
-		// A felfuggeszteseket beallitjuk a carStats-bol.
+		// A felfuggeszteseket beallita a carStats-bol.
 		JointSpring[] suspensions = new JointSpring[4];
-		// A forward swiftnesseket beallitjuk a carStats-bol.
+		// A forward swiftnesseket beallita a carStats-bol.
 		WheelFrictionCurve[] wheelFrictionCurveForward = new WheelFrictionCurve[4];
 		WheelFrictionCurve[] wheelFrictionCurveSideways = new WheelFrictionCurve[4];
 
@@ -50,7 +55,7 @@ public class CarController : MonoBehaviour
 		}
 		#endregion
 
-		// Megadjuk az auto tomegkozeppontjat, hogy ne boruljon fel.
+		// Megadja az auto tomegkozeppontjat, hogy ne boruljon fel.
 		carRigidbody = GetComponent<Rigidbody>();
 		carRigidbody.centerOfMass = centerOfMass.localPosition;
 	}
@@ -90,6 +95,16 @@ public class CarController : MonoBehaviour
 		wheelColliders[1].steerAngle = finalAngle;
 
 		UpdateMeshes();
+	}
+
+	// Ha az auto falnak utkozott, dead.
+	void OnTriggerEnter(Collider other)
+	{
+		if (other.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
+		{
+			carRigidbody.isKinematic = true;
+			Debug.Log(this.transform.name + " crashed.");
+		}
 	}
 
 	void UpdateMeshes()

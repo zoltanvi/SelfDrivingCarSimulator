@@ -248,6 +248,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!1 &1659922659542132
+GameObject:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  serializedVersion: 5
+  m_Component:
+  - component: {fileID: 4891052064753848}
+  - component: {fileID: 65497522028258402}
+  m_Layer: 9
+  m_Name: TriggerCollider
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
 --- !u!1 &1682435445529814
 GameObject:
   m_ObjectHideFlags: 1
@@ -396,7 +412,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1232616145293434}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0.003, y: -0.022, z: -0.48}
+  m_LocalPosition: {x: 0, y: -0.374, z: 0.0001}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4350465756756534}
@@ -654,6 +670,7 @@ Transform:
   m_Children:
   - {fileID: 4480517192677452}
   - {fileID: 4786001414006150}
+  - {fileID: 4891052064753848}
   m_Father: {fileID: 4350465756756534}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -664,7 +681,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1873969467322798}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 1.5}
+  m_LocalPosition: {x: 0, y: 0.35, z: 1.5}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 4350465756756534}
@@ -683,6 +700,19 @@ Transform:
   m_Father: {fileID: 4418005467305298}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
+--- !u!4 &4891052064753848
+Transform:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659922659542132}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.612, y: 0.757, z: -0.311}
+  m_LocalScale: {x: 1.83391, y: 0.83410996, z: 4.732879}
+  m_Children: []
+  m_Father: {fileID: 4834016087565728}
+  m_RootOrder: 2
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!4 &4967665404002114
 Transform:
   m_ObjectHideFlags: 1
@@ -779,7 +809,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 62bfae71dcba60444b7c65d55c5040da, type: 2}
+  - {fileID: 2100000, guid: e8c081bfdcba035429f78524220cbf0e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -941,6 +971,18 @@ BoxCollider:
   serializedVersion: 2
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!65 &65497522028258402
+BoxCollider:
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1659922659542132}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 0.89976263, z: 1}
+  m_Center: {x: 0, y: 0.050118662, z: 0}
 --- !u!114 &114033591220110584
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -968,7 +1010,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d0b480c2b6f9c4fa5ba89a5d8a1d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  downForce: 100
+  downForce: 150
   carStats:
     turnAngle: 55
     maxTorque: 600
@@ -987,6 +1029,7 @@ MonoBehaviour:
   - {fileID: 4418005467305298}
   - {fileID: 4777262355996256}
   customControl: 0
+  wallLayerName: Environment
 --- !u!114 &114749130403178722
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -999,8 +1042,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayOriginPoint: {fileID: 4837871962500276}
-  lineDistance: 5
-  rayQuantity: 3
+  lineLength: 7
+  numberOfRays: 3
   rayLayerName: Environment
   sensorText: {fileID: 0}
   fitnessMeter: {fileID: 114033591220110584}

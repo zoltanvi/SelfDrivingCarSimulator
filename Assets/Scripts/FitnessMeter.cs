@@ -1,19 +1,18 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
 public class FitnessMeter : MonoBehaviour
 {
 
 	[SerializeField] private Transform waypointsRoot;
 	[SerializeField] private Transform carCenterPoint;
-	[SerializeField] private Text fitnessText;
-	[SerializeField] private Text wrongwayText;
+	[SerializeField] private TextMeshProUGUI fitnessText;
+	[SerializeField] private TextMeshProUGUI wrongwayText;
 
 	private Transform[] waypoints;
 	private Transform prevPoint, currentPoint, nextPoint;
-	
-
-	int nextPointIndex = 1;
+	private int nextPointIndex = 1;
 
 	// AbsoluteFitness: a palyahoz viszonyitott fitness.
 	[HideInInspector]

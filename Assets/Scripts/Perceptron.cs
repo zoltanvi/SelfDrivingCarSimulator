@@ -5,7 +5,7 @@ public class Perceptron
 
 	private double[] weights;
 
-	/// <param name="n">Az inputok szama.</param>
+	// n az inputok szama.
 	public Perceptron(int n)
 	{
 		weights = new double[n];
@@ -16,7 +16,7 @@ public class Perceptron
 	}
 
 
-	public double FeedForward(double[] inputs)
+	public double CalculateOutput(double[] inputs)
 	{
 		double sum = 0d;
 		for (int i = 0; i < weights.Length; i++)
