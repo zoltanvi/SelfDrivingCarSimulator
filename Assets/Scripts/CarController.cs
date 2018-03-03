@@ -10,8 +10,8 @@ public class CarController : MonoBehaviour
 	[SerializeField] private Transform centerOfMass;
 	[SerializeField] private WheelCollider[] wheelColliders = new WheelCollider[4];
 	[SerializeField] private Transform[] wheelMeshes = new Transform[4];
-	[Header("Custom control on/off [i,j,k,l]")]
-	[SerializeField] private bool customControl;
+	[Header("Do you want to control the car?")]
+	[SerializeField] private bool manualControl;
 	[SerializeField] private string wallLayerName = "Environment";
 
 	public double steer;
@@ -77,6 +77,14 @@ public class CarController : MonoBehaviour
 		//	accelerate = Input.GetAxis("Vertical");
 		//}
 
+		if (manualControl)
+		{
+			// Kanyarodas (balra jobbra).
+			steer = Input.GetAxis("Horizontal");
+			// Gyorsulas (fel le).
+			accelerate = Input.GetAxis("Vertical");
+		}
+
 
 		for (int i = 0; i < 4; i++)
 		{
@@ -98,14 +106,15 @@ public class CarController : MonoBehaviour
 	}
 
 	// Ha az auto falnak utkozott, dead.
-	void OnTriggerEnter(Collider other)
+	void OnCollisionEnter(Collision collision)
 	{
-		if (other.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
+		if(collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
 			carRigidbody.isKinematic = true;
 			Debug.Log(this.transform.name + " crashed.");
 		}
 	}
+
 
 	void UpdateMeshes()
 	{

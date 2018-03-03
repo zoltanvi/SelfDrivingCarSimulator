@@ -5,7 +5,8 @@ using TMPro;
 public class WallSensor : MonoBehaviour
 {
 	[Header("The origin point of the rays")]
-	[SerializeField] private Transform rayOriginPoint;
+	[SerializeField]
+	private Transform rayOriginPoint;
 	[SerializeField] [Range(0f, 10f)] private float lineLength = 5f;
 	[SerializeField] [Range(1, 10)] private int numberOfRays = 3;
 	[SerializeField] private string rayLayerName = "Environment";
@@ -18,9 +19,11 @@ public class WallSensor : MonoBehaviour
 	private GameObject[] rayHolders;
 	private NeuronLayer neuronLayer1, neuronLayer2;
 	private double[] tempNeuronData;
+	private double[] weights1 = new double[] { -0.4, 0.1, 0.6, 0 };
+	private double[] weights2 = new double[] { -0.4, 0.8, 0, 0 };
 
 	double[] control = new double[2];
-	
+
 
 	// A perceptron inputjai.
 	private double[] raysAndFitness;
@@ -42,8 +45,8 @@ public class WallSensor : MonoBehaviour
 
 		InitializeLines();
 
-		Debug.Log(neuronLayer1.msg);
-		Debug.Log(neuronLayer2.msg);
+		//Debug.Log(neuronLayer1.msg);
+		//Debug.Log(neuronLayer2.msg);
 	}
 
 	void FixedUpdate()
@@ -55,8 +58,15 @@ public class WallSensor : MonoBehaviour
 		rawSensorText = "";
 		for (int i = 0; i < raysAndFitness.Length - 1; i++)
 		{
+			if (null != raycastHit[i].collider)
+			{
+				raysAndFitness[i] = raycastHit[i].distance;
+			}
+			else
+			{
+				raysAndFitness[i] = lineLength;
+			}
 
-			raysAndFitness[i] = raycastHit[i].distance;
 
 			// Szenzor adatok kiiratasa.
 			rawSensorText += (i + 1) + ". sensor: " +
@@ -66,12 +76,10 @@ public class WallSensor : MonoBehaviour
 
 		raysAndFitness[raysAndFitness.Length - 1] = carRigidbody.velocity.magnitude;
 
+
 		tempNeuronData = neuronLayer1.CalculateLayer(raysAndFitness);
 		control = neuronLayer2.CalculateLayer(tempNeuronData);
-
 		//Debug.Log(control[0] + " : kanyarodas,  " + control[1] + " : gyorsulas");
-
-
 		carController.steer = control[0];
 		carController.accelerate = control[1];
 

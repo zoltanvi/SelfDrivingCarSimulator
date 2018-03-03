@@ -25,6 +25,25 @@ public class NeuronLayer
 	}
 
 	/// <summary>
+	/// Létrehoz egy réteget neuronokból.
+	/// MEgadhatóak az élek súlyai.
+	/// </summary>
+	/// <param name="n"> a neuronok száma a rétegben.</param>
+	/// <param name="inputNumber">az inputok száma a rétegben.</param>
+	/// <param name="_weights">az élek súlyai a rétegben.</param>
+	public NeuronLayer(int n, int inputNumber, double[] _weights)
+	{
+		neurons = new Neuron[n];
+		for (int i = 0; i < neurons.Length; i++)
+		{
+			neurons[i] = new Neuron(inputNumber, _weights);
+			//msg = neurons[i].msg + "\n";
+		}
+
+	}
+
+
+	/// <summary>
 	/// Kiszámítja a réteg neuronjainak outputját.
 	/// </summary>
 	/// <returns> a réteg neuronjainak outputjával.</returns>
@@ -51,7 +70,7 @@ public class Neuron
 	public string msg;
 	Random rand = new Random();
 	/// <summary>
-	/// Létrehoz egy neuront.
+	/// Létrehoz egy neuront az inputok száma alapján.
 	/// </summary>
 	/// <param name="n"> a neuron inputjainak száma.</param>
 	public Neuron(int n)
@@ -69,6 +88,25 @@ public class Neuron
 			msg += "  w" + i + ": " + weights[i];
 		}
 	}
+
+
+	/// <summary>
+	/// Létrehoz egy neuront.
+	/// Megadhatóak a súlyok.
+	/// </summary>
+	/// <param name="n"> a neuron inputjainak a száma.</param>
+	/// <param name="_weights">a súlyok tömbje.</param>
+	public Neuron(int n, double[] _weights)
+	{
+		weights = new double[n];
+
+		for (int i = 0; i < weights.Length; i++)
+		{
+			weights[i] = _weights[i];
+			//msg += "  w" + i + ": " + weights[i];
+		}
+	}
+
 
 	/// <summary>
 	/// Generál egy outputot az aktivációs fügvénnyel.

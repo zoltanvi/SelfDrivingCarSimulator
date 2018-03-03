@@ -127,7 +127,7 @@ public class FitnessMeter : MonoBehaviour
 		// Ha a rajttol visszafele megy az auto, megjelenik a WRONG WAY felirat.
 		if (absoluteFitness < 0)
 		{
-			wrongwayText.text = "NEGATIVE DISTANCE :(";
+			wrongwayText.text = "!!!";
 		}
 		else
 		{
