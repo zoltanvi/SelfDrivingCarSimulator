@@ -5,10 +5,15 @@ using TMPro;
 public class FitnessMeter : MonoBehaviour
 {
 
-	[SerializeField] private Transform waypointsRoot;
+	//	[SerializeField] private Transform waypointsRoot;
+
+	[SerializeField] private GameObject wpRoot;
+
 	[SerializeField] private Transform carCenterPoint;
-	[SerializeField] private TextMeshProUGUI fitnessText;
-	[SerializeField] private TextMeshProUGUI wrongwayText;
+
+	//[SerializeField] private GameObject carManager;
+	//private CarManager myCarManager;
+
 
 	private Transform[] waypoints;
 	private Transform prevPoint, currentPoint, nextPoint;
@@ -22,13 +27,23 @@ public class FitnessMeter : MonoBehaviour
 	// SavedFitness: a mar elhagyott waypointok tavolsaganak osszege.
 	double savedFitness = 0;
 
+	private int carIndex;
 
 	void Start()
 	{
-		waypoints = new Transform[waypointsRoot.childCount];
+
+		carIndex = CarManager.carFIndex++;
+		CarManager.carFitness[carIndex] = absoluteFitness;
+
+
+
+		//carManager = GameObject.Find("CarManager");
+		//myCarManager = carManager.GetComponent<CarManager>();
+
+		waypoints = new Transform[wpRoot.transform.childCount];
 
 		int index = 0;
-		foreach (Transform wp in waypointsRoot)
+		foreach (Transform wp in wpRoot.transform)
 		{
 			waypoints[index++] = wp;
 		}
@@ -82,8 +97,6 @@ public class FitnessMeter : MonoBehaviour
 	void Update()
 	{
 		CalculateFitness();
-		// Debug.Log(this.transform.name + "\'s fitness is: " + Fitness);
-		fitnessText.text = "Fitness: " + string.Format("{0:0.0000}", absoluteFitness);
 	}
 
 	// Kiszamolja az auto fitness-et.
@@ -123,16 +136,7 @@ public class FitnessMeter : MonoBehaviour
 
 		// Az autonak a palyahoz viszonyitott elorehaladasa.
 		absoluteFitness = savedFitness + relativeFitness;
-
-		// Ha a rajttol visszafele megy az auto, megjelenik a WRONG WAY felirat.
-		if (absoluteFitness < 0)
-		{
-			wrongwayText.text = "!!!";
-		}
-		else
-		{
-			wrongwayText.text = "";
-		}
+		CarManager.carFitness[carIndex] = absoluteFitness;
 	}
 
 }

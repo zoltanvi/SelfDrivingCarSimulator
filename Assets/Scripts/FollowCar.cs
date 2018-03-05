@@ -5,6 +5,7 @@ public class FollowCar : MonoBehaviour
 
 	[SerializeField] private float movementSpeed = 8f;
 	[SerializeField] private float rotationSpeed = 10f;
+
 	public Transform targetCar;
 
 	public Vector3 offset = new Vector3(0.62f, 5.83f, -7.5f);

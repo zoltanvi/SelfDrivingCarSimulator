@@ -10,20 +10,23 @@ public class WallSensor : MonoBehaviour
 	[SerializeField] [Range(0f, 10f)] private float lineLength = 5f;
 	[SerializeField] [Range(1, 10)] private int numberOfRays = 3;
 	[SerializeField] private string rayLayerName = "Environment";
-	[SerializeField] private TextMeshProUGUI sensorText;
 	[SerializeField] private FitnessMeter fitnessMeter;
 	[SerializeField] private Rigidbody carRigidbody;
 	[SerializeField] private CarController carController;
+
+	//[SerializeField] private GameObject carManager;
+	//private CarManager myCarManager;
 
 	private string rawSensorText = "";
 	private GameObject[] rayHolders;
 	private NeuronLayer neuronLayer1, neuronLayer2;
 	private double[] tempNeuronData;
-	private double[] weights1 = new double[] { -0.4, 0.1, 0.6, 0 };
-	private double[] weights2 = new double[] { -0.4, 0.8, 0, 0 };
+	//private double[] weights1 = new double[] { -0.4, 0.1, 0.6, 0 };
+	//private double[] weights2 = new double[] { -0.4, 0.8, 0, 0 };
 
 	double[] control = new double[2];
 
+	private int carIndex;
 
 	// A perceptron inputjai.
 	private double[] raysAndFitness;
@@ -33,6 +36,10 @@ public class WallSensor : MonoBehaviour
 
 	void Start()
 	{
+		carIndex = CarManager.carRIndex++;
+
+		//carManager = GameObject.Find("CarManager");
+		//myCarManager = carManager.GetComponent<CarManager>();
 
 		neuronLayer1 = new NeuronLayer(4, numberOfRays + 1);
 		tempNeuronData = new double[4];
@@ -67,12 +74,12 @@ public class WallSensor : MonoBehaviour
 				raysAndFitness[i] = lineLength;
 			}
 
-
-			// Szenzor adatok kiiratasa.
+			// Szenzor adatok formazasa.
 			rawSensorText += (i + 1) + ". sensor: " +
 				string.Format("{0:0.0000}", raysAndFitness[i]) + "\n";
 		}
-		sensorText.text = rawSensorText;
+
+		CarManager.carDistances[carIndex] = rawSensorText;
 
 		raysAndFitness[raysAndFitness.Length - 1] = carRigidbody.velocity.magnitude;
 

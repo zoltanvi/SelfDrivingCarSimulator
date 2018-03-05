@@ -52,11 +52,13 @@
   </ItemGroup>
   <ItemGroup>
      <Compile Include="Assets\Scripts\CarController.cs" />
+     <Compile Include="Assets\Scripts\CarManager.cs" />
      <Compile Include="Assets\Scripts\CarStats.cs" />
      <Compile Include="Assets\Scripts\FitnessMeter.cs" />
      <Compile Include="Assets\Scripts\FollowCar.cs" />
      <Compile Include="Assets\Scripts\NeuronLayer.cs" />
      <Compile Include="Assets\Scripts\Perceptron.cs" />
+     <Compile Include="Assets\Scripts\UIPrinter.cs" />
      <Compile Include="Assets\Scripts\WallSensor.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />

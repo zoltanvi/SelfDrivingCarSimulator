@@ -994,10 +994,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 72f1787924737f34582559b359e21986, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  waypointsRoot: {fileID: 0}
+  wpRoot: {fileID: 1736990184806124, guid: 6f41cef01981f8549a2a33bfcec89a3e, type: 2}
   carCenterPoint: {fileID: 4097969882064458}
-  fitnessText: {fileID: 0}
-  wrongwayText: {fileID: 0}
+  carManager: {fileID: 1680934364953714, guid: 5f229bfbef0a4e24093dc50b7d1b03a9, type: 2}
   absoluteFitness: 0
 --- !u!114 &114069088919800350
 MonoBehaviour:
@@ -1028,7 +1027,7 @@ MonoBehaviour:
   - {fileID: 4266944939828808}
   - {fileID: 4418005467305298}
   - {fileID: 4777262355996256}
-  customControl: 0
+  manualControl: 0
   wallLayerName: Environment
   steer: 0
   accelerate: 0
@@ -1047,10 +1046,10 @@ MonoBehaviour:
   lineLength: 7
   numberOfRays: 3
   rayLayerName: Environment
-  sensorText: {fileID: 0}
   fitnessMeter: {fileID: 114033591220110584}
   carRigidbody: {fileID: 54672947877242660}
   carController: {fileID: 114069088919800350}
+  carManager: {fileID: 1680934364953714, guid: 5f229bfbef0a4e24093dc50b7d1b03a9, type: 2}
 --- !u!146 &146488191492311512
 WheelCollider:
   m_ObjectHideFlags: 1

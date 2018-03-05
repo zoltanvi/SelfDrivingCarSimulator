@@ -14,8 +14,8 @@ public class CarController : MonoBehaviour
 	[SerializeField] private bool manualControl;
 	[SerializeField] private string wallLayerName = "Environment";
 
-	public double steer;
-	public double accelerate;
+	[HideInInspector] public double steer;
+	[HideInInspector] public double accelerate;
 
 	private Rigidbody carRigidbody;
 
