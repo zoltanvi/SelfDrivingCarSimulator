@@ -7,7 +7,7 @@ public class FitnessMeter : MonoBehaviour
 
 	//	[SerializeField] private Transform waypointsRoot;
 
-	[SerializeField] private GameObject wpRoot;
+	[SerializeField] private GameObject waypointsRoot;
 
 	[SerializeField] private Transform carCenterPoint;
 
@@ -31,19 +31,21 @@ public class FitnessMeter : MonoBehaviour
 
 	void Start()
 	{
-
-		carIndex = CarManager.carFIndex++;
-		CarManager.carFitness[carIndex] = absoluteFitness;
+		
+		//carIndex = CarManager.carFIndex++;
+		carIndex = CarGameManager.Instance.carIndexF++;
+		//CarManager.carFitness[carIndex] = absoluteFitness;
+		CarGameManager.Instance.carFitness[carIndex] = absoluteFitness;
 
 
 
 		//carManager = GameObject.Find("CarManager");
 		//myCarManager = carManager.GetComponent<CarManager>();
 
-		waypoints = new Transform[wpRoot.transform.childCount];
+		waypoints = new Transform[waypointsRoot.transform.childCount];
 
 		int index = 0;
-		foreach (Transform wp in wpRoot.transform)
+		foreach (Transform wp in waypointsRoot.transform)
 		{
 			waypoints[index++] = wp;
 		}
@@ -136,7 +138,9 @@ public class FitnessMeter : MonoBehaviour
 
 		// Az autonak a palyahoz viszonyitott elorehaladasa.
 		absoluteFitness = savedFitness + relativeFitness;
-		CarManager.carFitness[carIndex] = absoluteFitness;
+
+		//CarManager.carFitness[carIndex] = absoluteFitness;
+		CarGameManager.Instance.carFitness[carIndex] = absoluteFitness;
 	}
 
 }

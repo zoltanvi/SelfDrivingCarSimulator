@@ -19,16 +19,16 @@ public class FollowCar : MonoBehaviour
 		  Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * movementSpeed);
 		transform.position = smoothedPosition;
 
-		Quaternion smoothedRotation =
-		  Quaternion.Slerp(transform.rotation, targetCar.rotation, Time.deltaTime * rotationSpeed);
-		transform.rotation = smoothedRotation;
-		transform.LookAt(targetCar);
+		//Quaternion smoothedRotation =
+		//  Quaternion.Slerp(transform.rotation, targetCar.rotation, Time.deltaTime * rotationSpeed);
+		//transform.rotation = smoothedRotation;
+		//transform.LookAt(targetCar);
 
-		//Quaternion toRot =
-		//	Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
-		//Quaternion curRot =
-		//	Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
-		//transform.rotation = curRot;
+		Quaternion toRot =
+			Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
+		Quaternion curRot =
+			Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
+		transform.rotation = curRot;
 
 
 	}

@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class CarManager : MonoBehaviour
 {
-
-	#region Variables
-	[Range(0, 20)]
-	[SerializeField]
+	/*
+	[SerializeField][Range(0, 20)]
 	private int numberOfCars = 1;
-
-	[SerializeField] private GameObject carPreFab;
-	[SerializeField] FollowCar followCar;
-
-	[SerializeField] private GameObject myUI;
+	[SerializeField]
+	private GameObject carPreFab;
+	[SerializeField]
+	FollowCar followCar;
+	[SerializeField]
+	private GameObject myUI;
 	private UIPrinter myUIPrinter;
-
 
 	public static string[] carDistances;
 	public static double[] carFitness;
@@ -25,20 +23,15 @@ public class CarManager : MonoBehaviour
 
 	private Transform bestCar;
 	private Transform[] cars;
-	#endregion
 
-	#region Methods
-	
+
 	void Start()
 	{
-		Debug.Log("tömbök inicializálása");
 		carDistances = new string[numberOfCars];
 		carFitness = new double[numberOfCars];
 
-		Debug.Log("autó transform tömb inicializálása");
 		cars = new Transform[numberOfCars];
 
-		Debug.Log("UI inicializálása");
 		myUI = GameObject.Find("myUI");
 		myUIPrinter = myUI.GetComponent<UIPrinter>();
 
@@ -47,7 +40,7 @@ public class CarManager : MonoBehaviour
 		{
 			cars[i] = Instantiate(carPreFab, transform.position, transform.rotation).transform;
 		}
-		
+
 		followCar.targetCar = cars[0];
 	}
 
@@ -56,7 +49,7 @@ public class CarManager : MonoBehaviour
 
 	void Update()
 	{
-		
+
 		int bestCarIndex = BestCarIndex();
 		followCar.targetCar = cars[bestCarIndex];
 		myUIPrinter.SensorDistances = carDistances[bestCarIndex];
@@ -77,7 +70,6 @@ public class CarManager : MonoBehaviour
 		}
 		return index;
 	}
-
-	#endregion
+	*/
 
 }

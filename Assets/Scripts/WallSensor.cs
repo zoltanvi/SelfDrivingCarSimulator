@@ -36,10 +36,8 @@ public class WallSensor : MonoBehaviour
 
 	void Start()
 	{
-		carIndex = CarManager.carRIndex++;
-
-		//carManager = GameObject.Find("CarManager");
-		//myCarManager = carManager.GetComponent<CarManager>();
+		//carIndex = CarManager.carRIndex++;
+		carIndex = CarGameManager.Instance.carIndexD++;
 
 		neuronLayer1 = new NeuronLayer(4, numberOfRays + 1);
 		tempNeuronData = new double[4];
@@ -79,7 +77,8 @@ public class WallSensor : MonoBehaviour
 				string.Format("{0:0.0000}", raysAndFitness[i]) + "\n";
 		}
 
-		CarManager.carDistances[carIndex] = rawSensorText;
+		//CarManager.carDistances[carIndex] = rawSensorText;
+		CarGameManager.Instance.carDistances[carIndex] = rawSensorText;
 
 		raysAndFitness[raysAndFitness.Length - 1] = carRigidbody.velocity.magnitude;
 
