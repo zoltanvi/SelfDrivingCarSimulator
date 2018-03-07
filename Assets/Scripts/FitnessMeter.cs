@@ -1,46 +1,29 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 public class FitnessMeter : MonoBehaviour
 {
 
-	//	[SerializeField] private Transform waypointsRoot;
-
 	[SerializeField] private GameObject waypointsRoot;
-
 	[SerializeField] private Transform carCenterPoint;
-
-	//[SerializeField] private GameObject carManager;
-	//private CarManager myCarManager;
-
 
 	private Transform[] waypoints;
 	private Transform prevPoint, currentPoint, nextPoint;
 	private int nextPointIndex = 1;
 
 	// AbsoluteFitness: a palyahoz viszonyitott fitness.
-	[HideInInspector]
-	public double absoluteFitness = 0;
+	[HideInInspector] public double absoluteFitness = 0;
+
 	// RelativeFitness: a currentPointhoz viszonyitott tavolsag.
 	double relativeFitness = 0;
 	// SavedFitness: a mar elhagyott waypointok tavolsaganak osszege.
 	double savedFitness = 0;
-
+	// Az auto sorszama - tobb autot managel a CarGameController osztaly
 	private int carIndex;
 
 	void Start()
 	{
-		
-		//carIndex = CarManager.carFIndex++;
 		carIndex = CarGameManager.Instance.carIndexF++;
-		//CarManager.carFitness[carIndex] = absoluteFitness;
 		CarGameManager.Instance.carFitness[carIndex] = absoluteFitness;
-
-
-
-		//carManager = GameObject.Find("CarManager");
-		//myCarManager = carManager.GetComponent<CarManager>();
 
 		waypoints = new Transform[waypointsRoot.transform.childCount];
 
@@ -139,7 +122,7 @@ public class FitnessMeter : MonoBehaviour
 		// Az autonak a palyahoz viszonyitott elorehaladasa.
 		absoluteFitness = savedFitness + relativeFitness;
 
-		//CarManager.carFitness[carIndex] = absoluteFitness;
+		// Az auto fitness erteket atadja a CarGameManager-nek
 		CarGameManager.Instance.carFitness[carIndex] = absoluteFitness;
 	}
 

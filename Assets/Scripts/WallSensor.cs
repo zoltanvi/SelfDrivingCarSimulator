@@ -1,68 +1,75 @@
 ﻿using UnityEngine;
-using UnityEngine.UI;
-using TMPro;
 
 public class WallSensor : MonoBehaviour
 {
-	[Header("The origin point of the rays")]
-	[SerializeField]
-	private Transform rayOriginPoint;
-	[SerializeField] [Range(0f, 10f)] private float lineLength = 5f;
-	[SerializeField] [Range(1, 10)] private int numberOfRays = 3;
+	// Az autohoz tartozo erzekelok kezdopontja
+	[SerializeField] private Transform rayOriginPoint;
+	// Az erzekelo sugarak hossza
+	[Range(0f, 10f)]
+	[SerializeField] private float lineLength = 5f;
+	// Az autohoz tartozo erzekelok darabszama
+	[Range(1, 10)]
+	[SerializeField] private int numberOfRays = 3;
+	// Az erzekelok csak ezen layeren levo object-eket erzekelik 
 	[SerializeField] private string rayLayerName = "Environment";
 	[SerializeField] private FitnessMeter fitnessMeter;
 	[SerializeField] private Rigidbody carRigidbody;
 	[SerializeField] private CarController carController;
 
-	//[SerializeField] private GameObject carManager;
-	//private CarManager myCarManager;
-
+	// Az UI panelen megjeleno szoveg itt lesz formazva
 	private string rawSensorText = "";
+	// Az erzekelok lathatatlanok, egy tombelem egy lathato vonalat tart
 	private GameObject[] rayHolders;
+
+
 	private NeuronLayer neuronLayer1, neuronLayer2;
 	private double[] tempNeuronData;
 	//private double[] weights1 = new double[] { -0.4, 0.1, 0.6, 0 };
 	//private double[] weights2 = new double[] { -0.4, 0.8, 0, 0 };
 
+	// Az auto iranyitasa a tombelemek alapjan tortenik
+	// control[0] = kanyarodas , control[1] = gyorsulas 
 	double[] control = new double[2];
-
+	// Az auto sorszama - tobb autot managel a CarGameController osztaly
 	private int carIndex;
 
-	// A perceptron inputjai.
+	// Az erzekelok altal mert tavolsagokat es a fitnesst  tartalmazza
 	private double[] raysAndFitness;
-	// A raycastHit-ben vannak a sugarak adatai tarolva.
+
+	// A raycastHit-ben vannak az erzekelok adatai tarolva.
 	private RaycastHit[] raycastHit;
 
 
 	void Start()
 	{
-		//carIndex = CarManager.carRIndex++;
+		// Beallitja az auto sorszamat
 		carIndex = CarGameManager.Instance.carIndexD++;
 
+		// Inicializalja a neuralis halozatot
 		neuronLayer1 = new NeuronLayer(4, numberOfRays + 1);
 		tempNeuronData = new double[4];
 		neuronLayer2 = new NeuronLayer(2, 4);
-
+		// Inicializalja a neuralis halo inputjait
 		raysAndFitness = new double[numberOfRays + 1];
-
+		// Inicializalja az erzekeloket
 		raycastHit = new RaycastHit[numberOfRays];
 		rayHolders = new GameObject[numberOfRays];
-
+		// Inicializalja az erzekeloket reprezentalo vonalakat
 		InitializeLines();
-
-		//Debug.Log(neuronLayer1.msg);
-		//Debug.Log(neuronLayer2.msg);
 	}
+
 
 	void FixedUpdate()
 	{
+		// Erzekelo sugarak letrahozasa
 		CreateRays(numberOfRays);
 
-		#region perceptron es fitness
-
+		// Erzekelo adatok tarolasa a raysAndFitness tombben
 		rawSensorText = "";
 		for (int i = 0; i < raysAndFitness.Length - 1; i++)
 		{
+			// Ha valamivel utkozik az erzekelo sugar akkor a mert adat tarolasa
+			// a raysAndFitness tombben, ellenben a vonal hosszat tarolja.
 			if (null != raycastHit[i].collider)
 			{
 				raysAndFitness[i] = raycastHit[i].distance;
@@ -72,29 +79,25 @@ public class WallSensor : MonoBehaviour
 				raysAndFitness[i] = lineLength;
 			}
 
-			// Szenzor adatok formazasa.
+			// Erzekelo adatok formazasa.
 			rawSensorText += (i + 1) + ". sensor: " +
 				string.Format("{0:0.0000}", raysAndFitness[i]) + "\n";
 		}
-
-		//CarManager.carDistances[carIndex] = rawSensorText;
-		CarGameManager.Instance.carDistances[carIndex] = rawSensorText;
-
+		// A neuralis halo utolso inputja az auto sebessege
 		raysAndFitness[raysAndFitness.Length - 1] = carRigidbody.velocity.magnitude;
 
+		// Atadja az erzekelo adatokat a CarGameManagernek
+		CarGameManager.Instance.carDistances[carIndex] = rawSensorText;
 
+		// Az elso neuronreteg adatait tarolja egy tombben
 		tempNeuronData = neuronLayer1.CalculateLayer(raysAndFitness);
+		// A masodik reteg az elso retegtol kapott adatokkal dolgozik
 		control = neuronLayer2.CalculateLayer(tempNeuronData);
 		//Debug.Log(control[0] + " : kanyarodas,  " + control[1] + " : gyorsulas");
 		carController.steer = control[0];
 		carController.accelerate = control[1];
 
 
-		#endregion
-
-
-
-		//Debug.Log(this.transform.name + "\'s perceptron : " + perceptron.CalculateOutput(raysAndFitness));
 	}
 
 	// Letrehozza az erzekelo sugarakat.
@@ -103,6 +106,10 @@ public class WallSensor : MonoBehaviour
 		// Az angleBase = a sugarak kozotti szog nagysaga.
 		float angleBase = 180f / (quantity + 1);
 
+		// Ha 5 erzekelo van, 45 fok lesz az erzekelok kozott     \ | /
+		//													    -- OOO --
+		//														   OOO
+		//														   OOO
 		if (quantity == 5)
 		{
 			for (int i = 0; i < quantity; i++)
@@ -116,12 +123,7 @@ public class WallSensor : MonoBehaviour
 				Vector3 rayOrigin = rayOriginPoint.position;
 				Vector3 rayDirection = lineRotation * (-rayOriginPoint.right);
 
-				Physics.Raycast(
-					rayOrigin,
-					rayDirection,
-					out raycastHit[i],
-					lineLength,
-					LayerMask.GetMask(rayLayerName));
+				Physics.Raycast(rayOrigin, rayDirection, out raycastHit[i], lineLength, LayerMask.GetMask(rayLayerName));
 
 				// Megrajzolja a sugarat. 
 				rayHolders[i].GetComponent<LineRenderer>().SetPosition(0, rayOrigin);
@@ -142,12 +144,7 @@ public class WallSensor : MonoBehaviour
 				Vector3 rayDirection = lineRotation * (-rayOriginPoint.right);
 
 				// Letrehozza a sugarat es eltarolja hogy hozzaernek-e a falhoz.
-				Physics.Raycast(
-					rayOrigin,
-					rayDirection,
-					out raycastHit[i - 1],
-					lineLength,
-					LayerMask.GetMask(rayLayerName));
+				Physics.Raycast(rayOrigin, rayDirection, out raycastHit[i - 1], lineLength, LayerMask.GetMask(rayLayerName));
 
 				// Megrajzolja a sugarat. 
 				rayHolders[i - 1].GetComponent<LineRenderer>().SetPosition(0, rayOrigin);
@@ -158,7 +155,7 @@ public class WallSensor : MonoBehaviour
 
 	}
 
-	// Inicializalja a sugarakat reprezentalo vonalakat.
+	// Inicializalja az erzekeloket reprezentalo vonalakat.
 	private void InitializeLines()
 	{
 		Material lineMat = new Material(Shader.Find("Sprites/Default"));
@@ -173,8 +170,8 @@ public class WallSensor : MonoBehaviour
 			rayHolders[i].GetComponent<LineRenderer>().endWidth = 0.08f;
 			rayHolders[i].GetComponent<LineRenderer>().useWorldSpace = false;
 			rayHolders[i].GetComponent<LineRenderer>().material = lineMat;
-			rayHolders[i].GetComponent<LineRenderer>().startColor = Color.blue;
-			rayHolders[i].GetComponent<LineRenderer>().endColor = Color.cyan;
+			rayHolders[i].GetComponent<LineRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.7f);
+			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(1.0f, 0.705f, 0.0f, 0.4f);
 
 		}
 	}

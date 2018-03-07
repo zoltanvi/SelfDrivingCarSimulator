@@ -9,10 +9,10 @@ public class NeuronLayer
 	public string msg;
 
 	/// <summary>
-	/// Létrehoz egy réteget neuronokból.
+	/// Letrehoz egy reteget neuronokbol.
 	/// </summary>
-	/// <param name="n"> a neuronok száma a rétegben.</param>
-	/// <param name="inputNumber"> az inputok száma a rétegben.</param>
+	/// <param name="n"> A neuronok szama a retegben.</param>
+	/// <param name="inputNumber"> Az inputok szama a retegben.</param>
 	public NeuronLayer(int n, int inputNumber)
 	{
 		neurons = new Neuron[n];
@@ -25,12 +25,12 @@ public class NeuronLayer
 	}
 
 	/// <summary>
-	/// Létrehoz egy réteget neuronokból.
-	/// MEgadhatóak az élek súlyai.
+	/// Letrehoz egy reteget neuronokból.
+	/// Megadhatoak az elek sulyai.
 	/// </summary>
-	/// <param name="n"> a neuronok száma a rétegben.</param>
-	/// <param name="inputNumber">az inputok száma a rétegben.</param>
-	/// <param name="_weights">az élek súlyai a rétegben.</param>
+	/// <param name="n"> A neuronok szama a retegben.</param>
+	/// <param name="inputNumber"> Az inputok szama a retegben.</param>
+	/// <param name="_weights"> Az elek sulyai a retegben.</param>
 	public NeuronLayer(int n, int inputNumber, double[] _weights)
 	{
 		neurons = new Neuron[n];
@@ -44,9 +44,9 @@ public class NeuronLayer
 
 
 	/// <summary>
-	/// Kiszámítja a réteg neuronjainak outputját.
+	/// Kiszamitja a reteg neuronjainak outputjat.
 	/// </summary>
-	/// <returns> a réteg neuronjainak outputjával.</returns>
+	/// <returns> Visszater a reteg neuronjainak outputjaval.</returns>
 	public double[] CalculateLayer(double[] inputs)
 	{
 		double[] layerOutput = new double[neurons.Length];
@@ -69,10 +69,11 @@ public class Neuron
 	private double[] weights;
 	public string msg;
 	Random rand = new Random();
+
 	/// <summary>
-	/// Létrehoz egy neuront az inputok száma alapján.
+	/// Letrehoz egy neuront az inputok szama alapjan.
 	/// </summary>
-	/// <param name="n"> a neuron inputjainak száma.</param>
+	/// <param name="n"> A neuron inputjainak szama.</param>
 	public Neuron(int n)
 	{
 		weights = new double[n];
@@ -80,7 +81,7 @@ public class Neuron
 		for (int i = 0; i < weights.Length; i++)
 		{
 			Thread.Sleep(1);
-			// 0 = negatív, 1 = pozitív
+			// 0 = negativ, 1 = pozitiv
 			int r = rand.Next(0, 2);
 			double tmp = rand.Next(0, 11);
 			tmp /= 10;
@@ -91,11 +92,11 @@ public class Neuron
 
 
 	/// <summary>
-	/// Létrehoz egy neuront.
-	/// Megadhatóak a súlyok.
+	/// Letrehoz egy neuront.
+	/// Megadhatoak a sulyok.
 	/// </summary>
-	/// <param name="n"> a neuron inputjainak a száma.</param>
-	/// <param name="_weights">a súlyok tömbje.</param>
+	/// <param name="n"> A neuron inputjainak a szama.</param>
+	/// <param name="_weights"> A sulyok tombje.</param>
 	public Neuron(int n, double[] _weights)
 	{
 		weights = new double[n];
@@ -109,10 +110,10 @@ public class Neuron
 
 
 	/// <summary>
-	/// Generál egy outputot az aktivációs fügvénnyel.
+	/// General egy outputot az aktivacios fugvennyel.
 	/// </summary>
-	/// <param name="inputs"> a neuron inputjainak tömbje.</param>
-	/// <returns> egy neuron outputjával.</returns>
+	/// <param name="inputs"> A neuron inputjainak tombje.</param>
+	/// <returns> Visszater egy neuron outputjaval.</returns>
 	public double Output(double[] inputs)
 	{
 		double sum = 0d;

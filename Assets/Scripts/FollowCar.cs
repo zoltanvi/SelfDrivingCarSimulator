@@ -13,23 +13,19 @@ public class FollowCar : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		Vector3 desiredPosition =
-		  targetCar.position + (targetCar.rotation * offset);
-		Vector3 smoothedPosition =
-		  Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * movementSpeed);
+		// Az auto poziciojat koveti a kamera
+		Vector3 desiredPosition = targetCar.position + (targetCar.rotation * offset);
+		Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * movementSpeed);
 		transform.position = smoothedPosition;
 
-		//Quaternion smoothedRotation =
-		//  Quaternion.Slerp(transform.rotation, targetCar.rotation, Time.deltaTime * rotationSpeed);
+		//Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, targetCar.rotation, Time.deltaTime * rotationSpeed);
 		//transform.rotation = smoothedRotation;
 		//transform.LookAt(targetCar);
 
-		Quaternion toRot =
-			Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
-		Quaternion curRot =
-			Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
+		// Az auto forgasat koveti a kamera
+		Quaternion toRot = Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
+		Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
 		transform.rotation = curRot;
-
 
 	}
 

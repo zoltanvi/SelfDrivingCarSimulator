@@ -51,9 +51,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-     <Compile Include="Assets\Scripts\CarController_old.cs" />
+     <Compile Include="Assets\Scripts\CarController.cs" />
      <Compile Include="Assets\Scripts\CarGameManager.cs" />
-     <Compile Include="Assets\Scripts\CarManager.cs" />
+     <Compile Include="Assets\Scripts\CarManager_old.cs" />
      <Compile Include="Assets\Scripts\CarStats.cs" />
      <Compile Include="Assets\Scripts\FitnessMeter.cs" />
      <Compile Include="Assets\Scripts\FollowCar.cs" />
