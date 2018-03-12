@@ -8,8 +8,8 @@ public class WallSensor : MonoBehaviour
 	[Range(0f, 10f)]
 	[SerializeField] private float lineLength = 5f;
 	// Az autohoz tartozo erzekelok darabszama
-	[Range(1, 10)]
-	[SerializeField] private int numberOfRays = 3;
+
+	private int rayCount;
 	// Az erzekelok csak ezen layeren levo object-eket erzekelik 
 	[SerializeField] private string rayLayerName = "Environment";
 	[SerializeField] private FitnessMeter fitnessMeter;
@@ -24,36 +24,27 @@ public class WallSensor : MonoBehaviour
 
 	private NeuronLayer neuronLayer1, neuronLayer2;
 	private double[] tempNeuronData;
-	//private double[] weights1 = new double[] { -0.4, 0.1, 0.6, 0 };
-	//private double[] weights2 = new double[] { -0.4, 0.8, 0, 0 };
 
-	// Az auto iranyitasa a tombelemek alapjan tortenik
-	// control[0] = kanyarodas , control[1] = gyorsulas 
-	double[] control = new double[2];
 	// Az auto sorszama - tobb autot managel a CarGameController osztaly
 	private int carIndex;
 
 	// Az erzekelok altal mert tavolsagokat es a fitnesst  tartalmazza
-	private double[] raysAndFitness;
+	private double[] carNeuronInputs;
 
 	// A raycastHit-ben vannak az erzekelok adatai tarolva.
 	private RaycastHit[] raycastHit;
 
-
 	void Start()
 	{
+		rayCount = CarGameManager.Instance.CarsRayCount;
 		// Beallitja az auto sorszamat
-		carIndex = CarGameManager.Instance.carIndexD++;
+		carIndex = CarGameManager.Instance.CarIndexD++;
 
-		// Inicializalja a neuralis halozatot
-		neuronLayer1 = new NeuronLayer(4, numberOfRays + 1);
-		tempNeuronData = new double[4];
-		neuronLayer2 = new NeuronLayer(2, 4);
 		// Inicializalja a neuralis halo inputjait
-		raysAndFitness = new double[numberOfRays + 1];
+		carNeuronInputs = new double[rayCount + 1];
 		// Inicializalja az erzekeloket
-		raycastHit = new RaycastHit[numberOfRays];
-		rayHolders = new GameObject[numberOfRays];
+		raycastHit = new RaycastHit[rayCount];
+		rayHolders = new GameObject[rayCount];
 		// Inicializalja az erzekeloket reprezentalo vonalakat
 		InitializeLines();
 	}
@@ -62,42 +53,33 @@ public class WallSensor : MonoBehaviour
 	void FixedUpdate()
 	{
 		// Erzekelo sugarak letrahozasa
-		CreateRays(numberOfRays);
+		CreateRays(rayCount);
 
-		// Erzekelo adatok tarolasa a raysAndFitness tombben
+		// Erzekelo adatok tarolasa a carNeuronInputs tombben
 		rawSensorText = "";
-		for (int i = 0; i < raysAndFitness.Length - 1; i++)
+		for (int i = 0; i < carNeuronInputs.Length - 1; i++)
 		{
 			// Ha valamivel utkozik az erzekelo sugar akkor a mert adat tarolasa
-			// a raysAndFitness tombben, ellenben a vonal hosszat tarolja.
+			// a carNeuronInputs tombben, ellenben a vonal hosszat tarolja.
 			if (null != raycastHit[i].collider)
 			{
-				raysAndFitness[i] = raycastHit[i].distance;
+				carNeuronInputs[i] = raycastHit[i].distance;
 			}
 			else
 			{
-				raysAndFitness[i] = lineLength;
+				carNeuronInputs[i] = lineLength;
 			}
 
 			// Erzekelo adatok formazasa.
 			rawSensorText += (i + 1) + ". sensor: " +
-				string.Format("{0:0.0000}", raysAndFitness[i]) + "\n";
+				string.Format("{0:0.0000}", carNeuronInputs[i]) + "\n";
 		}
 		// A neuralis halo utolso inputja az auto sebessege
-		raysAndFitness[raysAndFitness.Length - 1] = carRigidbody.velocity.magnitude;
+		carNeuronInputs[carNeuronInputs.Length - 1] = carRigidbody.velocity.magnitude;
 
-		// Atadja az erzekelo adatokat a CarGameManagernek
+		// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
+		CarGameManager.Instance.AllCarInputs[carIndex] = carNeuronInputs;
 		CarGameManager.Instance.carDistances[carIndex] = rawSensorText;
-
-		// Az elso neuronreteg adatait tarolja egy tombben
-		tempNeuronData = neuronLayer1.CalculateLayer(raysAndFitness);
-		// A masodik reteg az elso retegtol kapott adatokkal dolgozik
-		control = neuronLayer2.CalculateLayer(tempNeuronData);
-		//Debug.Log(control[0] + " : kanyarodas,  " + control[1] + " : gyorsulas");
-		carController.steer = control[0];
-		carController.accelerate = control[1];
-
-
 	}
 
 	// Letrehozza az erzekelo sugarakat.

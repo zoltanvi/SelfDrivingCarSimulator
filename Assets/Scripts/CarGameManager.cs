@@ -1,28 +1,41 @@
 ﻿using UnityEngine;
 
-public class CarGameManager : MonoBehaviour {
+public class CarGameManager : MonoBehaviour
+{
 
 	// Singleton
 	public static CarGameManager Instance { get; private set; }
 
 	// Valtozok
 	[Range(0, 100)]
-	// Az autok darabszama
-	[SerializeField] private int numberOfCars = 1;
-	// Az auto prefab-ja
+	//[SerializeField] private int numberOfCars = 1;
 	[SerializeField] private GameObject carPreFab;
-	// Az autot koveto kamera scriptje
 	[SerializeField] private FollowCar cameraFollowCar;
-	// A megjeleno UI panel
 	[SerializeField] private GameObject myUI;
+
+	[Space]
+
+	[Header("Neural network settings")]
+	[Range(1, 100)]
+	public int CarCount = 1;
+    [Range(1, 20)]
+	public int NeuronPerLayerCount = 4;
+	public double[] AllCarFitness;
+	public double[][] AllCarInputs;
+	[Range(0, 15)]
+	public int HiddenLayerCount = 2;
+    [Range(1, 15)]
+	public int CarsRayCount = 3;
+    public double Bias = 1.0;
+
 	// Itt vannak eltarolva az osszes auto erzekeloi altal mert tavolsagok (UI szamara)
 	[HideInInspector] public string[] carDistances;
-	// Ebben a tombben vannak eltarolva az osszes auto fitness erteke
-	[HideInInspector] public double[] carFitness;
-	// A carDistances tomb indexeloje
-	[HideInInspector] public int carIndexD = 0;
-	// A carFitness tomb indexeloje
+
+	[HideInInspector] public int CarIndexD = 0;
 	[HideInInspector] public int carIndexF = 0;
+	[HideInInspector] public int CarIndexN = 0;
+
+
 	// A UI panel printer scriptje
 	private UIPrinter myUIPrinter;
 	// A jelenlegi legnagyobb fitnessel rendelkezo auto
@@ -47,17 +60,24 @@ public class CarGameManager : MonoBehaviour {
 
 	void Start()
 	{
+		AllCarFitness = new double[CarCount];
+		AllCarInputs = new double[CarCount][];
+        for (int i = 0; i < AllCarInputs.Length; i++)
+        {
+            // az inputok a sugarak + az autó sebessége
+            AllCarInputs[i] = new double[CarsRayCount + 1];
+        }
+
 		// tombok inicializalasa
-		carDistances = new string[numberOfCars];
-		carFitness = new double[numberOfCars];
-		cars = new Transform[numberOfCars];
+		carDistances = new string[CarCount];
+		cars = new Transform[CarCount];
 
 		// UI panel / script inicializalasa
 		myUI = GameObject.Find("myUI");
 		myUIPrinter = myUI.GetComponent<UIPrinter>();
 
 		// Peldanyosit megadott darabszamu autot es azokat a cars[] tombbe helyezi
-		for (int i = 0; i < numberOfCars; i++)
+		for (int i = 0; i < CarCount; i++)
 		{
 			cars[i] = Instantiate(carPreFab, transform.position, transform.rotation).transform;
 		}
@@ -74,8 +94,8 @@ public class CarGameManager : MonoBehaviour {
 		int bestCarIndex = BestCarIndex();
 		cameraFollowCar.targetCar = cars[bestCarIndex];
 		myUIPrinter.SensorDistances = carDistances[bestCarIndex];
-		myUIPrinter.FitnessValue = carFitness[bestCarIndex];
-		
+		myUIPrinter.FitnessValue = AllCarFitness[bestCarIndex];
+
 	}
 
 	// Visszaadja a legmagasabb fitnessel rendelkezo auto indexet
@@ -83,11 +103,11 @@ public class CarGameManager : MonoBehaviour {
 	{
 		int index = 0;
 		double bestFitness = 0;
-		for (int i = 0; i < numberOfCars; i++)
+		for (int i = 0; i < CarCount; i++)
 		{
-			if (bestFitness < carFitness[i])
+			if (bestFitness < AllCarFitness[i])
 			{
-				bestFitness = carFitness[i];
+				bestFitness = AllCarFitness[i];
 				index = i;
 			}
 		}

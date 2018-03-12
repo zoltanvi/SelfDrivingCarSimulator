@@ -23,7 +23,7 @@ public class FitnessMeter : MonoBehaviour
 	void Start()
 	{
 		carIndex = CarGameManager.Instance.carIndexF++;
-		CarGameManager.Instance.carFitness[carIndex] = absoluteFitness;
+		CarGameManager.Instance.AllCarFitness[carIndex] = absoluteFitness;
 
 		waypoints = new Transform[waypointsRoot.transform.childCount];
 
@@ -123,7 +123,7 @@ public class FitnessMeter : MonoBehaviour
 		absoluteFitness = savedFitness + relativeFitness;
 
 		// Az auto fitness erteket atadja a CarGameManager-nek
-		CarGameManager.Instance.carFitness[carIndex] = absoluteFitness;
+		CarGameManager.Instance.AllCarFitness[carIndex] = absoluteFitness;
 	}
 
 }
