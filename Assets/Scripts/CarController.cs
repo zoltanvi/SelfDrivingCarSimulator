@@ -10,9 +10,9 @@ public class CarController : MonoBehaviour
 	[SerializeField] private Transform centerOfMass;
 	[SerializeField] private WheelCollider[] wheelColliders = new WheelCollider[4];
 	[SerializeField] private Transform[] wheelMeshes = new Transform[4];
-	[Header("Do you want to control the car?")]
-	[SerializeField] private bool manualControl;
 	private string wallLayerName = "Environment";
+	private int carIndex;
+	private bool isAlive = true;
 
 	[HideInInspector] public double steer;
 	[HideInInspector] public double accelerate;
@@ -27,7 +27,7 @@ public class CarController : MonoBehaviour
 
 	void Start()
 	{
-
+		carIndex = CarGameManager.Instance.CarIndexC++;
 		// A felfuggeszteseket beallita a carStats-bol.
 		JointSpring[] suspensions = new JointSpring[4];
 		// A forward swiftnesseket beallita a carStats-bol.
@@ -62,22 +62,8 @@ public class CarController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		//if (customControl)
-		//{
-		//	// Kanyarodas (balra jobbra).
-		//	steer = Input.GetAxis("TurnAngle");
-		//	// Gyorsulas (fel le).
-		//	accelerate = Input.GetAxis("Speed");
-		//}
-		//else
-		//{
-		//	// Kanyarodas (balra jobbra).
-		//	steer = Input.GetAxis("Horizontal");
-		//	// Gyorsulas (fel le).
-		//	accelerate = Input.GetAxis("Vertical");
-		//}
 
-		if (manualControl)
+		if (carIndex == 0 && CarGameManager.Instance.manualControl)
 		{
 			// Kanyarodas (balra jobbra).
 			steer = Input.GetAxis("Horizontal");
@@ -88,8 +74,16 @@ public class CarController : MonoBehaviour
 
 		for (int i = 0; i < 4; i++)
 		{
-			// A motor nyomateka = max nyomatek * gyorsulas.
-			wheelColliders[i].motorTorque = carStats.maxTorque * (float)accelerate;
+			if (isAlive)
+			{
+				
+				// A motor nyomateka = max nyomatek * gyorsulas.
+				wheelColliders[i].motorTorque = carStats.maxTorque * (float)accelerate;
+			}
+			else
+			{
+				wheelColliders[i].brakeTorque = Mathf.Infinity;
+			}
 		}
 
 		wheelColliders[0].attachedRigidbody.AddForce(
@@ -98,9 +92,19 @@ public class CarController : MonoBehaviour
 		// Elso kerekek maximum fordulasi szoge.
 		float finalAngle = (float)steer * carStats.turnAngle;
 
-		// Az elso kerekek megkapjak a fordulasi szoget.
-		wheelColliders[0].steerAngle = finalAngle;
-		wheelColliders[1].steerAngle = finalAngle;
+		if (isAlive)
+		{
+
+			// Az elso kerekek megkapjak a fordulasi szoget.
+			wheelColliders[0].steerAngle = finalAngle;
+			wheelColliders[1].steerAngle = finalAngle;
+		}
+		else
+		{
+			// Az elso kerekek megkapjak a fordulasi szoget.
+			wheelColliders[0].steerAngle = 0;
+			wheelColliders[1].steerAngle = 0;
+		}
 
 		UpdateMeshes();
 	}
@@ -108,11 +112,21 @@ public class CarController : MonoBehaviour
 	// Ha az auto falnak utkozott, dead.
 	void OnCollisionEnter(Collision collision)
 	{
-		if(collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
+		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
-			carRigidbody.isKinematic = true;
-			Debug.Log(this.transform.name + " crashed.");
+			CarGameManager.Instance.StopCar(carRigidbody, carIndex, this.transform, ref isAlive);
+			Debug.Log(this.transform.name + " collide.");
+			//carRigidbody.isKinematic = true;
+			//CarGameManager.Instance.carNNWeights[carIndex] += 
+			//	"fitness: " + CarGameManager.Instance.AllCarFitness[carIndex] + "\n\n";
+			//SaveNetwork.WriteData(CarGameManager.Instance.carNNWeights[carIndex]);
+			//Debug.Log(this.transform.name + " crashed.");
 		}
+	}
+
+	public void ResetThisCar()
+	{
+		CarGameManager.Instance.ResetCar(carRigidbody, carIndex, this.transform, ref isAlive);
 	}
 
 

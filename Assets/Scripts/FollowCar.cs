@@ -22,7 +22,7 @@ public class FollowCar : MonoBehaviour
 		//transform.rotation = smoothedRotation;
 		//transform.LookAt(targetCar);
 
-		// Az auto forgasat koveti a kamera
+		//Az auto forgasat koveti a kamera
 		Quaternion toRot = Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
 		Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
 		transform.rotation = curRot;
