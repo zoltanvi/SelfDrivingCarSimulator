@@ -6,8 +6,8 @@ public class FitnessMeter : MonoBehaviour
 	[SerializeField] private GameObject waypointsRoot;
 	[SerializeField] private Transform carCenterPoint;
 
-	private Transform[] waypoints;
-	private Transform prevPoint, currentPoint, nextPoint;
+	[HideInInspector] public Transform[] waypoints;
+	[HideInInspector] public Transform prevPoint, currentPoint, nextPoint;
 	private int nextPointIndex = 1;
 
 	// AbsoluteFitness: a palyahoz viszonyitott fitness.
@@ -22,7 +22,7 @@ public class FitnessMeter : MonoBehaviour
 
 	void Start()
 	{
-		carIndex = CarGameManager.Instance.carIndexF++;
+		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
 		CarGameManager.Instance.AllCarFitness[carIndex] = absoluteFitness;
 
 		waypoints = new Transform[waypointsRoot.transform.childCount];
@@ -37,6 +37,17 @@ public class FitnessMeter : MonoBehaviour
 		prevPoint = waypoints[waypoints.Length - 1];
 		currentPoint = waypoints[0];
 		nextPoint = waypoints[1];
+	}
+
+	public void Reset()
+	{
+		prevPoint = waypoints[waypoints.Length - 1];
+		currentPoint = waypoints[0];
+		nextPoint = waypoints[1];
+		absoluteFitness = 0;
+		relativeFitness = 0;
+		savedFitness = 0;
+
 	}
 
 	void CheckNegativeFitness()

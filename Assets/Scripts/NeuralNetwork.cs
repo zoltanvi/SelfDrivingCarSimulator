@@ -26,7 +26,7 @@ public class NeuralNetwork : MonoBehaviour
 	void Start()
 	{
 		bias = CarGameManager.Instance.Bias;
-		carIndex = CarGameManager.Instance.CarIndexN++;
+		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
 		hiddenLayerCount = CarGameManager.Instance.HiddenLayerCount;
 		koztesAdatDarab = CarGameManager.Instance.HiddenLayerCount + 1;
 		neuronCount = CarGameManager.Instance.NeuronPerLayerCount;

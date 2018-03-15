@@ -14,7 +14,7 @@ public class CarGameManager : MonoBehaviour
 	[Header("Do you want to control a car?")]
 	public bool manualControl;
 
-	[HideInInspector] public float timeLeft = 5.0f;
+	[HideInInspector] public float timeLeft = 10.0f;
 
 	[Space]
 
@@ -31,14 +31,11 @@ public class CarGameManager : MonoBehaviour
 	[Range(1, 15)]
 	public int CarsRayCount = 3;
 	public double Bias = 1.0;
+	private int roundCounter = 0;
 
 	// Itt vannak eltarolva az osszes auto erzekeloi altal mert tavolsagok (UI szamara)
 	[HideInInspector] public string[] carDistances;
 	[HideInInspector] public string[] carNNWeights;
-	[HideInInspector] public int CarIndexD = 0;
-	[HideInInspector] public int carIndexF = 0;
-	[HideInInspector] public int CarIndexN = 0;
-	[HideInInspector] public int CarIndexC = 0;
 	#endregion
 
 	// A UI panel printer scriptje
@@ -114,10 +111,19 @@ public class CarGameManager : MonoBehaviour
 	public GameObject SpawnFromPool(Vector3 position, Quaternion rotation)
 	{
 		GameObject objectToSpawn = pool.Dequeue();
-		objectToSpawn.GetComponent<CarController>().isAlive = true;
+		objectToSpawn.GetComponent<CarController>().carStats.isAlive = true;
+		Rigidbody objectRigidbody = objectToSpawn.GetComponent<Rigidbody>();
+		objectRigidbody.isKinematic = false;
+		objectRigidbody.velocity = new Vector3(0, 0, 0);
 		objectToSpawn.SetActive(true);
-		objectToSpawn.transform.position = position;
+		objectToSpawn.transform.position = position + new Vector3(0, 10, 0);
 		objectToSpawn.transform.rotation = rotation;
+
+		if (roundCounter > 0)
+		{
+			objectToSpawn.GetComponent<FitnessMeter>().Reset();
+		}
+		roundCounter++;
 
 		pool.Enqueue(objectToSpawn);
 		return objectToSpawn;
@@ -126,11 +132,13 @@ public class CarGameManager : MonoBehaviour
 
 	void Update()
 	{
+		//	Debug.Log(cars[0].gameObject.GetComponent<CarController>().carStats.isAlive);
+		Debug.Log(timeLeft);
 		timeLeft -= Time.deltaTime;
 
 		if (timeLeft < 0)
 		{
-			timeLeft = 5.0f;
+			timeLeft = 10.0f;
 
 			for (int i = 0; i < CarCount; i++)
 			{
@@ -184,15 +192,6 @@ public class CarGameManager : MonoBehaviour
 			GameLogger.WriteData(carNNWeights[carIndex]);
 			Debug.Log(carTransform.name + " crashed!");
 			isAlive = false;
-		}
-	}
-
-	public void ResetCar(Rigidbody carRigidbody, int carIndex, Transform carTransform, ref bool isAlive)
-	{
-		if (!isAlive)
-		{
-			// TODO: reset cars
-			//InstantiateCars();
 		}
 	}
 

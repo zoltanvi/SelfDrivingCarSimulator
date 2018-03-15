@@ -14,8 +14,6 @@ public class CarController : MonoBehaviour
 	private string wallLayerName = "Environment";
 	private int carIndex;
 
-	[HideInInspector] public bool isAlive = true;
-
 	[HideInInspector] public double steer;
 	[HideInInspector] public double accelerate;
 
@@ -29,7 +27,9 @@ public class CarController : MonoBehaviour
 
 	void Start()
 	{
-		carIndex = CarGameManager.Instance.CarIndexC++;
+		carIndex = carStats.index;
+		carStats.isAlive = true;
+
 		// A felfuggeszteseket beallita a carStats-bol.
 		JointSpring[] suspensions = new JointSpring[4];
 		// A forward swiftnesseket beallita a carStats-bol.
@@ -76,15 +76,15 @@ public class CarController : MonoBehaviour
 
 		for (int i = 0; i < 4; i++)
 		{
-			if (isAlive)
+			if (carStats.isAlive)
 			{
-				
 				// A motor nyomateka = max nyomatek * gyorsulas.
 				wheelColliders[i].motorTorque = carStats.maxTorque * (float)accelerate;
 			}
 			else
 			{
-				wheelColliders[i].brakeTorque = Mathf.Infinity;
+				wheelColliders[i].motorTorque = 0;
+
 			}
 		}
 
@@ -94,7 +94,7 @@ public class CarController : MonoBehaviour
 		// Elso kerekek maximum fordulasi szoge.
 		float finalAngle = (float)steer * carStats.turnAngle;
 
-		if (isAlive)
+		if (carStats.isAlive)
 		{
 
 			// Az elso kerekek megkapjak a fordulasi szoget.
@@ -103,7 +103,6 @@ public class CarController : MonoBehaviour
 		}
 		else
 		{
-			// Az elso kerekek megkapjak a fordulasi szoget.
 			wheelColliders[0].steerAngle = 0;
 			wheelColliders[1].steerAngle = 0;
 		}
@@ -116,7 +115,7 @@ public class CarController : MonoBehaviour
 	{
 		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
-			CarGameManager.Instance.StopCar(carRigidbody, carIndex, this.transform, ref isAlive);
+			CarGameManager.Instance.StopCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
 		}
 	}
 

@@ -3,6 +3,7 @@
 public class CarStats
 {
 	public int index;
+	public bool isAlive;
 
 	// Wheels
 	public float turnAngle = 55f;

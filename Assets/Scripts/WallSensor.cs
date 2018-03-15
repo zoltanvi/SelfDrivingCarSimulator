@@ -21,10 +21,6 @@ public class WallSensor : MonoBehaviour
 	// Az erzekelok lathatatlanok, egy tombelem egy lathato vonalat tart
 	private GameObject[] rayHolders;
 
-
-	private NeuronLayer neuronLayer1, neuronLayer2;
-	private double[] tempNeuronData;
-
 	// Az auto sorszama - tobb autot managel a CarGameController osztaly
 	private int carIndex;
 
@@ -38,7 +34,7 @@ public class WallSensor : MonoBehaviour
 	{
 		rayCount = CarGameManager.Instance.CarsRayCount;
 		// Beallitja az auto sorszamat
-		carIndex = CarGameManager.Instance.CarIndexD++;
+		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
 
 		// Inicializalja a neuralis halo inputjait
 		carNeuronInputs = new double[rayCount + 1];
