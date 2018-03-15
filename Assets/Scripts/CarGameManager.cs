@@ -1,23 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
 using UnityEngine;
 
 public class CarGameManager : MonoBehaviour
 {
 
-	// Singleton
 	public static CarGameManager Instance { get; private set; }
 
 	// Valtozok
-	[Range(0, 100)]
-	//[SerializeField] private int numberOfCars = 1;
 	[SerializeField] private GameObject carPreFab;
 	[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject myUI;
 	[Header("Do you want to control a car?")]
 	public bool manualControl;
 
+	[HideInInspector] public float timeLeft = 5.0f;
+
 	[Space]
 
+	#region Neural network settings variables
 	[Header("Neural network settings")]
 	[Range(1, 100)]
 	public int CarCount = 1;
@@ -38,7 +39,7 @@ public class CarGameManager : MonoBehaviour
 	[HideInInspector] public int carIndexF = 0;
 	[HideInInspector] public int CarIndexN = 0;
 	[HideInInspector] public int CarIndexC = 0;
-
+	#endregion
 
 	// A UI panel printer scriptje
 	private UIPrinter myUIPrinter;
@@ -47,7 +48,9 @@ public class CarGameManager : MonoBehaviour
 	// Az osszes auto
 	public Transform[] cars;
 
-	// Az osztalynak csak egyetlen peldanya letezhet
+	public Queue<GameObject> pool;
+
+	#region Singleton
 	private void Awake()
 	{
 		if (Instance == null)
@@ -60,7 +63,7 @@ public class CarGameManager : MonoBehaviour
 			Destroy(gameObject);
 		}
 	}
-
+	#endregion
 
 	void Start()
 	{
@@ -82,33 +85,60 @@ public class CarGameManager : MonoBehaviour
 		// UI panel / script inicializalasa
 		myUI = GameObject.Find("myUI");
 		myUIPrinter = myUI.GetComponent<UIPrinter>();
-		InstantiateCars();
 
-	}
 
-	private void InstantiateCars()
-	{
-		// Peldanyosit megadott darabszamu autot es azokat a cars[] tombbe helyezi
+		// Instantiate Cars
+		pool = new Queue<GameObject>();
 		for (int i = 0; i < CarCount; i++)
 		{
-			cars[i] = Instantiate(carPreFab, transform.position, transform.rotation).transform;
+			GameObject obj = Instantiate(carPreFab, transform.position, transform.rotation);
+			obj.GetComponent<CarController>().carStats.index = i;
+
+			obj.SetActive(false);
+			pool.Enqueue(obj);
+
+			cars[i] = obj.transform;
 			cars[i].name = "Car " + (i + 1);
 		}
-		// Kezdetben a kamera a legelso autot koveti
-		cameraFollowCar.targetCar = cars[0];
-	}
 
-	private void DeleteCars()
-	{
+		cameraFollowCar.targetCar = cars[0];
+
 		for (int i = 0; i < CarCount; i++)
 		{
-			DestroyObject(cars[i]);
+			SpawnFromPool(transform.position, transform.rotation);
 		}
+
+
+	}
+
+	public GameObject SpawnFromPool(Vector3 position, Quaternion rotation)
+	{
+		GameObject objectToSpawn = pool.Dequeue();
+		objectToSpawn.GetComponent<CarController>().isAlive = true;
+		objectToSpawn.SetActive(true);
+		objectToSpawn.transform.position = position;
+		objectToSpawn.transform.rotation = rotation;
+
+		pool.Enqueue(objectToSpawn);
+		return objectToSpawn;
 	}
 
 
 	void Update()
 	{
+		timeLeft -= Time.deltaTime;
+
+		if (timeLeft < 0)
+		{
+			timeLeft = 5.0f;
+
+			for (int i = 0; i < CarCount; i++)
+			{
+				SpawnFromPool(transform.position, transform.rotation);
+			}
+		}
+
+
 		// Ha nem akar vezetni a player egy autot, akkor
 		// lekeri a legmagasabb fitnessel rendelkezo auto fitnesset
 		// a kamera ezt az autot fogja kovetni

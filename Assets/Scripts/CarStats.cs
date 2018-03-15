@@ -2,6 +2,9 @@
 [System.Serializable]
 public class CarStats
 {
+	public int index;
+
+	// Wheels
 	public float turnAngle = 55f;
 	public float maxTorque = 700f;
 	public float spring = 10000f;

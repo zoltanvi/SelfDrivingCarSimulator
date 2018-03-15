@@ -23,7 +23,6 @@ public class NeuronLayer
 			NeuronWeights[i] = new double[weightCount + 1];
 		}
 		InitWeights();
-		//PrintWeights();
 	}
 
 	void InitWeights()

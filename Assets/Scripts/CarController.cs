@@ -5,14 +5,16 @@ public class CarController : MonoBehaviour
 
 	[Header("The grip of the car")]
 	[SerializeField] private float downForce = 100.0f;
-	[SerializeField] private CarStats carStats;
+
+	public CarStats carStats;
 	[Header("The car's center of mass")]
 	[SerializeField] private Transform centerOfMass;
 	[SerializeField] private WheelCollider[] wheelColliders = new WheelCollider[4];
 	[SerializeField] private Transform[] wheelMeshes = new Transform[4];
 	private string wallLayerName = "Environment";
 	private int carIndex;
-	private bool isAlive = true;
+
+	[HideInInspector] public bool isAlive = true;
 
 	[HideInInspector] public double steer;
 	[HideInInspector] public double accelerate;
@@ -115,20 +117,8 @@ public class CarController : MonoBehaviour
 		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
 			CarGameManager.Instance.StopCar(carRigidbody, carIndex, this.transform, ref isAlive);
-			Debug.Log(this.transform.name + " collide.");
-			//carRigidbody.isKinematic = true;
-			//CarGameManager.Instance.carNNWeights[carIndex] += 
-			//	"fitness: " + CarGameManager.Instance.AllCarFitness[carIndex] + "\n\n";
-			//SaveNetwork.WriteData(CarGameManager.Instance.carNNWeights[carIndex]);
-			//Debug.Log(this.transform.name + " crashed.");
 		}
 	}
-
-	public void ResetThisCar()
-	{
-		CarGameManager.Instance.ResetCar(carRigidbody, carIndex, this.transform, ref isAlive);
-	}
-
 
 	void UpdateMeshes()
 	{

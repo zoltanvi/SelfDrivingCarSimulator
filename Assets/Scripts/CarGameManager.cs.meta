@@ -5,7 +5,10 @@ licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - carPreFab: {instanceID: 0}
+  - cameraFollowCar: {instanceID: 0}
+  - myUI: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 
