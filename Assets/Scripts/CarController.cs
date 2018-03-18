@@ -136,4 +136,9 @@ public class CarController : MonoBehaviour
 		}
 	}
 
+	public void Freeze()
+	{
+		CarGameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
+	}
+
 }

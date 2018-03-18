@@ -7,6 +7,7 @@ public class Car
 {
 	public int Index { get; set; }
 	public double Fitness { get; set; }
+	public double LastFitness { get; set; }
 	public double[] Inputs { get; set; }
 	public string Distances { get; set; }
 	public string NNWeights { get; set; }
@@ -25,6 +26,12 @@ public class CarGameManager : MonoBehaviour
 	public bool manualControl;
 
 	public float timeLeft = 10.0f;
+	public const float timeOut = 7.0f;
+	public float checkingTimeLeft = timeOut;
+	public int carsAliveCount;
+	float waitingTime = 0;
+	int bestCarIndex;
+
 
 	// Jelzi, hogy első indulása-e az autónak
 	private bool firstStart = true;
@@ -42,8 +49,8 @@ public class CarGameManager : MonoBehaviour
 	[Range(1, 15)]
 	public int CarsRayCount = 3;
 	public double Bias = 1.0;
-	
 	#endregion
+
 
 	private UIPrinter myUIPrinter;
 	private Transform bestCar;
@@ -70,6 +77,7 @@ public class CarGameManager : MonoBehaviour
 	void Start()
 	{
 		LogTimestamp();
+		carsAliveCount = CarCount;
 
 		// Az autók adatait tároló tömb inicializálása
 		Cars = new Car[CarCount];
@@ -78,7 +86,8 @@ public class CarGameManager : MonoBehaviour
 			Cars[i] = new Car
 			{
 				Index = i,
-				Inputs = new double[CarsRayCount + 1]
+				Inputs = new double[CarsRayCount + 1],
+				LastFitness = 0
 			};
 		}
 
@@ -145,27 +154,27 @@ public class CarGameManager : MonoBehaviour
 
 	void Update()
 	{
+		#region Régi időkorlát
+		//// Egyenlőre időkorlátosak az autók 
+		//timeLeft -= Time.deltaTime;
 
-		// Egyenlőre időkorlátosak az autók 
-		timeLeft -= Time.deltaTime;
+		//if (timeLeft < 0)
+		//{
+		//	timeLeft = 10.0f;
 
-		if (timeLeft < 0)
-		{
-			timeLeft = 10.0f;
+		//	for (int i = 0; i < CarCount; i++)
+		//	{
+		//		SpawnFromPool(transform.position, transform.rotation);
+		//	}
+		//}
+		#endregion
 
-			for (int i = 0; i < CarCount; i++)
-			{
-				SpawnFromPool(transform.position, transform.rotation);
-			}
-		}
 
 
 		// Ha nem akar vezetni a player egy autót, akkor
 		// lekéri a legmagasabb fitnessel rendelkező autó fitnessét
 		// és a kamera ezt az autót fogja követni,
 		// az UI panelen a hozzá tartozó adatok fognak megjelenni.
-		int bestCarIndex;
-
 		if (!manualControl)
 		{
 			bestCarIndex = BestCarIndex();
@@ -177,6 +186,56 @@ public class CarGameManager : MonoBehaviour
 		cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
 		myUIPrinter.SensorDistances = Cars[bestCarIndex].Distances;
 		myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
+
+
+		// Ha nincs már működő autó, akkor új spawn
+		if (carsAliveCount == 0)
+		{
+
+			// Legyen idő megcsodálni az autókat a respawn előtt
+			waitingTime += Time.deltaTime;
+			if (waitingTime >= 4.0f)
+			{
+				// Az autók rendezése fitness szerint
+				SortCarsByFitness();
+
+				// Autók respawnolása
+				for (int i = 0; i < CarCount; i++)
+				{
+					SpawnFromPool(transform.position, transform.rotation);
+				}
+
+				waitingTime = 0;
+				carsAliveCount = CarCount;
+				checkingTimeLeft = timeOut;
+			}
+		}
+
+
+
+		checkingTimeLeft -= Time.deltaTime;
+		if (checkingTimeLeft <= 0)
+		{
+			for (int i = 0; i < CarCount; i++)
+			{
+				// Ha nem nőtt 5 másodperc alatt az autó fitness értéke
+				// legalább 7-tel, akkor lefagyasztja az autót
+				if (Cars[i].Fitness > Cars[i].LastFitness + 7)
+				{
+					Cars[i].LastFitness = Cars[i].Fitness;
+				}
+				else
+				{
+					Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
+					Cars[i].LastFitness = 0;
+				}
+
+			}
+			checkingTimeLeft = timeOut;
+		}
+
+
+
 
 
 	}
@@ -208,8 +267,49 @@ public class CarGameManager : MonoBehaviour
 			GameLogger.WriteData(dataText);
 			Debug.Log(carTransform.name + " crashed!");
 			isAlive = false;
+			carsAliveCount--;
 		}
 	}
+
+	private void SortCarsByFitness()
+	{
+		#region Komment
+		//Debug.Log("########################BEFORE SORTING#############################");
+
+		//for (int i = 0; i < CarCount; i++)
+		//{
+		//	Debug.Log(Cars[i].Transform.name + " fitness: " + Cars[i].Fitness);
+		//}
+		#endregion
+
+		int val = CarCount - 1;
+
+		if ((CarCount - 1) != 0)
+		{
+			for (; val >= 0; val--)
+			{
+				for (int a = 0, b = a + 1; b <= val; a++, b++)
+				{
+					if (Cars[a].Fitness < Cars[b].Fitness)
+					{
+						Car tmp = Cars[a];
+						Cars[a] = Cars[b];
+						Cars[b] = tmp;
+					}
+				}
+			}
+		}
+
+		#region Komment
+		//Debug.Log("##########################AFTER SORTING###########################");
+		//for (int i = 0; i < CarCount; i++)
+		//{
+		//	Debug.Log(Cars[i].Transform.name + " fitness: " + Cars[i].Fitness);
+		//}
+		#endregion
+
+	}
+
 
 	// A játék indításakor logol, hogy jobban látható legyen melyik játékhoz tartozik.
 	private void LogTimestamp()

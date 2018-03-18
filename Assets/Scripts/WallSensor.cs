@@ -72,6 +72,7 @@ public class WallSensor : MonoBehaviour
 		}
 		// A neuralis halo utolso inputja az auto sebessege
 		carNeuronInputs[carNeuronInputs.Length - 1] = carRigidbody.velocity.magnitude;
+		//Debug.Log(this.transform.name + " speed: " + carNeuronInputs[carNeuronInputs.Length - 1]);
 
 		// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
 		CarGameManager.Instance.Cars[carIndex].Inputs = carNeuronInputs;
