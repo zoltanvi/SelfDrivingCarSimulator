@@ -27,14 +27,13 @@ public class CarController : MonoBehaviour
 
 	void Start()
 	{
+		// Inicializálás
 		carIndex = carStats.index;
 		carStats.isAlive = true;
-
-		// A felfuggeszteseket beallita a carStats-bol.
 		JointSpring[] suspensions = new JointSpring[4];
-		// A forward swiftnesseket beallita a carStats-bol.
 		WheelFrictionCurve[] wheelFrictionCurveForward = new WheelFrictionCurve[4];
 		WheelFrictionCurve[] wheelFrictionCurveSideways = new WheelFrictionCurve[4];
+
 
 		#region Setting 4 wheels
 		for (int i = 0; i < 4; i++)
@@ -64,7 +63,7 @@ public class CarController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-
+		// A 0 indexű autót vezetheti a player, ha be van pipálva a checkbox a GameManagerben
 		if (carIndex == 0 && CarGameManager.Instance.manualControl)
 		{
 			// Kanyarodas (balra jobbra).
@@ -76,6 +75,7 @@ public class CarController : MonoBehaviour
 
 		for (int i = 0; i < 4; i++)
 		{
+			// Ha az autó nem ütközött falnak, csak akkor lehet irányítani a motort
 			if (carStats.isAlive)
 			{
 				// A motor nyomateka = max nyomatek * gyorsulas.
@@ -84,19 +84,19 @@ public class CarController : MonoBehaviour
 			else
 			{
 				wheelColliders[i].motorTorque = 0;
-
 			}
 		}
 
+		// Jobb tapadása lesz az autónak
 		wheelColliders[0].attachedRigidbody.AddForce(
 			(-transform.up) * downForce * wheelColliders[0].attachedRigidbody.velocity.magnitude);
 
 		// Elso kerekek maximum fordulasi szoge.
 		float finalAngle = (float)steer * carStats.turnAngle;
 
+		// Ha az autó nem ütközött falnak, csak akkor lehet kormányozni a kerekeket
 		if (carStats.isAlive)
 		{
-
 			// Az elso kerekek megkapjak a fordulasi szoget.
 			wheelColliders[0].steerAngle = finalAngle;
 			wheelColliders[1].steerAngle = finalAngle;
@@ -110,15 +110,16 @@ public class CarController : MonoBehaviour
 		UpdateMeshes();
 	}
 
-	// Ha az auto falnak utkozott, dead.
+	// Ha az auto falnak utkozott, freeze.
 	void OnCollisionEnter(Collision collision)
 	{
 		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
-			CarGameManager.Instance.StopCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
+			CarGameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
 		}
 	}
 
+	// A kerekek mesh-eit updateli
 	void UpdateMeshes()
 	{
 		for (int i = 0; i < 4; i++)
@@ -132,7 +133,6 @@ public class CarController : MonoBehaviour
 
 			wheelMeshes[i].position = pos;
 			wheelMeshes[i].rotation = quat;
-
 		}
 	}
 

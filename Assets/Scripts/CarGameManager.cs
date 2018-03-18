@@ -2,48 +2,53 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+// Az autóhoz tartozó adatokat tárolja
+public class Car
+{
+	public int Index { get; set; }
+	public double Fitness { get; set; }
+	public double[] Inputs { get; set; }
+	public string Distances { get; set; }
+	public string NNWeights { get; set; }
+	public Transform Transform { get; set; }
+}
+
 public class CarGameManager : MonoBehaviour
 {
 
 	public static CarGameManager Instance { get; private set; }
 
-	// Valtozok
 	[SerializeField] private GameObject carPreFab;
 	[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject myUI;
 	[Header("Do you want to control a car?")]
 	public bool manualControl;
 
-	[HideInInspector] public float timeLeft = 10.0f;
+	public float timeLeft = 10.0f;
+
+	// Jelzi, hogy első indulása-e az autónak
+	private bool firstStart = true;
 
 	[Space]
 
-	#region Neural network settings variables
+	#region Neural network settings
 	[Header("Neural network settings")]
 	[Range(1, 100)]
 	public int CarCount = 1;
 	[Range(1, 20)]
 	public int NeuronPerLayerCount = 4;
-	public double[] AllCarFitness;
-	public double[][] AllCarInputs;
 	[Range(0, 15)]
 	public int HiddenLayerCount = 2;
 	[Range(1, 15)]
 	public int CarsRayCount = 3;
 	public double Bias = 1.0;
-	private int roundCounter = 0;
-
-	// Itt vannak eltarolva az osszes auto erzekeloi altal mert tavolsagok (UI szamara)
-	[HideInInspector] public string[] carDistances;
-	[HideInInspector] public string[] carNNWeights;
+	
 	#endregion
 
-	// A UI panel printer scriptje
 	private UIPrinter myUIPrinter;
-	// A jelenlegi legnagyobb fitnessel rendelkezo auto
 	private Transform bestCar;
-	// Az osszes auto
-	public Transform[] cars;
+
+	public Car[] Cars;
 
 	public Queue<GameObject> pool;
 
@@ -66,26 +71,26 @@ public class CarGameManager : MonoBehaviour
 	{
 		LogTimestamp();
 
-		AllCarFitness = new double[CarCount];
-		AllCarInputs = new double[CarCount][];
-		for (int i = 0; i < AllCarInputs.Length; i++)
+		// Az autók adatait tároló tömb inicializálása
+		Cars = new Car[CarCount];
+		for (int i = 0; i < CarCount; i++)
 		{
-			// az inputok a sugarak + az autó sebessége
-			AllCarInputs[i] = new double[CarsRayCount + 1];
+			Cars[i] = new Car
+			{
+				Index = i,
+				Inputs = new double[CarsRayCount + 1]
+			};
 		}
 
-		// tombok inicializalasa
-		carDistances = new string[CarCount];
-		carNNWeights = new string[CarCount];
-		cars = new Transform[CarCount];
-
-		// UI panel / script inicializalasa
+		// UI panel / script inicializálása
 		myUI = GameObject.Find("myUI");
 		myUIPrinter = myUI.GetComponent<UIPrinter>();
 
 
-		// Instantiate Cars
+		// Az autókat egy Queue-ban tárolja, így újra fel lehet használni azokat
 		pool = new Queue<GameObject>();
+
+		// Az autók inicializálása. Ezek még nem aktív autók!
 		for (int i = 0; i < CarCount; i++)
 		{
 			GameObject obj = Instantiate(carPreFab, transform.position, transform.rotation);
@@ -94,20 +99,27 @@ public class CarGameManager : MonoBehaviour
 			obj.SetActive(false);
 			pool.Enqueue(obj);
 
-			cars[i] = obj.transform;
-			cars[i].name = "Car " + (i + 1);
+			Cars[i].Transform = obj.transform;
+			Cars[i].Transform.name = "Car " + (i + 1);
 		}
 
-		cameraFollowCar.targetCar = cars[0];
+		// A kamera kezdetben a legelső autót követi
+		cameraFollowCar.targetCar = Cars[0].Transform;
 
+
+		// Az autók spawnolása
 		for (int i = 0; i < CarCount; i++)
 		{
 			SpawnFromPool(transform.position, transform.rotation);
 		}
 
+		// Első spawnolás megtörtént
+		firstStart = false;
 
 	}
 
+	// Az inicializált autók spawnolása a kezdőpozícióba.
+	// Az autók pozíció adatait stb. visszaállítja defaultra.
 	public GameObject SpawnFromPool(Vector3 position, Quaternion rotation)
 	{
 		GameObject objectToSpawn = pool.Dequeue();
@@ -116,14 +128,15 @@ public class CarGameManager : MonoBehaviour
 		objectRigidbody.isKinematic = false;
 		objectRigidbody.velocity = new Vector3(0, 0, 0);
 		objectToSpawn.SetActive(true);
-		objectToSpawn.transform.position = position + new Vector3(0, 10, 0);
+		objectToSpawn.transform.position = position;
 		objectToSpawn.transform.rotation = rotation;
 
-		if (roundCounter > 0)
+		// Ha már volt első spawnolás, akkor az autó fitness értékeinek visszaállítása.
+		// (Errort dob ha még nem volt első spawnolás, ezért kell a feltétel)
+		if (!firstStart)
 		{
 			objectToSpawn.GetComponent<FitnessMeter>().Reset();
 		}
-		roundCounter++;
 
 		pool.Enqueue(objectToSpawn);
 		return objectToSpawn;
@@ -132,8 +145,8 @@ public class CarGameManager : MonoBehaviour
 
 	void Update()
 	{
-		//	Debug.Log(cars[0].gameObject.GetComponent<CarController>().carStats.isAlive);
-		Debug.Log(timeLeft);
+
+		// Egyenlőre időkorlátosak az autók 
 		timeLeft -= Time.deltaTime;
 
 		if (timeLeft < 0)
@@ -147,10 +160,10 @@ public class CarGameManager : MonoBehaviour
 		}
 
 
-		// Ha nem akar vezetni a player egy autot, akkor
-		// lekeri a legmagasabb fitnessel rendelkezo auto fitnesset
-		// a kamera ezt az autot fogja kovetni
-		// az UI panelen a hozza tartozo adatok fognak megjelenni.
+		// Ha nem akar vezetni a player egy autót, akkor
+		// lekéri a legmagasabb fitnessel rendelkező autó fitnessét
+		// és a kamera ezt az autót fogja követni,
+		// az UI panelen a hozzá tartozó adatok fognak megjelenni.
 		int bestCarIndex;
 
 		if (!manualControl)
@@ -161,44 +174,48 @@ public class CarGameManager : MonoBehaviour
 		{
 			bestCarIndex = 0;
 		}
-		cameraFollowCar.targetCar = cars[bestCarIndex];
-		myUIPrinter.SensorDistances = carDistances[bestCarIndex];
-		myUIPrinter.FitnessValue = AllCarFitness[bestCarIndex];
+		cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
+		myUIPrinter.SensorDistances = Cars[bestCarIndex].Distances;
+		myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
+
 
 	}
 
-	// Visszaadja a legmagasabb fitnessel rendelkezo auto indexet
+	// Visszaadja a legmagasabb fitnessel rendelkező autó indexét
 	private int BestCarIndex()
 	{
 		int index = 0;
 		double bestFitness = 0;
 		for (int i = 0; i < CarCount; i++)
 		{
-			if (bestFitness < AllCarFitness[i])
+			if (bestFitness < Cars[i].Fitness)
 			{
-				bestFitness = AllCarFitness[i];
-				index = i;
+				bestFitness = Cars[i].Fitness;
+				index = Cars[i].Index;
 			}
 		}
 		return index;
 	}
 
-	public void StopCar(Rigidbody carRigidbody, int carIndex, Transform carTransform, ref bool isAlive)
+	// Lefagyasztja az autót, logolja az autóhoz tartozó neurális háló súlyait,
+	// az autó fitnessét.
+	public void FreezeCar(Rigidbody carRigidbody, int carIndex, Transform carTransform, ref bool isAlive)
 	{
 		if (isAlive)
 		{
 			carRigidbody.isKinematic = true;
-			carNNWeights[carIndex] += "Maximum fitness: " + AllCarFitness[carIndex] + "\n\n";
-			GameLogger.WriteData(carNNWeights[carIndex]);
+			string dataText = Cars[carIndex].NNWeights += "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
+			GameLogger.WriteData(dataText);
 			Debug.Log(carTransform.name + " crashed!");
 			isAlive = false;
 		}
 	}
 
+	// A játék indításakor logol, hogy jobban látható legyen melyik játékhoz tartozik.
 	private void LogTimestamp()
 	{
 		DateTime localDate = DateTime.Now;
-		string ts = "### New game ###\n" + localDate.ToString() + "\n"
+		string ts = "######################## New game ########################\n" + localDate.ToString() + "\n"
 			+ "_______________________________________________________\n";
 		GameLogger.WriteData(ts);
 	}

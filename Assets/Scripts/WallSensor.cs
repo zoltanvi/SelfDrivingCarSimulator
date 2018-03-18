@@ -74,8 +74,8 @@ public class WallSensor : MonoBehaviour
 		carNeuronInputs[carNeuronInputs.Length - 1] = carRigidbody.velocity.magnitude;
 
 		// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
-		CarGameManager.Instance.AllCarInputs[carIndex] = carNeuronInputs;
-		CarGameManager.Instance.carDistances[carIndex] = rawSensorText;
+		CarGameManager.Instance.Cars[carIndex].Inputs = carNeuronInputs;
+		CarGameManager.Instance.Cars[carIndex].Distances = rawSensorText;
 	}
 
 	// Letrehozza az erzekelo sugarakat.
@@ -84,10 +84,7 @@ public class WallSensor : MonoBehaviour
 		// Az angleBase = a sugarak kozotti szog nagysaga.
 		float angleBase = 180f / (quantity + 1);
 
-		// Ha 5 erzekelo van, 45 fok lesz az erzekelok kozott     \ | /
-		//													    -- OOO --
-		//														   OOO
-		//														   OOO
+		// Ha 5 erzekelo van, 45 fok lesz az erzekelok kozott
 		if (quantity == 5)
 		{
 			for (int i = 0; i < quantity; i++)

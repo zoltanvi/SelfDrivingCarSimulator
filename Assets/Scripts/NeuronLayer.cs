@@ -4,12 +4,17 @@ public class NeuronLayer
 {
 	public double[][] NeuronWeights { get; set; }
 
-	static Random rand = new Random();
-	int neuronCount;
-	int weightCount;
-	double bias;
+	private static Random rand = new Random();
+	private int neuronCount;
+	private int weightCount;
+	private double bias;
 
-
+	/// <summary>
+	///  Egy réteg neuront hoz létre.
+	/// </summary>
+	/// <param name="neuronPerLayer"> A neuronok száma rétegenként.</param>
+	/// <param name="layerInputCount"> A rétegre kötni kívánt inputok száma.</param>
+	/// <param name="biasValue"> A bias értéke.</param>
 	public NeuronLayer(int neuronPerLayer, int layerInputCount, double biasValue)
 	{
 		neuronCount = neuronPerLayer;
@@ -25,6 +30,11 @@ public class NeuronLayer
 		InitWeights();
 	}
 
+
+	/// <summary>
+	/// Inicializálja a neuronok inputjainak súlyait random értékre.
+	/// A random érték -1.0 és 1.0 között van
+	/// </summary>
 	void InitWeights()
 	{
 		for (int i = 0; i < NeuronWeights.Length; i++)
@@ -39,8 +49,12 @@ public class NeuronLayer
 		}
 	}
 
-	// az inputs tömbnek a mérete ugyan annyinak 
-	// kell legyen, mint a súlyok darabszáma!
+
+	/// <summary>
+	/// Kiszámolja a réteg outputját.
+	/// </summary>
+	/// <param name="inputs"> Az inputok tömbje.</param>
+	/// <returns> Az outputok tömbjével.</returns>
 	public double[] CalculateLayer(double[] inputs)
 	{
 		double[] layerOutput = new double[neuronCount];
@@ -61,11 +75,11 @@ public class NeuronLayer
 
 
 	/// <summary>
-	/// Az aktivacios fuggveny, jelen esetben a tanh(x) fuggveny. (Hiperbolikus tangens)
-	/// A fuggveny ertekkeszlete (-1.0, 1.0)
+	/// Az aktivációs függvény, jelen esetben a tanh(x) fuggvény. (Hiperbolikus tangens)
+	/// A függveny értékkészlete (-1.0, 1.0)
 	/// </summary>
-	/// <param name="x"> Mely ponton szamitsa ki a fuggvenyerteket.</param>
-	/// <returns> Visszater a kiszamitott fuggvenyertekkel.</returns>
+	/// <param name="x"> Mely ponton számítsa ki a függvényértéket.</param>
+	/// <returns> A kiszámított függvényértékkel.</returns>
 	private double Activate(double x)
 	{
 		return (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x));

@@ -6,13 +6,12 @@ public class NeuralNetwork : MonoBehaviour
 
 	private int carIndex;
 	public NeuronLayer[] NeuronLayers { get; set; }
-	// Az input réteg (0.), és az output réteg (utolsó), nem számít bele!
 	private int hiddenLayerCount;
-	// Neuronok száma rétegenként (az input réteg igen, az output réteg nem számít bele!)
+	// Neuronok szama retegenkent.
 	private int neuronCount;
 	private int inputCount;
-	private int koztesAdatDarab;
-	private double[][] koztesAdatok;
+	private int transferCount;
+	private double[][] transferData;
 	private double[] carInputs;
 	private double bias;
 
@@ -28,17 +27,17 @@ public class NeuralNetwork : MonoBehaviour
 		bias = CarGameManager.Instance.Bias;
 		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
 		hiddenLayerCount = CarGameManager.Instance.HiddenLayerCount;
-		koztesAdatDarab = CarGameManager.Instance.HiddenLayerCount + 1;
+		transferCount = CarGameManager.Instance.HiddenLayerCount + 1;
 		neuronCount = CarGameManager.Instance.NeuronPerLayerCount;
 		inputCount = CarGameManager.Instance.CarsRayCount + 1;
 
-		koztesAdatok = new double[koztesAdatDarab][];
-		for (int i = 0; i < koztesAdatok.Length; i++)
+		transferData = new double[transferCount][];
+		for (int i = 0; i < transferData.Length; i++)
 		{
-			koztesAdatok[i] = new double[neuronCount];
+			transferData[i] = new double[neuronCount];
 		}
 
-		carInputs = CarGameManager.Instance.AllCarInputs[carIndex];
+		carInputs = CarGameManager.Instance.Cars[carIndex].Inputs;
 
 		NeuronLayers = new NeuronLayer[hiddenLayerCount + 2];
 
@@ -72,8 +71,7 @@ public class NeuralNetwork : MonoBehaviour
 			}
 			carNNWeights += "\n";
 		}
-		CarGameManager.Instance.carNNWeights[carIndex] = carNNWeights;
-		//Debug.Log(kk);
+		CarGameManager.Instance.Cars[carIndex].NNWeights = carNNWeights;
 		#endregion
 
 	}
@@ -81,16 +79,19 @@ public class NeuralNetwork : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		carInputs = CarGameManager.Instance.AllCarInputs[carIndex];
+		carInputs = CarGameManager.Instance.Cars[carIndex].Inputs;
 
-		// Az input réteg az autó szenzorait kapja inputként
-		koztesAdatok[0] = NeuronLayers[0].CalculateLayer(carInputs);
-		for (int i = 1; i < koztesAdatok.Length; i++)
+		// Az input reteg az auto tavolsagadatait + sebesseget kapja meg
+		transferData[0] = NeuronLayers[0].CalculateLayer(carInputs);
+
+		// A tobbi reteg az elozo reteg adatait kapja meg
+		// TODO: közvetlenul is tovább lehet adni az adatokat
+		for (int i = 1; i < transferData.Length; i++)
 		{
-			koztesAdatok[i] = NeuronLayers[i].CalculateLayer(koztesAdatok[i - 1]);
+			transferData[i] = NeuronLayers[i].CalculateLayer(transferData[i - 1]);
 		}
-
-		control = NeuronLayers[NeuronLayers.Length - 1].CalculateLayer(koztesAdatok[koztesAdatok.Length - 1]);
+		// Az output reteg az iranyitasra van kotve
+		control = NeuronLayers[NeuronLayers.Length - 1].CalculateLayer(transferData[transferData.Length - 1]);
 
 		carController.steer = control[0];
 		carController.accelerate = control[1];

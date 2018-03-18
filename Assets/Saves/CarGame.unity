@@ -540,17 +540,13 @@ MonoBehaviour:
   carPreFab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
   cameraFollowCar: {fileID: 994807528}
   myUI: {fileID: 1592389584908998, guid: 05db685a0dd880544a123d45e947b668, type: 2}
-  manualControl: 1
-  timeLeft: 5
-  CarCount: 1
+  manualControl: 0
+  timeLeft: 10
+  CarCount: 50
   NeuronPerLayerCount: 6
-  AllCarFitness: []
   HiddenLayerCount: 2
   CarsRayCount: 5
   Bias: 1
-  carDistances: []
-  carNNWeights: []
-  cars: []
 --- !u!4 &1277089010
 Transform:
   m_ObjectHideFlags: 0
@@ -558,7 +554,7 @@ Transform:
   m_PrefabInternal: {fileID: 0}
   m_GameObject: {fileID: 1277089008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.374, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}
@@ -605,7 +601,7 @@ Prefab:
       objectReference: {fileID: 0}
     - target: {fileID: 1134274914523264, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}

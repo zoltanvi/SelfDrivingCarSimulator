@@ -1,7 +1,7 @@
 ﻿
-Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2017
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarGameDegreeThesis", "CarGameDegreeThesis.csproj", "{78D79549-E306-D438-68D9-64E01DC35FBF}"
+Microsoft Visual Studio Solution File, Format Version 11.00
+# Visual Studio 2010
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CarGameDegreeThesis", "Assembly-CSharp.csproj", "{D5C20E71-DF03-C875-96B0-973090AF9971}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -9,12 +9,15 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{78D79549-E306-D438-68D9-64E01DC35FBF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{78D79549-E306-D438-68D9-64E01DC35FBF}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{78D79549-E306-D438-68D9-64E01DC35FBF}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{78D79549-E306-D438-68D9-64E01DC35FBF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D5C20E71-DF03-C875-96B0-973090AF9971}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D5C20E71-DF03-C875-96B0-973090AF9971}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D5C20E71-DF03-C875-96B0-973090AF9971}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D5C20E71-DF03-C875-96B0-973090AF9971}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = Assembly-CSharp.csproj
 	EndGlobalSection
 EndGlobal
