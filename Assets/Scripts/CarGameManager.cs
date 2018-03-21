@@ -136,6 +136,7 @@ public class CarGameManager : MonoBehaviour
 		Rigidbody objectRigidbody = objectToSpawn.GetComponent<Rigidbody>();
 		objectRigidbody.isKinematic = false;
 		objectRigidbody.velocity = new Vector3(0, 0, 0);
+		objectRigidbody.angularVelocity = new Vector3(0, 0, 0);
 		objectToSpawn.SetActive(true);
 		objectToSpawn.transform.position = position;
 		objectToSpawn.transform.rotation = rotation;
