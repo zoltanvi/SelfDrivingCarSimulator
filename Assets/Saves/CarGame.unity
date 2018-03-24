@@ -540,11 +540,11 @@ MonoBehaviour:
   carPreFab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
   cameraFollowCar: {fileID: 994807528}
   myUI: {fileID: 1592389584908998, guid: 05db685a0dd880544a123d45e947b668, type: 2}
-  manualControl: 1
+  manualControl: 0
   timeLeft: 10
   checkingTimeLeft: 5
   carsAliveCount: 0
-  CarCount: 5
+  CarCount: 10
   NeuronPerLayerCount: 6
   HiddenLayerCount: 2
   CarsRayCount: 5

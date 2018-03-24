@@ -55,8 +55,8 @@ public class NeuralNetwork : MonoBehaviour
 		#region Neuronhalo print
 
 		DateTime localDate = DateTime.Now;
-		string carNNWeights = localDate.ToString() 
-			+ "\n" + (carIndex+1) + ". car:\n";
+		string carNNWeights = localDate.ToString()
+			+ "\n" + (carIndex + 1) + ". car:\n";
 		for (int i = 0; i < NeuronLayers.Length; i++)
 		{
 			carNNWeights += (i + 1) + ". layer: \n";
@@ -71,8 +71,9 @@ public class NeuralNetwork : MonoBehaviour
 			}
 			carNNWeights += "\n";
 		}
-		CarGameManager.Instance.Cars[carIndex].NNWeights = carNNWeights;
+		CarGameManager.Instance.Cars[carIndex].NeuralNetworkText = carNNWeights;
 		#endregion
+
 
 	}
 
