@@ -39,13 +39,13 @@ public class CarGameManager : MonoBehaviour
 	public int carsAliveCount;
 	float waitingTime = 0;
 	int bestCarIndex;
-	int[] carSet;
 	int[][] carPairs;
 
 	private static System.Random rand = new System.Random();
-	int lineCount;
-	string[][] tokens;
-	double[][] dtokens;
+
+	private NeuralNetwork[] carNetwork;
+	private double[,,,] savedCarNetwork;
+
 
 	// Jelzi, hogy első indulása-e az autónak
 	private bool firstStart = true;
@@ -92,12 +92,11 @@ public class CarGameManager : MonoBehaviour
 	void Start()
 	{
 		LogTimestamp();
-		lineCount = (NeuronPerLayerCount * (HiddenLayerCount + 1)) + 2;
-		tokens = new string[lineCount][];
-		dtokens = new double[lineCount][];
+		carNetwork = new NeuralNetwork[CarCount];
+
+
 
 		carsAliveCount = CarCount;
-		carSet = new int[CarCount / 2];
 		carPairs = new int[CarCount][];
 		for (int i = 0; i < carPairs.Length; i++)
 		{
@@ -233,11 +232,34 @@ public class CarGameManager : MonoBehaviour
 		if (isAlive)
 		{
 			carRigidbody.isKinematic = true;
-			string dataText = Cars[carIndex].NeuralNetworkText += "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
-			GameLogger.WriteData(dataText);
+
 			Debug.Log(carTransform.name + " crashed!");
 			isAlive = false;
 			carsAliveCount--;
+			NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
+
+			#region Neuronhalo print
+
+			string carNNWeights = carIndex + ". car:\n";
+			for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
+			{
+				carNNWeights += (i + 1) + ". layer: \n";
+				for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
+				{
+					for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
+					{
+						string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
+						carNNWeights += tmp + "\t";
+					}
+					carNNWeights += "\n";
+				}
+				carNNWeights += "\n";
+			}
+			#endregion
+			GameLogger.WriteData(carNNWeights);
+			string dataText = "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
+			GameLogger.WriteData(dataText);
+
 		}
 	}
 
@@ -285,40 +307,80 @@ public class CarGameManager : MonoBehaviour
 		GameLogger.WriteData(ts);
 	}
 
-	// Kiírja az autók neurális hálójához tartozó súlyokat egy csv fájlba
+	// Elmenti a neurális háló adatait a savedCarNetwork tömbbe
 	private void SaveNeuronNetworks()
 	{
 
-		using (StreamWriter file = new StreamWriter(@"Assets/Resources/NetworkData.csv", false))
+		for (int i = 0; i < CarCount; i++)
 		{
-			for (int i = 0; i < CarCount; i++)
-			{
-				NeuronLayer[] neuronLayers = Cars[i].Transform.gameObject.GetComponent<NeuralNetwork>().NeuronLayers;
-				int carIndex = Cars[i].Index;
-				double carFitness = Cars[i].Fitness;
-				file.WriteLine("{0};{1}", carIndex, carFitness);
-				for (int j = 0; j < neuronLayers.Length; j++)
-				{
-					for (int k = 0; k < neuronLayers[j].NeuronWeights.Length; k++)
-					{
-						for (int l = 0; l < neuronLayers[j].NeuronWeights[0].Length; l++)
-						{
-							if (l < neuronLayers[j].NeuronWeights[0].Length - 1)
-							{
-								file.Write("{0};", neuronLayers[j].NeuronWeights[k][l]);
-							}
-							else
-							{
-								file.Write("{0}", neuronLayers[j].NeuronWeights[k][l]);
-							}
-						}
-						file.Write(file.NewLine);
-					}
-				}
-
-			}
+			carNetwork[i] = Cars[i].Transform.gameObject.GetComponent<NeuralNetwork>();
 		}
 
+		savedCarNetwork = new double[
+			CarCount,
+			carNetwork[0].NeuronLayers.Length,
+			carNetwork[0].NeuronLayers[0].NeuronWeights.Length,
+			carNetwork[0].NeuronLayers[0].NeuronWeights[0].Length];
+
+
+		for (int i = 0; i < CarCount; i++)  // melyik autó
+		{
+			for (int j = 0; j < carNetwork[i].NeuronLayers.Length; j++) // melyik réteg
+			{
+				for (int k = 0; k < carNetwork[i].NeuronLayers[j].NeuronWeights.Length; k++) // melyik neuron
+				{
+					for (int l = 0; l < carNetwork[i].NeuronLayers[j].NeuronWeights[0].Length; l++) // melyik súlya
+					{
+						savedCarNetwork[i, j, k, l] = carNetwork[i].NeuronLayers[j].NeuronWeights[k][l];
+					}
+				}
+			}
+		}
+	}
+
+
+
+	private void RecombineAndMutate()
+	{
+		int rnd;
+		int ind;
+		int mutation;
+		//int r;
+		double tmp;
+
+		for (int i = 0; i < CarCount; i++)  // melyik autó
+		{
+			for (int j = 0; j < carNetwork[i].NeuronLayers.Length; j++) // melyik réteg
+			{
+				for (int k = 0; k < carNetwork[i].NeuronLayers[j].NeuronWeights.Length; k++) // melyik neuron
+				{
+					for (int l = 0; l < carNetwork[i].NeuronLayers[j].NeuronWeights[0].Length; l++) // melyik súlya
+					{
+						// 66% hogy a bal oldali szülőt fogja örökölni (a valószínűleg jobbik szülőt)
+						rnd = rand.Next(3);
+						rnd = rnd < 2 ? 0 : 1;
+						ind = carPairs[i][rnd];
+
+						// 25% eséllyel mutálódik a súly
+						mutation = rand.Next(4);
+						if (mutation == 0)
+						{
+							tmp = rand.Next(150, 200);
+							tmp /= 100;
+
+							carNetwork[i].NeuronLayers[j].NeuronWeights[k][l] =
+								savedCarNetwork[ind, j, k, l] * tmp;
+						}
+						else
+						{
+							carNetwork[i].NeuronLayers[j].NeuronWeights[k][l] =
+								savedCarNetwork[ind, j, k, l];
+						}
+
+					}
+				}
+			}
+		}
 
 	}
 
@@ -331,51 +393,67 @@ public class CarGameManager : MonoBehaviour
 
 			// Legyen idő megcsodálni az autókat a respawn előtt
 			waitingTime += Time.deltaTime;
-			if (waitingTime >= 3.0f)
+			if (waitingTime >= 0.5f)
 			{
+
+				// Elmenti az összes autó neurális hálóját
 				SaveNeuronNetworks();
 
 				// Az autók rendezése fitness szerint
 				SortCarsByFitness();
 
-				for (int i = 0; i < carSet.Length; i++)
-				{
-					carSet[i] = CarsData[i].Index;
-				}
 
-				Debug.Log("A top 50% autó indexei a következők: ");
-				foreach (int item in carSet)
-				{
-					Debug.Log(item);
-				}
+				//#region kiíratás
+				//Debug.Log("A top 50% autó indexei a következők: ");
+				//for (int i = 0; i < CarsData.Length/2; i++)
+				//{
+				//	Debug.Log(CarsData[i].Index);
+				//}
+				//#endregion
 
-
+				int fatherIndex = rand.Next(CarCount/2);
+				int randomFromBottomHalf = CarsData[rand.Next(CarCount/2, CarCount)].Index;
 
 				// random párokat készít (nem lesz önmagával párban senki)
-				for (int i = 0; i < carPairs.Length; i++)
+				for (int i = 0; i < CarCount; i++)
 				{
-					carPairs[i][0] = carSet[rand.Next(0, carSet.Length)];
+					carPairs[i][0] = CarsData[i/2].Index;
+
 					int rnd = carPairs[i][0];
 					while (carPairs[i][0] == rnd)
 					{
-						rnd = rand.Next(0, carSet.Length);
+						rnd = CarsData[rand.Next(0, CarCount/2)].Index;
 					}
 					carPairs[i][1] = rnd;
 				}
+				// Egy db a rosszabbik 50%ból származik!
+				carPairs[fatherIndex][1] = randomFromBottomHalf;
 
+				#region old pair maker
+				//// random párokat készít (nem lesz önmagával párban senki)
+				//for (int i = 0; i < carPairs.Length; i++)
+				//{
+				//	carPairs[i][0] = carSet[rand.Next(0, carSet.Length)];
+				//	int rnd = carPairs[i][0];
+				//	while (carPairs[i][0] == rnd)
+				//	{
+				//		rnd = carSet[rand.Next(0, carSet.Length)];
+				//	}
+				//	carPairs[i][1] = rnd;
+				//}
+				#endregion
+
+				#region kiíratás
 				for (int i = 0; i < carPairs.Length; i++)
 				{
 					string str = carPairs[i][0] + " :: " + carPairs[i][1];
 					Debug.Log(str);
 				}
+				#endregion
 
 				// ettől a ponttól kezdve megvannak a párok
 
-				#region neural network weights set
-
-				// TODO: elmenteni egy [carCount][neuronlayers] tömbbe
-			
-				#endregion
+				RecombineAndMutate();
 
 				// Autók respawnolása
 				for (int i = 0; i < CarCount; i++)
@@ -398,6 +476,12 @@ public class CarGameManager : MonoBehaviour
 		{
 			for (int i = 0; i < CarCount; i++)
 			{
+				if (Cars[i].Fitness >= 500.0)
+				{
+					Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
+					Cars[i].LastFitness = 0;
+				}
+
 				// Ha nem nőtt 5 másodperc alatt az autó fitness értéke
 				// legalább 7-tel, akkor lefagyasztja az autót
 				if (Cars[i].Fitness > Cars[i].LastFitness + 7)

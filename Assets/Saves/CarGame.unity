@@ -544,9 +544,9 @@ MonoBehaviour:
   timeLeft: 10
   checkingTimeLeft: 5
   carsAliveCount: 0
-  CarCount: 10
-  NeuronPerLayerCount: 6
-  HiddenLayerCount: 2
+  CarCount: 20
+  NeuronPerLayerCount: 5
+  HiddenLayerCount: 1
   CarsRayCount: 5
   Bias: 1
 --- !u!4 &1277089010

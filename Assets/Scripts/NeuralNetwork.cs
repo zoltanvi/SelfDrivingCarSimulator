@@ -52,29 +52,6 @@ public class NeuralNetwork : MonoBehaviour
 		NeuronLayers[hiddenLayerCount + 1] = new NeuronLayer(2, neuronCount, bias);
 
 
-		#region Neuronhalo print
-
-		DateTime localDate = DateTime.Now;
-		string carNNWeights = localDate.ToString()
-			+ "\n" + (carIndex + 1) + ". car:\n";
-		for (int i = 0; i < NeuronLayers.Length; i++)
-		{
-			carNNWeights += (i + 1) + ". layer: \n";
-			for (int k = 0; k < NeuronLayers[i].NeuronWeights.Length; k++)
-			{
-				for (int j = 0; j < NeuronLayers[i].NeuronWeights[0].Length; j++)
-				{
-					string tmp = string.Format("{0,10}", NeuronLayers[i].NeuronWeights[k][j]);
-					carNNWeights += tmp + "\t";
-				}
-				carNNWeights += "\n";
-			}
-			carNNWeights += "\n";
-		}
-		CarGameManager.Instance.Cars[carIndex].NeuralNetworkText = carNNWeights;
-		#endregion
-
-
 	}
 
 
