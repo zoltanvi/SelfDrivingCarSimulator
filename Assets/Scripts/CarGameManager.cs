@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections;
 using System.IO;
 using UnityEngine;
 
@@ -38,6 +39,13 @@ public class CarGameManager : MonoBehaviour
 	public int carsAliveCount;
 	float waitingTime = 0;
 	int bestCarIndex;
+	int[] carSet;
+	int[][] carPairs;
+
+	private static System.Random rand = new System.Random();
+	int lineCount;
+	string[][] tokens;
+	double[][] dtokens;
 
 	// Jelzi, hogy első indulása-e az autónak
 	private bool firstStart = true;
@@ -84,7 +92,17 @@ public class CarGameManager : MonoBehaviour
 	void Start()
 	{
 		LogTimestamp();
+		lineCount = (NeuronPerLayerCount * (HiddenLayerCount + 1)) + 2;
+		tokens = new string[lineCount][];
+		dtokens = new double[lineCount][];
+
 		carsAliveCount = CarCount;
+		carSet = new int[CarCount / 2];
+		carPairs = new int[CarCount][];
+		for (int i = 0; i < carPairs.Length; i++)
+		{
+			carPairs[i] = new int[2];
+		}
 
 		// Az autók adatait tároló tömb inicializálása
 		CarsData = new IndexFitness[CarCount];
@@ -183,61 +201,12 @@ public class CarGameManager : MonoBehaviour
 		myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
 
 
-		// Ha nincs már működő autó, akkor új spawn
-		if (carsAliveCount == 0)
-		{
-
-			// Legyen idő megcsodálni az autókat a respawn előtt
-			waitingTime += Time.deltaTime;
-			if (waitingTime >= 4.0f)
-			{
-				SaveNeuronNetworks();
-				
-				// Az autók rendezése fitness szerint
-				SortCarsByFitness();
-
-				for (int i = 0; i < CarsData.Length / 2; i++)
-				{
-					string str = CarsData[i].Index + ": " + CarsData[i].Fitness;
-					Debug.Log(str);
-				}
+		NewGeneration();
 
 
-
-				// Autók respawnolása
-				for (int i = 0; i < CarCount; i++)
-				{
-					SpawnFromPool(transform.position, transform.rotation);
-				}
-
-				waitingTime = 0;
-				carsAliveCount = CarCount;
-				checkingTimeLeft = timeOut;
-			}
-		}
+		CheckSlowCars();
 
 
-
-		checkingTimeLeft -= Time.deltaTime;
-		if (checkingTimeLeft <= 0)
-		{
-			for (int i = 0; i < CarCount; i++)
-			{
-				// Ha nem nőtt 5 másodperc alatt az autó fitness értéke
-				// legalább 7-tel, akkor lefagyasztja az autót
-				if (Cars[i].Fitness > Cars[i].LastFitness + 7)
-				{
-					Cars[i].LastFitness = Cars[i].Fitness;
-				}
-				else
-				{
-					Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
-					Cars[i].LastFitness = 0;
-				}
-
-			}
-			checkingTimeLeft = timeOut;
-		}
 
 	}
 
@@ -272,16 +241,9 @@ public class CarGameManager : MonoBehaviour
 		}
 	}
 
+	// Rendezi az autókat a CarsData[] tömbben fitness érték szerint
 	private void SortCarsByFitness()
 	{
-		#region Komment
-		//Debug.Log("########################BEFORE SORTING#############################");
-
-		//for (int i = 0; i < CarCount; i++)
-		//{
-		//	Debug.Log(Cars[i].Transform.name + " fitness: " + Cars[i].Fitness);
-		//}
-		#endregion
 
 		for (int i = 0; i < CarCount; i++)
 		{
@@ -306,17 +268,13 @@ public class CarGameManager : MonoBehaviour
 				}
 			}
 		}
-
-		#region Komment
-		//Debug.Log("##########################AFTER SORTING###########################");
-		//for (int i = 0; i < CarCount; i++)
-		//{
-		//	Debug.Log(Cars[i].Transform.name + " fitness: " + Cars[i].Fitness);
-		//}
-		#endregion
+		Debug.Log("Sorbarendezett autók: ");
+		foreach (var item in CarsData)
+		{
+			Debug.Log(item.Index + " : " + item.Fitness);
+		}
 
 	}
-
 
 	// A játék indításakor logol, hogy jobban látható legyen melyik játékhoz tartozik.
 	private void LogTimestamp()
@@ -327,6 +285,7 @@ public class CarGameManager : MonoBehaviour
 		GameLogger.WriteData(ts);
 	}
 
+	// Kiírja az autók neurális hálójához tartozó súlyokat egy csv fájlba
 	private void SaveNeuronNetworks()
 	{
 
@@ -363,5 +322,97 @@ public class CarGameManager : MonoBehaviour
 
 	}
 
+	// Egy új generáció spawnolását végzi
+	private void NewGeneration()
+	{
+		// Ha nincs már működő autó, akkor új spawn
+		if (carsAliveCount == 0)
+		{
+
+			// Legyen idő megcsodálni az autókat a respawn előtt
+			waitingTime += Time.deltaTime;
+			if (waitingTime >= 3.0f)
+			{
+				SaveNeuronNetworks();
+
+				// Az autók rendezése fitness szerint
+				SortCarsByFitness();
+
+				for (int i = 0; i < carSet.Length; i++)
+				{
+					carSet[i] = CarsData[i].Index;
+				}
+
+				Debug.Log("A top 50% autó indexei a következők: ");
+				foreach (int item in carSet)
+				{
+					Debug.Log(item);
+				}
+
+
+
+				// random párokat készít (nem lesz önmagával párban senki)
+				for (int i = 0; i < carPairs.Length; i++)
+				{
+					carPairs[i][0] = carSet[rand.Next(0, carSet.Length)];
+					int rnd = carPairs[i][0];
+					while (carPairs[i][0] == rnd)
+					{
+						rnd = rand.Next(0, carSet.Length);
+					}
+					carPairs[i][1] = rnd;
+				}
+
+				for (int i = 0; i < carPairs.Length; i++)
+				{
+					string str = carPairs[i][0] + " :: " + carPairs[i][1];
+					Debug.Log(str);
+				}
+
+				// ettől a ponttól kezdve megvannak a párok
+
+				#region neural network weights set
+
+				// TODO: elmenteni egy [carCount][neuronlayers] tömbbe
+			
+				#endregion
+
+				// Autók respawnolása
+				for (int i = 0; i < CarCount; i++)
+				{
+					SpawnFromPool(transform.position, transform.rotation);
+				}
+
+				waitingTime = 0;
+				carsAliveCount = CarCount;
+				checkingTimeLeft = timeOut;
+			}
+		}
+	}
+
+	// Ellenőrzi az autókat, és lefagyasztja amelyik nem elég gyors, vagy hátrafele megy
+	private void CheckSlowCars()
+	{
+		checkingTimeLeft -= Time.deltaTime;
+		if (checkingTimeLeft <= 0)
+		{
+			for (int i = 0; i < CarCount; i++)
+			{
+				// Ha nem nőtt 5 másodperc alatt az autó fitness értéke
+				// legalább 7-tel, akkor lefagyasztja az autót
+				if (Cars[i].Fitness > Cars[i].LastFitness + 7)
+				{
+					Cars[i].LastFitness = Cars[i].Fitness;
+				}
+				else
+				{
+					Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
+					Cars[i].LastFitness = 0;
+				}
+
+			}
+			checkingTimeLeft = timeOut;
+		}
+	}
 
 }
