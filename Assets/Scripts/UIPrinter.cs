@@ -10,8 +10,6 @@ public class UIPrinter : MonoBehaviour {
 	public string SensorDistances { get; set; }
 	public double FitnessValue { get; set; }
 
-
-	#region Methods
 	void Update () 
 	{
 		// Kiirja az erzekelok adatait, fitness erteket az autonak
@@ -22,7 +20,5 @@ public class UIPrinter : MonoBehaviour {
 		wrongwayText.text = (FitnessValue < 0) ? "!!!" : "";
 
 	}
-
-	#endregion
 	
 }

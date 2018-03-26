@@ -59,8 +59,6 @@
      <Compile Include="Assets\Scripts\GameLogger.cs" />
      <Compile Include="Assets\Scripts\NeuralNetwork.cs" />
      <Compile Include="Assets\Scripts\NeuronLayer.cs" />
-     <Compile Include="Assets\Scripts\Perceptron.cs" />
-     <Compile Include="Assets\Scripts\Timer.cs" />
      <Compile Include="Assets\Scripts\UIPrinter.cs" />
      <Compile Include="Assets\Scripts\WallSensor.cs" />
      <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
@@ -117,6 +115,7 @@
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
      <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\LiberationSans - OFL.txt" />
      <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Bangers - OFL.txt" />
+     <None Include="Assets\Resources\SavedNetworks_after30min.txt" />
  <Reference Include="UnityEngine.UI">
  <HintPath>F:/Program Files/Unity/Editor/Data/UnityExtensions/Unity/GUISystem/UnityEngine.UI.dll</HintPath>
  </Reference>
