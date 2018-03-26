@@ -356,20 +356,19 @@ public class CarGameManager : MonoBehaviour
 				{
 					for (int l = 0; l < carNetwork[i].NeuronLayers[j].NeuronWeights[0].Length; l++) // melyik súlya
 					{
-						// 66% hogy a bal oldali szülőt fogja örökölni (a valószínűleg jobbik szülőt)
-						rnd = rand.Next(3);
+						// 50% eséllyel örököl bizonyos szülőt
+						rnd = rand.Next(2);
 						rnd = rnd < 2 ? 0 : 1;
 						ind = carPairs[i][rnd];
-
-						// 25% eséllyel mutálódik a súly
-						mutation = rand.Next(4);
+						// 50% eséllyel mutálódik a súly
+						mutation = rand.Next(2);
 						if (mutation == 0)
 						{
-							tmp = rand.Next(150, 200);
-							tmp /= 100;
+							tmp = UnityEngine.Random.Range(-0.2f, 0.2f);
+
 
 							carNetwork[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[ind, j, k, l] * tmp;
+								savedCarNetwork[ind, j, k, l] + tmp;
 						}
 						else
 						{
@@ -411,18 +410,18 @@ public class CarGameManager : MonoBehaviour
 				//}
 				//#endregion
 
-				int fatherIndex = rand.Next(CarCount/2);
-				int randomFromBottomHalf = CarsData[rand.Next(CarCount/2, CarCount)].Index;
+				int fatherIndex = rand.Next(CarCount / 2);
+				int randomFromBottomHalf = CarsData[rand.Next(CarCount / 2, CarCount)].Index;
 
 				// random párokat készít (nem lesz önmagával párban senki)
 				for (int i = 0; i < CarCount; i++)
 				{
-					carPairs[i][0] = CarsData[i/2].Index;
+					carPairs[i][0] = CarsData[i / 2].Index;
 
 					int rnd = carPairs[i][0];
 					while (carPairs[i][0] == rnd)
 					{
-						rnd = CarsData[rand.Next(0, CarCount/2)].Index;
+						rnd = CarsData[rand.Next(0, CarCount / 2)].Index;
 					}
 					carPairs[i][1] = rnd;
 				}
