@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // Az autóhoz tartozó adatokat tárolja
@@ -30,7 +29,7 @@ public class CarGameManager : MonoBehaviour
 	[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject myUI;
 	[Header("Do you want to control a car?")]
-	public bool manualControl;
+	public bool manualControl = false;
 
 	public const float timeOut = 10.0f;
 	public float checkingTimeLeft = timeOut;
@@ -54,13 +53,15 @@ public class CarGameManager : MonoBehaviour
 	#region Neural network settings
 	[Header("Neural network settings")]
 	[Range(1, 100)]
-	public int CarCount = 1;
+	public int CarCount = 20;
 	[Range(1, 20)]
-	public int NeuronPerLayerCount = 4;
+	public int NeuronPerLayerCount = 6;
 	[Range(0, 15)]
 	public int HiddenLayerCount = 2;
 	[Range(1, 15)]
-	public int CarsRayCount = 3;
+	public int CarsRayCount = 5;
+	[Range(0, 50)]
+	public float MutationRatePercent = 2;
 	public double Bias = 1.0;
 	#endregion
 
@@ -193,6 +194,7 @@ public class CarGameManager : MonoBehaviour
 		{
 			bestCarIndex = 0;
 		}
+
 		cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
 		myUIPrinter.SensorDistances = Cars[bestCarIndex].Distances;
 		myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
@@ -245,13 +247,24 @@ public class CarGameManager : MonoBehaviour
 	private int GetBestCarIndex()
 	{
 		int index = 0;
-		double bestFitness = 0;
-		for (int i = 0; i < CarCount; i++)
+		//double bestFitness = 0;
+		//for (int i = 0; i < CarCount; i++)
+		//{
+		//	if (bestFitness < Cars[i].Fitness && 
+		//		Cars[i].Transform.gameObject.GetComponent<CarController>().carStats.isAlive == true)
+		//	{
+		//		bestFitness = Cars[i].Fitness;
+		//		index = Cars[i].Index;
+		//	}
+		//}
+
+		SortCarsByFitness();
+
+		for (int i = CarCount-1; i >= 0 ; i--)
 		{
-			if (bestFitness < Cars[i].Fitness)
+			if (Cars[indexFitness[i].Index].Transform.gameObject.GetComponent<CarController>().carStats.isAlive)
 			{
-				bestFitness = Cars[i].Fitness;
-				index = Cars[i].Index;
+				index = indexFitness[i].Index;
 			}
 		}
 		return index;
@@ -266,7 +279,9 @@ public class CarGameManager : MonoBehaviour
 		{
 			carRigidbody.isKinematic = true;
 
-			Debug.Log(carTransform.name + " crashed!");
+
+			// Debug.Log(carTransform.name + " crashed!");
+
 			isAlive = false;
 			carsAliveCount--;
 			NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
@@ -343,7 +358,11 @@ public class CarGameManager : MonoBehaviour
 	private void RecombineAndMutate()
 	{
 		int index;
-		double mutationRate;
+		// Pl. Ha a mutáció ráta = 5%,
+		// akkor az eredeti érték minimum 95%-a, maximum 105%-a lehet a mutálódott érték.
+		MutationRatePercent /= 100;
+		float mutationRateMinimum = (1 - MutationRatePercent);
+		float mutationRateMaximum = (1 + MutationRatePercent);
 
 		for (int i = 0; i < CarCount; i++)  // melyik autó
 		{
@@ -355,18 +374,24 @@ public class CarGameManager : MonoBehaviour
 					{
 						// 50% eséllyel örököl az egyik szülőtől.
 						// carPairs[i] a két szülő indexét tartalmazza
-						index = carPairs[i][UnityEngine.Random.Range(0, 2)];
+						index = carPairs[i][Random.Range(0, 2)];
 
 						// 50% eséllyel mutálódik a súly
-						if (UnityEngine.Random.Range(0, 2) == 0)
+						if (Random.Range(0, 2) == 0)
 						{
-							// -0.2 és 0.2 közötti értékkel növeli az eredetit a mutációkor.
-							// Próbálgattam szorzással is, viszont akkor 10-15 generáció után
-							// annyira megváltoznak az értékek, hogy az összes autó szimplán megáll.
-							mutationRate = UnityEngine.Random.Range(-0.2f, 0.2f);
+							#region Régi mutáció
+							//// -0.2 és 0.2 közötti értékkel növeli az eredetit a mutációkor.
+							//// Próbálgattam szorzással is, viszont akkor 10-15 generáció után
+							//// annyira megváltoznak az értékek, hogy az összes autó szimplán megáll.
+							//mutationRate = Random.Range(-0.2f, 0.2f);
+
+							//carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
+							//	savedCarNetwork[index, j, k, l] + mutationRate;
+							#endregion
 
 							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[index, j, k, l] + mutationRate;
+								savedCarNetwork[index, j, k, l] * Random.Range(mutationRateMinimum, mutationRateMaximum);
+
 						}
 						else
 						{
@@ -404,8 +429,8 @@ public class CarGameManager : MonoBehaviour
 				// Kiválasztja az egyik autót
 				// és párba állítja az egyik rosszabbik 50%ban lévő autóval.
 				// TODO: Normális zajt implementálni
-				int fatherIndex = UnityEngine.Random.Range(0, (int)(CarCount / 2));
-				int badCarIndex = indexFitness[UnityEngine.Random.Range((int)(CarCount / 2), CarCount)].Index;
+				int fatherIndex = Random.Range(0, (int)(CarCount / 2));
+				int badCarIndex = indexFitness[Random.Range((int)(CarCount / 2), CarCount)].Index;
 
 				// random párokat készít (nem lesz önmagával párban senki)
 				for (int i = 0; i < CarCount; i++)
@@ -415,7 +440,7 @@ public class CarGameManager : MonoBehaviour
 					int rnd = carPairs[i][0];
 					while (carPairs[i][0] == rnd)
 					{
-						rnd = indexFitness[UnityEngine.Random.Range(0, (int)(CarCount / 2))].Index;
+						rnd = indexFitness[Random.Range(0, (int)(CarCount / 2))].Index;
 					}
 					carPairs[i][1] = rnd;
 				}
@@ -436,6 +461,7 @@ public class CarGameManager : MonoBehaviour
 				// Autók respawnolása
 				for (int i = 0; i < CarCount; i++)
 				{
+					Cars[i].LastFitness = 0;
 					SpawnFromPool(transform.position, transform.rotation);
 				}
 
@@ -457,6 +483,7 @@ public class CarGameManager : MonoBehaviour
 		{
 			for (int i = 0; i < CarCount; i++)
 			{
+
 				if (Cars[i].Fitness >= 500.0)
 				{
 					Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();

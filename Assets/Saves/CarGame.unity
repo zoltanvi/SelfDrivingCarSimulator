@@ -307,11 +307,11 @@ MonoBehaviour:
     lineCount: 0
     pageCount: 0
     materialCount: 1
-  m_havePropertiesChanged: 0
+  m_havePropertiesChanged: 1
   m_isUsingLegacyAnimationComponent: 0
   m_isVolumetricText: 0
   m_spriteAnimator: {fileID: 0}
-  m_isInputParsingRequired: 0
+  m_isInputParsingRequired: 1
   m_inputSource: 0
   m_hasFontAssetChanged: 0
   m_subTextObjects:
@@ -531,10 +531,11 @@ MonoBehaviour:
   manualControl: 0
   checkingTimeLeft: 10
   carsAliveCount: 0
-  CarCount: 20
+  CarCount: 30
   NeuronPerLayerCount: 6
   HiddenLayerCount: 2
   CarsRayCount: 5
+  MutationRatePercent: 3
   Bias: 1
 --- !u!4 &1277089010
 Transform:
