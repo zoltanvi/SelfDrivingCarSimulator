@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 // Az autóhoz tartozó adatokat tárolja
@@ -28,15 +29,23 @@ public class CarGameManager : MonoBehaviour
 	[SerializeField] private GameObject carPreFab;
 	[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject myUI;
+	[SerializeField] private GraphMaker graphMaker;
+
 	[Header("Do you want to control a car?")]
 	public bool manualControl = false;
 
-	public const float timeOut = 10.0f;
-	public float checkingTimeLeft = timeOut;
+	private const float timeOut = 10.0f;
+	public float freezeTimeLeft = timeOut;
+	public const float globalTimeOut = 40.0f;
+	public float globalTimeLeft = globalTimeOut;
+
 	public int carsAliveCount;
 	float waitingTime = 0;
 	int bestCarIndex;
 	int[][] carPairs;
+	ArrayList avgFitness = new ArrayList();
+	ArrayList medianFitness = new ArrayList();
+	int generationCount = 0;
 
 	// Az autók neurális hálózataira való hivatkozás
 	private NeuralNetwork[] carNetworks;
@@ -61,7 +70,10 @@ public class CarGameManager : MonoBehaviour
 	[Range(1, 15)]
 	public int CarsRayCount = 5;
 	[Range(0, 50)]
-	public float MutationRatePercent = 2;
+	public float MutationRate = 5;
+	// Pl. Ha a mutáció ráta = 5%,
+	// akkor az eredeti érték minimum 95%-a, maximum 105%-a lehet a mutálódott érték.
+	private float mutationRatePercent;
 	public double Bias = 1.0;
 	#endregion
 
@@ -114,6 +126,8 @@ public class CarGameManager : MonoBehaviour
 			indexFitness[i] = new IndexFitness();
 
 		}
+
+		mutationRatePercent = MutationRate / 100;
 
 		// UI panel / script inicializálása
 		myUI = GameObject.Find("myUI");
@@ -203,7 +217,7 @@ public class CarGameManager : MonoBehaviour
 		// Új generáció létrehozása
 		CreateNewGeneration();
 
-		// Autók megfagyasztása, ha szükséges
+		// Autók megfagyasztása, amikor szükséges
 		FreezeSlowCars();
 
 	}
@@ -247,20 +261,10 @@ public class CarGameManager : MonoBehaviour
 	private int GetBestCarIndex()
 	{
 		int index = 0;
-		//double bestFitness = 0;
-		//for (int i = 0; i < CarCount; i++)
-		//{
-		//	if (bestFitness < Cars[i].Fitness && 
-		//		Cars[i].Transform.gameObject.GetComponent<CarController>().carStats.isAlive == true)
-		//	{
-		//		bestFitness = Cars[i].Fitness;
-		//		index = Cars[i].Index;
-		//	}
-		//}
 
 		SortCarsByFitness();
 
-		for (int i = CarCount-1; i >= 0 ; i--)
+		for (int i = CarCount - 1; i >= 0; i--)
 		{
 			if (Cars[indexFitness[i].Index].Transform.gameObject.GetComponent<CarController>().carStats.isAlive)
 			{
@@ -358,11 +362,10 @@ public class CarGameManager : MonoBehaviour
 	private void RecombineAndMutate()
 	{
 		int index;
-		// Pl. Ha a mutáció ráta = 5%,
-		// akkor az eredeti érték minimum 95%-a, maximum 105%-a lehet a mutálódott érték.
-		MutationRatePercent /= 100;
-		float mutationRateMinimum = (1 - MutationRatePercent);
-		float mutationRateMaximum = (1 + MutationRatePercent);
+		float mutation;
+		float mutationRateMinimum = (1 - mutationRatePercent);
+		float mutationRateMaximum = (1 + mutationRatePercent);
+
 
 		for (int i = 0; i < CarCount; i++)  // melyik autó
 		{
@@ -372,39 +375,35 @@ public class CarGameManager : MonoBehaviour
 				{
 					for (int l = 0; l < carNetworks[i].NeuronLayers[j].NeuronWeights[0].Length; l++) // melyik súlya
 					{
-						// 50% eséllyel örököl az egyik szülőtől.
-						// carPairs[i] a két szülő indexét tartalmazza
-						index = carPairs[i][Random.Range(0, 2)];
-
-						// 50% eséllyel mutálódik a súly
-						if (Random.Range(0, 2) == 0)
+						if (i == indexFitness[0].Index)
 						{
-							#region Régi mutáció
-							//// -0.2 és 0.2 közötti értékkel növeli az eredetit a mutációkor.
-							//// Próbálgattam szorzással is, viszont akkor 10-15 generáció után
-							//// annyira megváltoznak az értékek, hogy az összes autó szimplán megáll.
-							//mutationRate = Random.Range(-0.2f, 0.2f);
-
-							//carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-							//	savedCarNetwork[index, j, k, l] + mutationRate;
-							#endregion
-
 							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[index, j, k, l] * Random.Range(mutationRateMinimum, mutationRateMaximum);
-
+								savedCarNetwork[i, j, k, l];
 						}
 						else
 						{
-							// Nem történik mutáció, csak öröklődés az egyik szülőtől
-							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[index, j, k, l];
-						}
 
+							mutation = Random.Range(mutationRateMinimum, mutationRateMaximum);
+							// 50% eséllyel örököl az egyik szülőtől.
+							// carPairs[i] a két szülő indexét tartalmazza
+							index = carPairs[i][Random.Range(0, 2)];
+
+							// 50% eséllyel mutálódik
+							if (Random.Range(0, 2) == 0)
+							{
+								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
+								savedCarNetwork[index, j, k, l] * mutation;
+							}
+							else
+							{
+								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
+									savedCarNetwork[index, j, k, l];
+							}
+						}
 					}
 				}
 			}
 		}
-
 	}
 
 
@@ -420,6 +419,9 @@ public class CarGameManager : MonoBehaviour
 			waitingTime += Time.deltaTime;
 			if (waitingTime >= 0.5f)
 			{
+
+				CalculateAverageFitness();
+
 				// Elmenti az összes autó neurális hálóját
 				SaveNeuralNetworks();
 
@@ -432,9 +434,13 @@ public class CarGameManager : MonoBehaviour
 				int fatherIndex = Random.Range(0, (int)(CarCount / 2));
 				int badCarIndex = indexFitness[Random.Range((int)(CarCount / 2), CarCount)].Index;
 
-				// random párokat készít (nem lesz önmagával párban senki)
+				// Random párokat készít. 
+				// Egy autó nem lehet párja önmagának, KIVÉTEL a legjobb fitness-el rendelkező autó
+				// Mivel itt csak egy helyen lesz önmagával párban a legjobb, így ő teljes egészében továbbjut
+				// a következő generációba, változás nélkül.
 				for (int i = 0; i < CarCount; i++)
 				{
+
 					carPairs[i][0] = indexFitness[i / 2].Index;
 
 					int rnd = carPairs[i][0];
@@ -443,6 +449,7 @@ public class CarGameManager : MonoBehaviour
 						rnd = indexFitness[Random.Range(0, (int)(CarCount / 2))].Index;
 					}
 					carPairs[i][1] = rnd;
+
 				}
 				// Egy db a rosszabbik 50%ból származik!
 				carPairs[fatherIndex][1] = badCarIndex;
@@ -467,28 +474,34 @@ public class CarGameManager : MonoBehaviour
 
 				waitingTime = 0;
 				carsAliveCount = CarCount;
-				checkingTimeLeft = timeOut;
+				freezeTimeLeft = timeOut;
+				globalTimeLeft = globalTimeOut;
 			}
 		}
 	}
 
 
 
-	// Ellenőrzi az autókat, és lefagyasztja amelyik nem elég gyors,
-	// illetve ha elérte az 500-as fitness-t, egyenlőre akkor is lefagy.
+	// Ellenőrzi az autókat, és lefagyasztja amelyik nem elég gyors.
 	private void FreezeSlowCars()
 	{
-		checkingTimeLeft -= Time.deltaTime;
-		if (checkingTimeLeft <= 0)
+		// Az összes autónak ennyi idő alatt kell eljutnia valameddig, azután FREEZE
+		globalTimeLeft -= Time.deltaTime;
+		if (globalTimeLeft <= 0)
 		{
 			for (int i = 0; i < CarCount; i++)
 			{
+				Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
+				Cars[i].LastFitness = 0;
+			}
+			globalTimeLeft = globalTimeOut;
+		}
 
-				if (Cars[i].Fitness >= 500.0)
-				{
-					Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
-					Cars[i].LastFitness = 0;
-				}
+		freezeTimeLeft -= Time.deltaTime;
+		if (freezeTimeLeft <= 0)
+		{
+			for (int i = 0; i < CarCount; i++)
+			{
 
 				// Ha nem nőtt 10 másodperc alatt az autó fitness értéke
 				// legalább 10-zel, akkor lefagyasztja az autót
@@ -503,8 +516,53 @@ public class CarGameManager : MonoBehaviour
 				}
 
 			}
-			checkingTimeLeft = timeOut;
+			freezeTimeLeft = timeOut;
 		}
+	}
+
+	private void CalculateAverageFitness()
+	{
+
+		double avg = 0;
+		for (int i = 0; i < CarCount; i++)
+		{
+			avg += Cars[i].Fitness;
+		}
+		avg /= CarCount;
+
+		avgFitness.Add(avg);
+		graphMaker.AddDataPointInOrder(new Vector2(generationCount++, (int)avg ));
+		graphMaker.RedrawGraph();
+
+		double median = 0;
+
+		// Cars[] tömbben az autók
+		// indexFitness[] tömbben az autók indexei, fitness szerint sorbarendezve
+		// indexfitness[CarCount/2].Index = A sorbarendezett autók közül a középső indexe 
+		median = Cars[indexFitness[CarCount / 2].Index].Fitness;
+		medianFitness.Add(median);
+
+	}
+
+	public void SaveFitnessData()
+	{
+		// AVERAGE
+		GameLogger.WriteAvgFitnessData("NEW STATS\n\n");
+		foreach (double item in avgFitness)
+		{
+			GameLogger.WriteAvgFitnessData(item.ToString());
+		}
+		GameLogger.WriteAvgFitnessData("\n\n");
+
+
+		// MEDIAN
+		GameLogger.WriteMedianFitnessData("NEW STATS\n\n");
+		foreach (double item in medianFitness)
+		{
+			GameLogger.WriteMedianFitnessData(item.ToString());
+		}
+		GameLogger.WriteMedianFitnessData("\n\n");
+
 	}
 
 }
