@@ -29,7 +29,7 @@ public class CarGameManager : MonoBehaviour
 	[SerializeField] private GameObject carPreFab;
 	[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject myUI;
-	[SerializeField] private GraphMaker graphMaker;
+	//[SerializeField] private GraphMaker graphMaker;
 
 	[Header("Do you want to control a car?")]
 	public bool manualControl = false;
@@ -41,11 +41,12 @@ public class CarGameManager : MonoBehaviour
 
 	public int carsAliveCount;
 	float waitingTime = 0;
-	int bestCarIndex;
+	public int bestCarIndex;
 	int[][] carPairs;
-	ArrayList avgFitness = new ArrayList();
-	ArrayList medianFitness = new ArrayList();
-	int generationCount = 0;
+	public List<double> avgFitness = new List<double>();
+	public List<double> medianFitness = new List<double>();
+	
+	public int GenerationCount = 0;
 
 	// Az autók neurális hálózataira való hivatkozás
 	private NeuralNetwork[] carNetworks;
@@ -210,7 +211,6 @@ public class CarGameManager : MonoBehaviour
 		}
 
 		cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
-		myUIPrinter.SensorDistances = Cars[bestCarIndex].Distances;
 		myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
 
 
@@ -531,8 +531,9 @@ public class CarGameManager : MonoBehaviour
 		avg /= CarCount;
 
 		avgFitness.Add(avg);
-		graphMaker.AddDataPointInOrder(new Vector2(generationCount++, (int)avg ));
-		graphMaker.RedrawGraph();
+		//graphMaker.AddDataPointInOrder(new Vector2(GenerationCount++, (int)avg ));
+		//graphMaker.RedrawGraph();
+		GenerationCount++;
 
 		double median = 0;
 
