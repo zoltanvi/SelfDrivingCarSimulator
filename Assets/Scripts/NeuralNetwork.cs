@@ -1,16 +1,14 @@
 ﻿using UnityEngine;
-using System;
 
 public class NeuralNetwork : MonoBehaviour
 {
 
-	private int carIndex;
 	public NeuronLayer[] NeuronLayers { get; set; }
+
+	private int carIndex;
 	private int hiddenLayerCount;
-	// Neuronok szama retegenkent.
 	private int neuronCount;
 	private int inputCount;
-	private int transferCount;
 	private double[][] transferData;
 	private double[] carInputs;
 	private double bias;
@@ -27,49 +25,78 @@ public class NeuralNetwork : MonoBehaviour
 		bias = CarGameManager.Instance.Bias;
 		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
 		hiddenLayerCount = CarGameManager.Instance.HiddenLayerCount;
-		transferCount = CarGameManager.Instance.HiddenLayerCount + 1;
 		neuronCount = CarGameManager.Instance.NeuronPerLayerCount;
 		inputCount = CarGameManager.Instance.CarsRayCount + 1;
 
-		transferData = new double[transferCount][];
+		transferData = new double[hiddenLayerCount][];
 		for (int i = 0; i < transferData.Length; i++)
 		{
 			transferData[i] = new double[neuronCount];
 		}
 
-		carInputs = CarGameManager.Instance.Cars[carIndex].Inputs;
+		// hidden layers, +1 output layer
+		NeuronLayers = new NeuronLayer[hiddenLayerCount + 1];
 
-		NeuronLayers = new NeuronLayer[hiddenLayerCount + 2];
 
-
-		// Initialize the input layer and the hidden layers
-		NeuronLayers[0] = new NeuronLayer(neuronCount, inputCount, bias);
-		for (int i = 1; i < NeuronLayers.Length - 1; i++)
+		// Initialize the hidden layers.
+		// If zero hidden layer -> there is only the output layer
+		if (hiddenLayerCount == 0)
 		{
-			NeuronLayers[i] = new NeuronLayer(neuronCount, neuronCount, bias);
+			NeuronLayers[0] = new NeuronLayer(2, neuronCount, bias);
 		}
-		// Initialize the output layer
-		NeuronLayers[hiddenLayerCount + 1] = new NeuronLayer(2, neuronCount, bias);
-
+		// If one hidden layer -> first layer gets the input,
+		// second layer is the output layer.
+		else if (hiddenLayerCount == 1)
+		{
+			NeuronLayers[0] = new NeuronLayer(neuronCount, inputCount, bias);
+			NeuronLayers[1] = new NeuronLayer(2, neuronCount, bias);
+		}
+		// If two or more hidden layers -> first layer gets the input,
+		// the other ones get the output from the previous layer
+		// and the last layer is the output layer.
+		else if (hiddenLayerCount >= 2)
+		{
+			NeuronLayers[0] = new NeuronLayer(neuronCount, inputCount, bias);
+			for (int i = 1; i < NeuronLayers.Length - 1; i++)
+			{
+				NeuronLayers[i] = new NeuronLayer(neuronCount, neuronCount, bias);
+			}
+			NeuronLayers[NeuronLayers.Length - 1] = new NeuronLayer(2, neuronCount, bias);
+		}
 
 	}
 
 
 	void FixedUpdate()
 	{
+		// The inputs array contains the car's sensor datas and it's current speed.
 		carInputs = CarGameManager.Instance.Cars[carIndex].Inputs;
 
-		// Az input reteg az auto tavolsagadatait + sebesseget kapja meg
-		transferData[0] = NeuronLayers[0].CalculateLayer(carInputs);
-
-		// A tobbi reteg az elozo reteg adatait kapja meg
-		// TODO: közvetlenul is tovább lehet adni az adatokat
-		for (int i = 1; i < transferData.Length; i++)
+		// If zero hidden layer -> there is only the output layer
+		if (hiddenLayerCount == 0)
 		{
-			transferData[i] = NeuronLayers[i].CalculateLayer(transferData[i - 1]);
+			control = NeuronLayers[0].CalculateLayer(carInputs);
 		}
-		// Az output reteg az iranyitasra van kotve
-		control = NeuronLayers[NeuronLayers.Length - 1].CalculateLayer(transferData[transferData.Length - 1]);
+		// If one hidden layer -> first layer gets the input,
+		// second layer is the output layer.
+		else if (hiddenLayerCount == 1)
+		{
+			control = NeuronLayers[1].CalculateLayer(
+				NeuronLayers[0].CalculateLayer(carInputs));
+		}
+		// If two or more hidden layers -> first layer gets the input,
+		// the other ones get the output from the previous layer
+		// and the last layer is the output layer.
+		else if (hiddenLayerCount >= 2)
+		{
+			transferData[0] = NeuronLayers[0].CalculateLayer(carInputs);
+			for (int i = 1; i < transferData.Length; i++)
+			{
+				transferData[i] = NeuronLayers[i].CalculateLayer(transferData[i - 1]);
+			}
+			control = NeuronLayers[NeuronLayers.Length - 1].CalculateLayer(transferData[transferData.Length - 1]);
+		}
+
 
 		carController.steer = control[0];
 		carController.accelerate = control[1];

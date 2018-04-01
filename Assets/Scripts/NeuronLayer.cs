@@ -6,67 +6,69 @@ public class NeuronLayer
 
 	private static Random rand = new Random();
 	private int neuronCount;
-	private int weightCount;
+	private int inputCount;
 	private double bias;
 
+	private double weight;
+
 	/// <summary>
-	///  Egy réteg neuront hoz létre.
+	/// Creates a neuron layer.
 	/// </summary>
-	/// <param name="neuronPerLayer"> A neuronok száma rétegenként.</param>
-	/// <param name="layerInputCount"> A rétegre kötni kívánt inputok száma.</param>
-	/// <param name="biasValue"> A bias értéke.</param>
-	public NeuronLayer(int neuronPerLayer, int layerInputCount, double biasValue)
+	/// <param name="neuronCount"> The number of neurons in the layer.</param>
+	/// <param name="inputCount"> The number of inputs the neuron layer gets (without the bias).</param>
+	/// <param name="bias"> The bias value for the layer.</param>
+	public NeuronLayer(int neuronCount, int inputCount, double bias)
 	{
-		neuronCount = neuronPerLayer;
-		weightCount = layerInputCount;
-		bias = biasValue;
+		this.neuronCount = neuronCount;
+		this.inputCount = inputCount;
+		this.bias = bias;
 
 		NeuronWeights = new double[neuronCount][];
 		for (int i = 0; i < NeuronWeights.Length; i++)
 		{
-			// +1 input a bias!
-			NeuronWeights[i] = new double[weightCount + 1];
+			// +1 input is the bias
+			NeuronWeights[i] = new double[inputCount + 1];
 		}
+
 		InitWeights();
 	}
 
-
 	/// <summary>
-	/// Inicializálja a neuronok inputjainak súlyait random értékre.
-	/// A random érték -1.0 és 1.0 között van
+	/// Initializes the weights in the layer for all neurons to a random number
+	/// between -1 and 1.
 	/// </summary>
 	void InitWeights()
 	{
 		for (int i = 0; i < NeuronWeights.Length; i++)
 		{
-			for (int j = 0; j < NeuronWeights[0].Length; j++)
+			for (int j = 0; j < NeuronWeights[i].Length; j++)
 			{
-				int r = rand.Next(0, 2);
-				double tmp = rand.Next(0, 11);
-				tmp /= 10;
-				NeuronWeights[i][j] = r < 1 ? tmp : tmp * (-1);
+				// Get a random number between -1 and 1
+				NeuronWeights[i][j] = (double)(rand.Next(-10, 11)) / 10;
 			}
 		}
 	}
 
 
 	/// <summary>
-	/// Kiszámolja a réteg outputját.
+	/// Calculates the output of the neuron layer.
 	/// </summary>
-	/// <param name="inputs"> Az inputok tömbje.</param>
-	/// <returns> Az outputok tömbjével.</returns>
+	/// <param name="inputs"> An array which contains the output of the previous layer.</param>
+	/// <returns> Returns the output array of the neuron layer.</returns>
 	public double[] CalculateLayer(double[] inputs)
 	{
 		double[] layerOutput = new double[neuronCount];
 
+		// for each neuron -
 		for (int i = 0; i < neuronCount; i++)
 		{
 			double weightedSum = 0;
-			for (int j = 0; j < weightCount; j++)
+			// - calculate the output
+			for (int j = 0; j < inputCount; j++)
 			{
 				weightedSum += inputs[j] * NeuronWeights[i][j];
 			}
-			weightedSum += bias * NeuronWeights[i][weightCount];
+			weightedSum += bias * NeuronWeights[i][inputCount];
 
 			layerOutput[i] = Activate(weightedSum);
 		}
@@ -75,13 +77,13 @@ public class NeuronLayer
 
 
 	/// <summary>
-	/// Az aktivációs függvény, jelen esetben a tanh(x) fuggvény. (Hiperbolikus tangens)
-	/// A függveny értékkészlete (-1.0, 1.0)
+	/// The activation function which is tahn(x) for us now.
 	/// </summary>
-	/// <param name="x"> Mely ponton számítsa ki a függvényértéket.</param>
-	/// <returns> A kiszámított függvényértékkel.</returns>
+	/// <param name="x"> The function parameter.</param>
+	/// <returns>Returns the calculated function value which is between -1 and 1.</returns>
 	private double Activate(double x)
 	{
+		// tanh(x) function
 		return (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x));
 	}
 

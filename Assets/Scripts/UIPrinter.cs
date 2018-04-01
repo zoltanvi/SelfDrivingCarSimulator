@@ -16,6 +16,7 @@ public class UIPrinter : MonoBehaviour {
 	[SerializeField] private TextMeshProUGUI populationText;
 	[SerializeField] private TextMeshProUGUI averageDifferenceText;
 	[SerializeField] private TextMeshProUGUI medianDifferenceText;
+	[SerializeField] private TextMeshProUGUI aliveCountText;
 
 	private List<double> avgF;
 	private List<double> medF;
@@ -36,7 +37,8 @@ public class UIPrinter : MonoBehaviour {
 		averageText.text = string.Format("{0:0.00}", (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0);
 		medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
 		mutationRateText.text = string.Format("{0:0}%", CarGameManager.Instance.MutationRate);
-		populationText.text = string.Format("{0:0}", CarGameManager.Instance.CarCount); ;
+		populationText.text = string.Format("{0:0}", CarGameManager.Instance.CarCount);
+		aliveCountText.text = CarGameManager.Instance.carsAliveCount.ToString();
 
 		double prevAvg = (avgF.Count - 2 >= 0) ? avgF[avgF.Count - 2] : 0;
 		double currentAvg = (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0;
