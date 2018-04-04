@@ -45,7 +45,7 @@ public class CarGameManager : MonoBehaviour
 	int[][] carPairs;
 	public List<double> avgFitness = new List<double>();
 	public List<double> medianFitness = new List<double>();
-	
+
 	public int GenerationCount = 0;
 
 	// Az autók neurális hálózataira való hivatkozás
@@ -203,7 +203,7 @@ public class CarGameManager : MonoBehaviour
 		// az UI panelen a hozzá tartozó adatok fognak megjelenni.
 		if (!manualControl)
 		{
-			bestCarIndex = GetBestCarIndex();
+			bestCarIndex = GetBestLivingCarIndex();
 		}
 		else
 		{
@@ -257,8 +257,8 @@ public class CarGameManager : MonoBehaviour
 
 
 
-	// Visszaadja a legmagasabb fitnessel rendelkező autó indexét
-	private int GetBestCarIndex()
+	// Visszaadja a legmagasabb fitnessel rendelkező autó indexét, ami még életben van!
+	private int GetBestLivingCarIndex()
 	{
 		int index = 0;
 
@@ -274,6 +274,20 @@ public class CarGameManager : MonoBehaviour
 		return index;
 	}
 
+	private int GetBestCarIndex()
+	{
+		int bestIndex = 0;
+		double highestFitness = double.MinValue;
+		foreach (var item in indexFitness)
+		{
+			if (item.Fitness > highestFitness)
+			{
+				highestFitness = item.Fitness;
+				bestIndex = item.Index;
+			}
+		}
+		return bestIndex;
+	}
 
 
 	// Lefagyasztja az autót, majd logolja az autóhoz tartozó neurális háló súlyait + az autó fitnessét.
@@ -428,31 +442,38 @@ public class CarGameManager : MonoBehaviour
 				// Az autók rendezése fitness szerint
 				SortCarsByFitness();
 
+
+				#region Régi párválasztás
 				// Kiválasztja az egyik autót
 				// és párba állítja az egyik rosszabbik 50%ban lévő autóval.
-				// TODO: Normális zajt implementálni
-				int fatherIndex = Random.Range(0, (int)(CarCount / 2));
-				int badCarIndex = indexFitness[Random.Range((int)(CarCount / 2), CarCount)].Index;
 
-				// Random párokat készít. 
-				// Egy autó nem lehet párja önmagának, KIVÉTEL a legjobb fitness-el rendelkező autó
-				// Mivel itt csak egy helyen lesz önmagával párban a legjobb, így ő teljes egészében továbbjut
-				// a következő generációba, változás nélkül.
-				for (int i = 0; i < CarCount; i++)
-				{
+				//	int fatherIndex = Random.Range(0, (int)(CarCount / 2));
+				//	int badCarIndex = indexFitness[Random.Range((int)(CarCount / 2), CarCount)].Index;
 
-					carPairs[i][0] = indexFitness[i / 2].Index;
 
-					int rnd = carPairs[i][0];
-					while (carPairs[i][0] == rnd)
-					{
-						rnd = indexFitness[Random.Range(0, (int)(CarCount / 2))].Index;
-					}
-					carPairs[i][1] = rnd;
+				//// Random párokat készít. 
+				//// Egy autó nem lehet párja önmagának, KIVÉTEL a legjobb fitness-el rendelkező autó
+				//// Mivel itt csak egy helyen lesz önmagával párban a legjobb, így ő teljes egészében továbbjut
+				//// a következő generációba, változás nélkül.
+				//for (int i = 0; i < CarCount; i++)
+				//{
 
-				}
-				// Egy db a rosszabbik 50%ból származik!
-				carPairs[fatherIndex][1] = badCarIndex;
+				//	carPairs[i][0] = indexFitness[i / 2].Index;
+
+				//	int rnd = carPairs[i][0];
+				//	while (carPairs[i][0] == rnd)
+				//	{
+				//		rnd = indexFitness[Random.Range(0, (int)(CarCount / 2))].Index;
+				//	}
+				//	carPairs[i][1] = rnd;
+
+				//}
+				//// Egy db a rosszabbik 50%ból származik!
+				//carPairs[fatherIndex][1] = badCarIndex;
+				#endregion
+				
+
+				TournamentSelection();
 
 				#region kiíratás
 				//for (int i = 0; i < carPairs.Length; i++)
@@ -564,6 +585,91 @@ public class CarGameManager : MonoBehaviour
 		}
 		GameLogger.WriteMedianFitnessData("\n\n");
 
+	}
+
+	private void TournamentSelection() {
+		TournamentSelectionBase(0);
+		TournamentSelectionBase(1);
+	}
+
+	private void TournamentSelectionBase(int parentIndex)
+	{
+		int selectionPressure = 3;
+
+		// Holds the choosen cars indexes for the round
+		List<int> picked = new List<int>();
+
+		int paired = 0;
+
+		#region Full random az egyik szülő
+		// Az első szülő full random
+		//for (int i = 0; i < CarCount; i++)
+		//{
+		//	carPairs[i][0] = Random.Range(0, CarCount);
+		//}
+		#endregion
+
+
+		// amíg meg nincs meg az összes pár, új tournament
+		while (paired < CarCount)
+		{
+			#region Jelenlegi tournament inicializálása
+			List<int> tournament = new List<int>();
+			for (int i = 0; i < CarCount; i++)
+			{
+				tournament.Add(i);
+			}
+			#endregion
+
+			// amíg van elég versenyző a tournamenten belül (és még kell pár), versenyzők kiválasztása
+			while (tournament.Count >= selectionPressure && paired < CarCount)
+			{
+				// a kiválasztottak kiürítése (ha nem üres)
+				picked.Clear();
+
+				// amíg meg nincs mindegyik versenyző
+				while (picked.Count != selectionPressure)
+				{
+					int current = tournament[Random.Range(0, tournament.Count)];
+					if (!picked.Contains(current))
+					{
+						picked.Add(current);
+						tournament.Remove(current);
+					}
+				}
+				// párosítás
+				carPairs[paired][parentIndex] = GetTournamentBestIndex(picked);
+				paired++;
+			}
+		}
+
+		// Elvileg a Recombine-ban benne van, hogy a legjobb autó maradjon...
+		//carPairs[carPairs.Length][0] = GetBestCarIndex();
+		//carPairs[carPairs.Length][1] = GetBestCarIndex();
+
+	}
+
+	private int GetTournamentBestIndex(List<int> picked)
+	{
+		int bestIndex = int.MinValue;
+		double highestFitness = double.MinValue;
+		foreach (var thispicked in picked)
+		{
+			double currentFitness = 0;
+			foreach (var infi in indexFitness)
+			{
+				if (infi.Index == thispicked)
+				{
+					currentFitness = infi.Fitness;
+				}
+			}
+			if (currentFitness > highestFitness)
+			{
+				highestFitness = currentFitness;
+				bestIndex = thispicked;
+			}
+		}
+		return bestIndex;
 	}
 
 }
