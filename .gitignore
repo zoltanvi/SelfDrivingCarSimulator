@@ -39,3 +39,7 @@ sysinfo.txt
 
 
 # End of https://www.gitignore.io/api/unity
+
+/Assets/Resources/AverageFitness.txt
+/Assets/Resources/MedianFitness.txt
+/Assets/Resources/SavedNetworks.txt
