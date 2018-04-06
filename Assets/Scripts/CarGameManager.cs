@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 
 // Az autóhoz tartozó adatokat tárolja
@@ -274,6 +273,7 @@ public class CarGameManager : MonoBehaviour
 		return index;
 	}
 
+	// Visszaadja a legmagasabb fitnessel rendelkező autó indexét (nem számít hogy él-e)
 	private int GetBestCarIndex()
 	{
 		int bestIndex = 0;
@@ -429,7 +429,7 @@ public class CarGameManager : MonoBehaviour
 		if (carsAliveCount == 0)
 		{
 
-			// Egy kis várakozási idő, miután minden autó leállt (nem feltétlen kell)
+			// Egy kis várakozási idő, miután minden autó leállt (csak hogy ne villogjon annyira gyorsan)
 			waitingTime += Time.deltaTime;
 			if (waitingTime >= 0.5f)
 			{
@@ -552,8 +552,6 @@ public class CarGameManager : MonoBehaviour
 		avg /= CarCount;
 
 		avgFitness.Add(avg);
-		//graphMaker.AddDataPointInOrder(new Vector2(GenerationCount++, (int)avg ));
-		//graphMaker.RedrawGraph();
 		GenerationCount++;
 
 		double median = 0;
@@ -588,7 +586,7 @@ public class CarGameManager : MonoBehaviour
 	}
 
 	private void TournamentSelection() {
-		TournamentSelectionBase(0);
+		//TournamentSelectionBase(0);
 		TournamentSelectionBase(1);
 	}
 
@@ -596,17 +594,17 @@ public class CarGameManager : MonoBehaviour
 	{
 		int selectionPressure = 3;
 
-		// Holds the choosen cars indexes for the round
+		// Holds the choosen car indexes for the round
 		List<int> picked = new List<int>();
 
 		int paired = 0;
 
 		#region Full random az egyik szülő
 		// Az első szülő full random
-		//for (int i = 0; i < CarCount; i++)
-		//{
-		//	carPairs[i][0] = Random.Range(0, CarCount);
-		//}
+		for (int i = 0; i < CarCount; i++)
+		{
+			carPairs[i][0] = Random.Range(0, CarCount);
+		}
 		#endregion
 
 
@@ -643,7 +641,7 @@ public class CarGameManager : MonoBehaviour
 			}
 		}
 
-		// Elvileg a Recombine-ban benne van, hogy a legjobb autó maradjon...
+		// A Recombine-ban már benne van, hogy a legjobb autó maradjon
 		//carPairs[carPairs.Length][0] = GetBestCarIndex();
 		//carPairs[carPairs.Length][1] = GetBestCarIndex();
 
