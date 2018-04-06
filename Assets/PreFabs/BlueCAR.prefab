@@ -387,7 +387,7 @@ GameObject:
   - component: {fileID: 114033591220110584}
   - component: {fileID: 114606927322087156}
   m_Layer: 9
-  m_Name: CAR
+  m_Name: BlueCAR
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -742,7 +742,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
+  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -776,7 +776,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
+  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -810,7 +810,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: e8c081bfdcba035429f78524220cbf0e, type: 2}
+  - {fileID: 2100000, guid: 57de8f1de09917143bb496c0b988e47f, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -844,7 +844,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
+  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -878,7 +878,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
+  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -998,6 +998,10 @@ MonoBehaviour:
   waypointsRoot: {fileID: 1736990184806124, guid: 6f41cef01981f8549a2a33bfcec89a3e,
     type: 2}
   carCenterPoint: {fileID: 4097969882064458}
+  waypoints: []
+  prevPoint: {fileID: 0}
+  currentPoint: {fileID: 0}
+  nextPoint: {fileID: 0}
   absoluteFitness: 0
 --- !u!114 &114069088919800350
 MonoBehaviour:
@@ -1012,6 +1016,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   downForce: 150
   carStats:
+    index: 0
+    isAlive: 0
     turnAngle: 55
     maxTorque: 600
     spring: 10000
@@ -1028,7 +1034,7 @@ MonoBehaviour:
   - {fileID: 4266944939828808}
   - {fileID: 4418005467305298}
   - {fileID: 4777262355996256}
-  manualControl: 0
+  controlledByPlayer: 0
   steer: 0
   accelerate: 0
 --- !u!114 &114606927322087156
@@ -1055,7 +1061,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayOriginPoint: {fileID: 4837871962500276}
-  lineLength: 10
+  lineLength: 25
   rayLayerName: Environment
   fitnessMeter: {fileID: 114033591220110584}
   carRigidbody: {fileID: 54672947877242660}

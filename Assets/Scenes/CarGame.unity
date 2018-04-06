@@ -350,7 +350,7 @@ GameObject:
   - component: {fileID: 1277089010}
   - component: {fileID: 1277089009}
   m_Layer: 0
-  m_Name: CarGameManager
+  m_Name: GameManager
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -367,9 +367,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 47f737cb395a96f4f9aed83f3f4d582e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  carPreFab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21, type: 2}
+  blueCarPrefab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
+    type: 2}
+  redCarPrefab: {fileID: 1931166108372316, guid: 73c49525d14a3e94aa3324351e8231b2,
+    type: 2}
   cameraFollowCar: {fileID: 994807528}
   myUI: {fileID: 1592389584908998, guid: 05db685a0dd880544a123d45e947b668, type: 2}
+  blueBodyMat: {fileID: 2100000, guid: 57de8f1de09917143bb496c0b988e47f, type: 2}
+  transparentBlueBodyMat: {fileID: 2100000, guid: e8c081bfdcba035429f78524220cbf0e,
+    type: 2}
+  wheelMat: {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
+  transparentWheelMat: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   manualControl: 0
   freezeTimeLeft: 10
   globalTimeLeft: 40
@@ -378,10 +386,10 @@ MonoBehaviour:
   avgFitness: []
   medianFitness: []
   GenerationCount: 0
-  CarCount: 20
+  CarCount: 5
   NeuronPerLayerCount: 6
   HiddenLayerCount: 3
-  CarsRayCount: 5
+  CarsRayCount: 9
   MutationRate: 3
   Bias: 1
 --- !u!4 &1277089010

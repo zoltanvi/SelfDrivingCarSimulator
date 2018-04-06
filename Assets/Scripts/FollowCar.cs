@@ -9,12 +9,12 @@ public class FollowCar : MonoBehaviour
 	public Transform targetCar;
 
 	public Vector3 offset = new Vector3(0.62f, 5.83f, -7.5f);
+	private bool controlledByPlayer = false;
 
-	public void GetBehindYou()
+	void Start()
 	{
-		transform.position = targetCar.position + (targetCar.rotation * offset);
+		controlledByPlayer = GameManager.Instance.manualControl;
 	}
-
 
 	void FixedUpdate()
 	{
@@ -24,14 +24,22 @@ public class FollowCar : MonoBehaviour
 		Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, Time.deltaTime * movementSpeed);
 		transform.position = smoothedPosition;
 
-		//Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, targetCar.rotation, Time.deltaTime * rotationSpeed);
-		//transform.rotation = smoothedRotation;
-		//transform.LookAt(targetCar);
+		// Ha irányítjuk az egyik autót, akkor a kamera az autóra néz, nem fog annyira forogni
+		if (controlledByPlayer)
+		{
+			Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, targetCar.rotation, Time.deltaTime * rotationSpeed);
+			transform.rotation = smoothedRotation;
+			transform.LookAt(targetCar);
+		}
+		else
+		{
+			// Lágyabb kamera forgás, azonban zavaró ha akkor is így forog, amikor vezetjük az autót
+			Quaternion toRot = Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
+			Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
+			transform.rotation = curRot;
 
-		//Az auto forgasat koveti a kamera
-		Quaternion toRot = Quaternion.LookRotation(targetCar.position - transform.position, targetCar.up);
-		Quaternion curRot = Quaternion.Slerp(transform.rotation, toRot, Time.deltaTime * rotationSpeed);
-		transform.rotation = curRot;
+		}
+
 
 	}
 

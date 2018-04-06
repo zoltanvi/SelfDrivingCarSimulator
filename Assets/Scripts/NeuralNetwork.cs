@@ -22,11 +22,11 @@ public class NeuralNetwork : MonoBehaviour
 
 	void Start()
 	{
-		bias = CarGameManager.Instance.Bias;
+		bias = GameManager.Instance.Bias;
 		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
-		hiddenLayerCount = CarGameManager.Instance.HiddenLayerCount;
-		neuronCount = CarGameManager.Instance.NeuronPerLayerCount;
-		inputCount = CarGameManager.Instance.CarsRayCount + 1;
+		hiddenLayerCount = GameManager.Instance.HiddenLayerCount;
+		neuronCount = GameManager.Instance.NeuronPerLayerCount;
+		inputCount = GameManager.Instance.CarsRayCount + 1;
 
 		transferData = new double[hiddenLayerCount][];
 		for (int i = 0; i < transferData.Length; i++)
@@ -70,7 +70,7 @@ public class NeuralNetwork : MonoBehaviour
 	void FixedUpdate()
 	{
 		// The inputs array contains the car's sensor datas and it's current speed.
-		carInputs = CarGameManager.Instance.Cars[carIndex].Inputs;
+		carInputs = GameManager.Instance.Cars[carIndex].Inputs;
 
 		// If zero hidden layer -> there is only the output layer
 		if (hiddenLayerCount == 0)

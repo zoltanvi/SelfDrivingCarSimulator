@@ -19,11 +19,20 @@ public class FitnessMeter : MonoBehaviour
 	double savedFitness = 0;
 	// Az auto sorszama - tobb autot managel a CarGameController osztaly
 	private int carIndex;
+	private bool controlledByPlayer = false;
 
 	void Start()
 	{
-		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
-		CarGameManager.Instance.Cars[carIndex].Fitness = absoluteFitness;
+		if (!this.gameObject.GetComponent<CarController>().controlledByPlayer)
+		{
+			carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
+			GameManager.Instance.Cars[carIndex].Fitness = absoluteFitness;
+		}
+		else
+		{
+			controlledByPlayer = true;
+			GameManager.Instance.PlayerFitness = absoluteFitness;
+		}
 
 		waypoints = new Transform[waypointsRoot.transform.childCount];
 
@@ -135,7 +144,14 @@ public class FitnessMeter : MonoBehaviour
 		absoluteFitness = savedFitness + relativeFitness;
 
 		// Az auto fitness erteket atadja a CarGameManager-nek
-		CarGameManager.Instance.Cars[carIndex].Fitness = absoluteFitness;
+		if (!controlledByPlayer)
+		{
+			GameManager.Instance.Cars[carIndex].Fitness = absoluteFitness;
+		}
+		else
+		{
+			GameManager.Instance.PlayerFitness = absoluteFitness;
+		}
 	}
 
 }

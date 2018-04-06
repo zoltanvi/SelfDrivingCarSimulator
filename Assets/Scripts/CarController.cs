@@ -13,6 +13,7 @@ public class CarController : MonoBehaviour
 	[SerializeField] private Transform[] wheelMeshes = new Transform[4];
 	private string wallLayerName = "Environment";
 	private int carIndex;
+	public bool controlledByPlayer = false;
 
 	[HideInInspector] public double steer;
 	[HideInInspector] public double accelerate;
@@ -63,8 +64,8 @@ public class CarController : MonoBehaviour
 
 	void FixedUpdate()
 	{
-		// A 0 indexű autót vezetheti a player, ha be van pipálva a checkbox a GameManagerben
-		if (carIndex == 0 && CarGameManager.Instance.manualControl)
+		// Ha az autó játékos által van irányítva, akkor megkapja a vezérlést (billentyűzet)
+		if (controlledByPlayer)
 		{
 			// Kanyarodas (balra jobbra).
 			steer = Input.GetAxis("Horizontal");
@@ -115,7 +116,7 @@ public class CarController : MonoBehaviour
 	{
 		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
-			CarGameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
+			GameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
 		}
 	}
 
@@ -138,7 +139,7 @@ public class CarController : MonoBehaviour
 
 	public void Freeze()
 	{
-		CarGameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
+		GameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
 	}
 
 }

@@ -20,28 +20,34 @@ public class IndexFitness
 	public double Fitness { get; set; }
 }
 
-public class CarGameManager : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
 
-	public static CarGameManager Instance { get; private set; }
+	public static GameManager Instance { get; private set; }
 
-	[SerializeField] private GameObject carPreFab;
+	[SerializeField] private GameObject blueCarPrefab;
+	[SerializeField] private GameObject redCarPrefab;
 	[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject myUI;
-	//[SerializeField] private GraphMaker graphMaker;
 
-	[Header("Do you want to control a car?")]
+	[SerializeField] private Material blueBodyMat;
+	[SerializeField] private Material transparentBlueBodyMat;
+	[SerializeField] private Material wheelMat;
+	[SerializeField] private Material transparentWheelMat;
+
+	[Header("Do you want to drive a car?")]
 	public bool manualControl = false;
 
 	private const float timeOut = 10.0f;
+	private const float globalTimeOut = 40.0f;
+
 	public float freezeTimeLeft = timeOut;
-	public const float globalTimeOut = 40.0f;
 	public float globalTimeLeft = globalTimeOut;
 
 	public int carsAliveCount;
-	float waitingTime = 0;
+	private float waitingTime = 0;
 	public int bestCarIndex;
-	int[][] carPairs;
+	private int[][] carPairs;
 	public List<double> avgFitness = new List<double>();
 	public List<double> medianFitness = new List<double>();
 
@@ -61,20 +67,16 @@ public class CarGameManager : MonoBehaviour
 	[Space]
 	#region Neural network settings
 	[Header("Neural network settings")]
-	[Range(1, 100)]
-	public int CarCount = 20;
-	[Range(1, 20)]
-	public int NeuronPerLayerCount = 6;
-	[Range(0, 15)]
-	public int HiddenLayerCount = 2;
-	[Range(1, 15)]
-	public int CarsRayCount = 5;
-	[Range(0, 50)]
-	public float MutationRate = 5;
+	[Range(1, 100)] public int CarCount = 20;
+	[Range(1, 20)] public int NeuronPerLayerCount = 6;
+	[Range(0, 15)] public int HiddenLayerCount = 2;
+	[Range(1, 15)] public int CarsRayCount = 5;
+	[Range(0, 50)] public float MutationRate = 5;
+	public double Bias = 1.0;
+
 	// Pl. Ha a mutáció ráta = 5%,
 	// akkor az eredeti érték minimum 95%-a, maximum 105%-a lehet a mutálódott érték.
 	private float mutationRatePercent;
-	public double Bias = 1.0;
 	#endregion
 
 	private UIPrinter myUIPrinter;
@@ -86,6 +88,11 @@ public class CarGameManager : MonoBehaviour
 	private IndexFitness[] indexFitness;
 	// Az autók újra felhasználhatók, ezért egy poolban inicializálódnak
 	private Queue<GameObject> pool;
+
+	// saját autó
+	private GameObject playerCar;
+	public double PlayerFitness { get; set; }
+	private bool isPlayerAlive = false;
 
 	#region Singleton
 	private void Awake()
@@ -133,6 +140,27 @@ public class CarGameManager : MonoBehaviour
 		myUI = GameObject.Find("myUI");
 		myUIPrinter = myUI.GetComponent<UIPrinter>();
 
+		// Kicseréli a kék autó materialját áltátszóra / nem átlátszóra attól függően, hogy akarunk-e játszani
+
+		if (!manualControl)
+		{
+			blueCarPrefab.transform.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = blueBodyMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+		}
+		else
+		{
+			blueCarPrefab.transform.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = transparentBlueBodyMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+		}
+
+
+
 
 		// Az autókat egy pool-ban tárolja, így újra fel lehet használni azokat
 		pool = new Queue<GameObject>();
@@ -140,7 +168,7 @@ public class CarGameManager : MonoBehaviour
 		// Az autók inicializálása. Ezek még nem aktív autók!
 		for (int i = 0; i < CarCount; i++)
 		{
-			GameObject obj = Instantiate(carPreFab, transform.position, transform.rotation);
+			GameObject obj = Instantiate(blueCarPrefab, transform.position, transform.rotation);
 			obj.GetComponent<CarController>().carStats.index = i;
 
 			obj.SetActive(false);
@@ -148,6 +176,18 @@ public class CarGameManager : MonoBehaviour
 
 			Cars[i].Transform = obj.transform;
 			Cars[i].Transform.name = "Car " + (i + 1);
+		}
+
+		if (manualControl)
+		{
+
+			playerCar = Instantiate(redCarPrefab, transform.position, transform.rotation);
+			playerCar.GetComponent<CarController>().controlledByPlayer = true;
+			playerCar.SetActive(false);
+			playerCar.GetComponent<CarController>().carStats.index = -1;
+
+			SpawnPlayerCar(transform.position, transform.rotation);
+
 		}
 
 		// A kamera kezdetben a legelső autót követi
@@ -192,25 +232,45 @@ public class CarGameManager : MonoBehaviour
 		return objectToSpawn;
 	}
 
+	// A player irányította autó spawnolása a kezdőpozícióba.
+	// Az autók pozíció adatait stb. visszaállítja defaultra.
+	public GameObject SpawnPlayerCar(Vector3 position, Quaternion rotation)
+	{
+		playerCar.GetComponent<CarController>().carStats.isAlive = true;
+		Rigidbody objectRigidbody = playerCar.GetComponent<Rigidbody>();
+		objectRigidbody.isKinematic = false;
+		objectRigidbody.velocity = new Vector3(0, 0, 0);
+		objectRigidbody.angularVelocity = new Vector3(0, 0, 0);
+		playerCar.SetActive(true);
+		playerCar.transform.position = position;
+		playerCar.transform.rotation = rotation;
+		isPlayerAlive = true;
+		// Ha már volt első spawnolás, akkor az autó fitness értékeinek visszaállítása.
+		// (Errort dobna ha első spawnoláskor elérné ezt a kódot!)
+		if (!firstStart)
+		{
+			playerCar.GetComponent<FitnessMeter>().Reset();
+		}
+		return playerCar;
+	}
 
 
-	void Update()
+	void FixedUpdate()
 	{
 		// Ha nem akar vezetni a player egy autót, akkor
 		// lekéri a legmagasabb fitnessel rendelkező autó fitnessét
-		// és a kamera ezt az autót fogja követni,
-		// az UI panelen a hozzá tartozó adatok fognak megjelenni.
+		// és a kamera ezt az autót fogja követni.
 		if (!manualControl)
 		{
 			bestCarIndex = GetBestLivingCarIndex();
+			cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
+			myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
 		}
 		else
 		{
-			bestCarIndex = 0;
+			cameraFollowCar.targetCar = playerCar.transform;
+			myUIPrinter.FitnessValue = PlayerFitness;
 		}
-
-		cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
-		myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
 
 
 		// Új generáció létrehozása
@@ -220,7 +280,6 @@ public class CarGameManager : MonoBehaviour
 		FreezeSlowCars();
 
 	}
-
 
 
 	// Elmenti a neurális háló adatait a savedCarNetwork tömbbe
@@ -255,7 +314,6 @@ public class CarGameManager : MonoBehaviour
 	}
 
 
-
 	// Visszaadja a legmagasabb fitnessel rendelkező autó indexét, ami még életben van!
 	private int GetBestLivingCarIndex()
 	{
@@ -272,6 +330,7 @@ public class CarGameManager : MonoBehaviour
 		}
 		return index;
 	}
+
 
 	// Visszaadja a legmagasabb fitnessel rendelkező autó indexét (nem számít hogy él-e)
 	private int GetBestCarIndex()
@@ -293,45 +352,47 @@ public class CarGameManager : MonoBehaviour
 	// Lefagyasztja az autót, majd logolja az autóhoz tartozó neurális háló súlyait + az autó fitnessét.
 	public void FreezeCar(Rigidbody carRigidbody, int carIndex, Transform carTransform, ref bool isAlive)
 	{
+
 		if (isAlive)
 		{
 			carRigidbody.isKinematic = true;
-
-
-			// Debug.Log(carTransform.name + " crashed!");
-
 			isAlive = false;
-			carsAliveCount--;
-			NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
 
-
-			#region Súlyok és fitness értékek fájlba írása
-			string carNNWeights = carIndex + ". car:\n";
-			for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
+			if (carIndex != -1)
 			{
-				carNNWeights += (i + 1) + ". layer: \n";
-				for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
+				carsAliveCount--;
+				NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
+
+				#region Súlyok és fitness értékek fájlba írása
+				string carNNWeights = carIndex + ". car:\n";
+				for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
 				{
-					for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
+					carNNWeights += (i + 1) + ". layer: \n";
+					for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
 					{
-						string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
-						carNNWeights += tmp + "\t";
+						for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
+						{
+							string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
+							carNNWeights += tmp + "\t";
+						}
+						carNNWeights += "\n";
 					}
 					carNNWeights += "\n";
 				}
-				carNNWeights += "\n";
+
+
+				GameLogger.WriteData(carNNWeights);
+				string dataText = "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
+				GameLogger.WriteData(dataText);
+				#endregion
 			}
-
-
-			GameLogger.WriteData(carNNWeights);
-			string dataText = "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
-			GameLogger.WriteData(dataText);
-			#endregion
-
+			else
+			{
+				isPlayerAlive = false;
+			}
 
 		}
 	}
-
 
 
 	// Rendezi az autókat az indexFitness[] tömbben fitness érték szerint
@@ -371,8 +432,7 @@ public class CarGameManager : MonoBehaviour
 	}
 
 
-
-	// Egyenlőre egyszerre történik a rekombináció és a mutáció
+	// A rekombináció és a mutáció egyszerre történik ( performance miatt )
 	private void RecombineAndMutate()
 	{
 		int index;
@@ -421,12 +481,11 @@ public class CarGameManager : MonoBehaviour
 	}
 
 
-
 	// Egy új generáció spawnolását végzi
 	private void CreateNewGeneration()
 	{
 		// Ha nincs már működő autó, akkor megtörténhet az új spawn
-		if (carsAliveCount == 0)
+		if (carsAliveCount <= 0 && isPlayerAlive == false)
 		{
 
 			// Egy kis várakozási idő, miután minden autó leállt (csak hogy ne villogjon annyira gyorsan)
@@ -471,7 +530,6 @@ public class CarGameManager : MonoBehaviour
 				//// Egy db a rosszabbik 50%ból származik!
 				//carPairs[fatherIndex][1] = badCarIndex;
 				#endregion
-				
 
 				TournamentSelection();
 
@@ -493,6 +551,12 @@ public class CarGameManager : MonoBehaviour
 					SpawnFromPool(transform.position, transform.rotation);
 				}
 
+				if (manualControl)
+				{
+					SpawnPlayerCar(transform.position, transform.rotation);
+				}
+
+
 				waitingTime = 0;
 				carsAliveCount = CarCount;
 				freezeTimeLeft = timeOut;
@@ -500,7 +564,6 @@ public class CarGameManager : MonoBehaviour
 			}
 		}
 	}
-
 
 
 	// Ellenőrzi az autókat, és lefagyasztja amelyik nem elég gyors.
@@ -515,6 +578,11 @@ public class CarGameManager : MonoBehaviour
 				Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
 				Cars[i].LastFitness = 0;
 			}
+			if (manualControl)
+			{
+				playerCar.transform.gameObject.GetComponent<CarController>().Freeze();
+			}
+
 			globalTimeLeft = globalTimeOut;
 		}
 
@@ -585,7 +653,8 @@ public class CarGameManager : MonoBehaviour
 
 	}
 
-	private void TournamentSelection() {
+	private void TournamentSelection()
+	{
 		//TournamentSelectionBase(0);
 		TournamentSelectionBase(1);
 	}

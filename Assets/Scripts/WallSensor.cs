@@ -5,8 +5,8 @@ public class WallSensor : MonoBehaviour
 	// Az autohoz tartozo erzekelok kezdopontja
 	[SerializeField] private Transform rayOriginPoint;
 	// Az erzekelo sugarak hossza
-	[Range(0f, 10f)]
-	[SerializeField] private float lineLength = 5f;
+	[Range(0f, 50f)]
+	[SerializeField] private float lineLength = 25f;
 	// Az autohoz tartozo erzekelok darabszama
 
 	private int rayCount;
@@ -15,6 +15,7 @@ public class WallSensor : MonoBehaviour
 	[SerializeField] private FitnessMeter fitnessMeter;
 	[SerializeField] private Rigidbody carRigidbody;
 	[SerializeField] private CarController carController;
+	private bool controlledByPlayer = false;
 
 	// Az UI panelen megjeleno szoveg itt lesz formazva
 	private string rawSensorText = "";
@@ -32,7 +33,7 @@ public class WallSensor : MonoBehaviour
 
 	void Start()
 	{
-		rayCount = CarGameManager.Instance.CarsRayCount;
+		rayCount = GameManager.Instance.CarsRayCount;
 		// Beallitja az auto sorszamat
 		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
 
@@ -43,6 +44,11 @@ public class WallSensor : MonoBehaviour
 		rayHolders = new GameObject[rayCount];
 		// Inicializalja az erzekeloket reprezentalo vonalakat
 		InitializeLines();
+
+		if (this.gameObject.GetComponent<CarController>().controlledByPlayer)
+		{
+			controlledByPlayer = true;
+		}
 	}
 
 
@@ -74,9 +80,13 @@ public class WallSensor : MonoBehaviour
 		carNeuronInputs[carNeuronInputs.Length - 1] = carRigidbody.velocity.magnitude;
 		//Debug.Log(this.transform.name + " speed: " + carNeuronInputs[carNeuronInputs.Length - 1]);
 
-		// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
-		CarGameManager.Instance.Cars[carIndex].Inputs = carNeuronInputs;
-		CarGameManager.Instance.Cars[carIndex].Distances = rawSensorText;
+		if (!controlledByPlayer)
+		{
+			// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
+			GameManager.Instance.Cars[carIndex].Inputs = carNeuronInputs;
+			GameManager.Instance.Cars[carIndex].Distances = rawSensorText;
+		}
+		
 	}
 
 	// Letrehozza az erzekelo sugarakat.
@@ -146,8 +156,8 @@ public class WallSensor : MonoBehaviour
 			rayHolders[i].GetComponent<LineRenderer>().endWidth = 0.08f;
 			rayHolders[i].GetComponent<LineRenderer>().useWorldSpace = false;
 			rayHolders[i].GetComponent<LineRenderer>().material = lineMat;
-			rayHolders[i].GetComponent<LineRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.7f);
-			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(1.0f, 0.705f, 0.0f, 0.4f);
+			rayHolders[i].GetComponent<LineRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.06f);
+			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(1.0f, 0.705f, 0.0f, 0.06f);
 
 		}
 	}

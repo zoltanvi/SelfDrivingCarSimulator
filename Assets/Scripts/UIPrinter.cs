@@ -3,7 +3,8 @@ using TMPro;
 using System.Collections.Generic;
 
 
-public class UIPrinter : MonoBehaviour {
+public class UIPrinter : MonoBehaviour
+{
 
 	[SerializeField] private TextMeshProUGUI remainingTimeText;
 	[SerializeField] private TextMeshProUGUI freezeTimeText;
@@ -24,21 +25,36 @@ public class UIPrinter : MonoBehaviour {
 	private Color red = new Color(1f, 0f, 0f, 1f);
 
 	public double FitnessValue { get; set; }
+	private bool controlledByPlayer = false;
 
-	void Update () 
+	void Start()
 	{
-		avgF = CarGameManager.Instance.avgFitness;
-		medF = CarGameManager.Instance.medianFitness;
-		remainingTimeText.text = string.Format("{0:0.0} sec", CarGameManager.Instance.globalTimeLeft);
-		freezeTimeText.text = string.Format("{0:0.0} sec", CarGameManager.Instance.freezeTimeLeft);
-		generationText.text = string.Format("{0:0}", CarGameManager.Instance.GenerationCount);
+		controlledByPlayer = GameManager.Instance.manualControl;
+	}
+	void Update()
+	{
+		avgF = GameManager.Instance.avgFitness;
+		medF = GameManager.Instance.medianFitness;
+		remainingTimeText.text = string.Format("{0:0.0} sec", GameManager.Instance.globalTimeLeft);
+		freezeTimeText.text = string.Format("{0:0.0} sec", GameManager.Instance.freezeTimeLeft);
+		generationText.text = string.Format("{0:0}", GameManager.Instance.GenerationCount);
 		fitnessText.text = string.Format("{0:0.00}", FitnessValue);
-		creatureIDText.text = string.Format("#{0:0}", CarGameManager.Instance.bestCarIndex);
+
+		if (controlledByPlayer)
+		{
+			creatureIDText.text = "PLAYER";
+		}
+		else
+		{
+			creatureIDText.text = string.Format("#{0:0}", GameManager.Instance.bestCarIndex);
+		}
+
+
 		averageText.text = string.Format("{0:0.00}", (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0);
 		medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
-		mutationRateText.text = string.Format("{0:0}%", CarGameManager.Instance.MutationRate);
-		populationText.text = string.Format("{0:0}", CarGameManager.Instance.CarCount);
-		aliveCountText.text = CarGameManager.Instance.carsAliveCount.ToString();
+		mutationRateText.text = string.Format("{0:0}%", GameManager.Instance.MutationRate);
+		populationText.text = string.Format("{0:0}", GameManager.Instance.CarCount);
+		aliveCountText.text = GameManager.Instance.carsAliveCount.ToString();
 
 		double prevAvg = (avgF.Count - 2 >= 0) ? avgF[avgF.Count - 2] : 0;
 		double currentAvg = (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0;
@@ -70,5 +86,5 @@ public class UIPrinter : MonoBehaviour {
 		}
 
 	}
-	
+
 }
