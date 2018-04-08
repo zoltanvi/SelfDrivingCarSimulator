@@ -42,7 +42,7 @@ public class NeuralNetwork : MonoBehaviour
 		// If zero hidden layer -> there is only the output layer
 		if (hiddenLayerCount == 0)
 		{
-			NeuronLayers[0] = new NeuronLayer(2, neuronCount, bias);
+			NeuronLayers[0] = new NeuronLayer(2, inputCount, bias);
 		}
 		// If one hidden layer -> first layer gets the input,
 		// second layer is the output layer.

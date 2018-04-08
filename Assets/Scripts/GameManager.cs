@@ -1,5 +1,8 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
+using System.Globalization;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.IO;
 
 // Az autóhoz tartozó adatokat tárolja
 public class Car
@@ -25,40 +28,47 @@ public class GameManager : MonoBehaviour
 
 	public static GameManager Instance { get; private set; }
 
+	[Header("PreFabs... nothing to see here")]
 	[SerializeField] private GameObject blueCarPrefab;
 	[SerializeField] private GameObject redCarPrefab;
-	[SerializeField] private FollowCar cameraFollowCar;
-	[SerializeField] private GameObject myUI;
+	[SerializeField] private GameObject blueCarMeshes;
 
+	[Header("Materials")]
 	[SerializeField] private Material blueBodyMat;
 	[SerializeField] private Material transparentBlueBodyMat;
 	[SerializeField] private Material wheelMat;
 	[SerializeField] private Material transparentWheelMat;
+	[Space(20)]
+	[SerializeField] private FollowCar cameraFollowCar;
+	[SerializeField] private GameObject myUI;
 
 	[Header("Do you want to drive a car?")]
 	public bool manualControl = false;
+	[Header("Log network data?")]
+	public bool logNetworkData = false;
 
 	private const float timeOut = 10.0f;
 	private const float globalTimeOut = 40.0f;
 
-	public float freezeTimeLeft = timeOut;
-	public float globalTimeLeft = globalTimeOut;
+	[HideInInspector] public float freezeTimeLeft = timeOut;
+	[HideInInspector] public float globalTimeLeft = globalTimeOut;
 
-	public int carsAliveCount;
+	[HideInInspector] public int carsAliveCount;
 	private float waitingTime = 0;
-	public int bestCarIndex;
+	[HideInInspector] public int bestCarIndex;
 	private int[][] carPairs;
-	public List<double> avgFitness = new List<double>();
-	public List<double> medianFitness = new List<double>();
+	[HideInInspector] public List<double> avgFitness = new List<double>();
+	[HideInInspector] public List<double> medianFitness = new List<double>();
 
-	public int GenerationCount = 0;
+	[HideInInspector] public int GenerationCount = 0;
 
 	// Az autók neurális hálózataira való hivatkozás
 	private NeuralNetwork[] carNetworks;
 
 	// 4D tömbben tárolja az összes autó neurális hálójának értékeit,
 	// mert rekombinációkor az eredeti értékekkel kell dolgozni.
-	private double[,,,] savedCarNetwork;
+	//private double[,,,] savedCarNetwork;
+	private double[][][][] savedCarNetwork;
 
 
 	// Jelzi, hogy első kör-e (később valószínűleg egy számlálóra fogom cserélni)
@@ -71,7 +81,7 @@ public class GameManager : MonoBehaviour
 	[Range(1, 20)] public int NeuronPerLayerCount = 6;
 	[Range(0, 15)] public int HiddenLayerCount = 2;
 	[Range(1, 15)] public int CarsRayCount = 5;
-	[Range(0, 50)] public float MutationRate = 5;
+	[Range(0, 50)] public float MutationRate = 3;
 	public double Bias = 1.0;
 
 	// Pl. Ha a mutáció ráta = 5%,
@@ -111,6 +121,7 @@ public class GameManager : MonoBehaviour
 
 	void Start()
 	{
+
 		carNetworks = new NeuralNetwork[CarCount];
 		carsAliveCount = CarCount;
 
@@ -144,19 +155,21 @@ public class GameManager : MonoBehaviour
 
 		if (!manualControl)
 		{
-			blueCarPrefab.transform.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = blueBodyMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			Transform blueCarWheels = blueCarMeshes.transform.GetChild(1);
+			blueCarMeshes.transform.GetChild(0).GetComponent<MeshRenderer>().material = blueBodyMat;
+			blueCarWheels.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			blueCarWheels.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			blueCarWheels.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			blueCarWheels.GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
 		}
 		else
 		{
-			blueCarPrefab.transform.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = transparentBlueBodyMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
-			blueCarPrefab.transform.GetChild(1).GetChild(1).GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			Transform blueCarWheels = blueCarMeshes.transform.GetChild(1);
+			blueCarMeshes.transform.GetChild(0).GetComponent<MeshRenderer>().material = transparentBlueBodyMat;
+			blueCarWheels.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			blueCarWheels.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			blueCarWheels.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
+			blueCarWheels.GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = transparentWheelMat;
 		}
 
 
@@ -205,6 +218,66 @@ public class GameManager : MonoBehaviour
 
 	}
 
+	public void Save()
+	{
+		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
+		{
+			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
+			{
+				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
+				{
+					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
+					{
+						savedCarNetwork[i][j][k][l] = 55;
+					}
+				}
+			}
+		}
+
+
+		FileStream file;
+		using (file = File.Create(Application.persistentDataPath + "/NeuralNetworks.dat"))
+		{
+			BinaryFormatter bf = new BinaryFormatter();
+			bf.Serialize(file, savedCarNetwork);
+		}
+
+		Debug.Log("Saved file: " + Application.persistentDataPath);
+	}
+
+	public void Load()
+	{
+		if (File.Exists(Application.persistentDataPath + "/NeuralNetworks.dat"))
+		{
+			FileStream file;
+			using (file = File.Open(Application.persistentDataPath + "/NeuralNetworks.dat", FileMode.Open))
+			{
+				BinaryFormatter bf = new BinaryFormatter();
+				savedCarNetwork = (double[][][][])bf.Deserialize(file);
+				bf.Serialize(file, savedCarNetwork);
+			}
+
+			Debug.Log("File loaded from: " + Application.persistentDataPath + "/NeuralNetworks.dat");
+
+			for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
+			{
+				for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
+				{
+					for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
+					{
+						for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
+						{
+							Debug.Log(savedCarNetwork[i][j][k][l]);
+						}
+					}
+				}
+			}
+
+
+
+		}
+		
+	}
 
 
 	// Az inicializált autók spawnolása a kezdőpozícióba.
@@ -286,28 +359,56 @@ public class GameManager : MonoBehaviour
 	private void SaveNeuralNetworks()
 	{
 
+		if (GenerationCount <= 1)
+		{
+			InitSavedCarNetwork();
+		}
+
+
+		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
+		{
+			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
+			{
+				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
+				{
+					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
+					{
+						savedCarNetwork[i][j][k][l] = carNetworks[i].NeuronLayers[j].NeuronWeights[k][l];
+					}
+				}
+			}
+		}
+
+	}
+
+
+	private void InitSavedCarNetwork()
+	{
 		for (int i = 0; i < CarCount; i++)
 		{
 			carNetworks[i] = Cars[i].Transform.gameObject.GetComponent<NeuralNetwork>();
 		}
 
-		savedCarNetwork = new double[
-			CarCount,
-			carNetworks[0].NeuronLayers.Length,
-			carNetworks[0].NeuronLayers[0].NeuronWeights.Length,
-			carNetworks[0].NeuronLayers[0].NeuronWeights[0].Length];
+		savedCarNetwork = new double[CarCount][][][];
 
-
-		for (int i = 0; i < CarCount; i++)  // melyik autó
+		for (int i = 0; i < savedCarNetwork.Length; i++)
 		{
-			for (int j = 0; j < carNetworks[i].NeuronLayers.Length; j++) // melyik neuronréteg
+			savedCarNetwork[i] = new double[carNetworks[i].NeuronLayers.Length][][];
+		}
+		for (int i = 0; i < savedCarNetwork.Length; i++)
+		{
+			for (int j = 0; j < savedCarNetwork[i].Length; j++)
 			{
-				for (int k = 0; k < carNetworks[i].NeuronLayers[j].NeuronWeights.Length; k++) // melyik neuron
+				savedCarNetwork[i][j] = new double[carNetworks[i].NeuronLayers[j].NeuronWeights.Length][];
+			}
+		}
+		for (int i = 0; i < savedCarNetwork.Length; i++)
+		{
+			for (int j = 0; j < savedCarNetwork[i].Length; j++)
+			{
+				for (int k = 0; k < savedCarNetwork[i][j].Length; k++)
 				{
-					for (int l = 0; l < carNetworks[i].NeuronLayers[j].NeuronWeights[0].Length; l++) // melyik súlya
-					{
-						savedCarNetwork[i, j, k, l] = carNetworks[i].NeuronLayers[j].NeuronWeights[k][l];
-					}
+					savedCarNetwork[i][j][k] = new double[carNetworks[i].NeuronLayers[j].NeuronWeights[k].Length];
 				}
 			}
 		}
@@ -361,30 +462,35 @@ public class GameManager : MonoBehaviour
 			if (carIndex != -1)
 			{
 				carsAliveCount--;
-				NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
 
-				#region Súlyok és fitness értékek fájlba írása
-				string carNNWeights = carIndex + ". car:\n";
-				for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
+				if (logNetworkData)
 				{
-					carNNWeights += (i + 1) + ". layer: \n";
-					for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
+					NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
+
+					#region Súlyok és fitness értékek fájlba írása
+					string carNNWeights = carIndex + ". car:\n";
+					for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
 					{
-						for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
+						carNNWeights += (i + 1) + ". layer: \n";
+						for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
 						{
-							string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
-							carNNWeights += tmp + "\t";
+							for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
+							{
+								string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
+								carNNWeights += tmp + "\t";
+							}
+							carNNWeights += "\n";
 						}
 						carNNWeights += "\n";
 					}
-					carNNWeights += "\n";
+
+
+					GameLogger.WriteData(carNNWeights);
+					string dataText = "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
+					GameLogger.WriteData(dataText);
+					#endregion
 				}
 
-
-				GameLogger.WriteData(carNNWeights);
-				string dataText = "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
-				GameLogger.WriteData(dataText);
-				#endregion
 			}
 			else
 			{
@@ -441,18 +547,18 @@ public class GameManager : MonoBehaviour
 		float mutationRateMaximum = (1 + mutationRatePercent);
 
 
-		for (int i = 0; i < CarCount; i++)  // melyik autó
+		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
 		{
-			for (int j = 0; j < carNetworks[i].NeuronLayers.Length; j++) // melyik neuronréteg
+			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
 			{
-				for (int k = 0; k < carNetworks[i].NeuronLayers[j].NeuronWeights.Length; k++) // melyik neuronja
+				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
 				{
-					for (int l = 0; l < carNetworks[i].NeuronLayers[j].NeuronWeights[0].Length; l++) // melyik súlya
+					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
 					{
 						if (i == indexFitness[0].Index)
 						{
 							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[i, j, k, l];
+								savedCarNetwork[i][j][k][l];
 						}
 						else
 						{
@@ -466,12 +572,12 @@ public class GameManager : MonoBehaviour
 							if (Random.Range(0, 2) == 0)
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[index, j, k, l] * mutation;
+								savedCarNetwork[index][j][k][l] * mutation;
 							}
 							else
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-									savedCarNetwork[index, j, k, l];
+									savedCarNetwork[index][j][k][l];
 							}
 						}
 					}
@@ -500,36 +606,6 @@ public class GameManager : MonoBehaviour
 
 				// Az autók rendezése fitness szerint
 				SortCarsByFitness();
-
-
-				#region Régi párválasztás
-				// Kiválasztja az egyik autót
-				// és párba állítja az egyik rosszabbik 50%ban lévő autóval.
-
-				//	int fatherIndex = Random.Range(0, (int)(CarCount / 2));
-				//	int badCarIndex = indexFitness[Random.Range((int)(CarCount / 2), CarCount)].Index;
-
-
-				//// Random párokat készít. 
-				//// Egy autó nem lehet párja önmagának, KIVÉTEL a legjobb fitness-el rendelkező autó
-				//// Mivel itt csak egy helyen lesz önmagával párban a legjobb, így ő teljes egészében továbbjut
-				//// a következő generációba, változás nélkül.
-				//for (int i = 0; i < CarCount; i++)
-				//{
-
-				//	carPairs[i][0] = indexFitness[i / 2].Index;
-
-				//	int rnd = carPairs[i][0];
-				//	while (carPairs[i][0] == rnd)
-				//	{
-				//		rnd = indexFitness[Random.Range(0, (int)(CarCount / 2))].Index;
-				//	}
-				//	carPairs[i][1] = rnd;
-
-				//}
-				//// Egy db a rosszabbik 50%ból származik!
-				//carPairs[fatherIndex][1] = badCarIndex;
-				#endregion
 
 				TournamentSelection();
 
@@ -638,7 +714,7 @@ public class GameManager : MonoBehaviour
 		GameLogger.WriteAvgFitnessData("NEW STATS\n\n");
 		foreach (double item in avgFitness)
 		{
-			GameLogger.WriteAvgFitnessData(item.ToString());
+			GameLogger.WriteAvgFitnessData(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")));
 		}
 		GameLogger.WriteAvgFitnessData("\n\n");
 
@@ -647,7 +723,8 @@ public class GameManager : MonoBehaviour
 		GameLogger.WriteMedianFitnessData("NEW STATS\n\n");
 		foreach (double item in medianFitness)
 		{
-			GameLogger.WriteMedianFitnessData(item.ToString());
+			GameLogger.WriteMedianFitnessData(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")));
+
 		}
 		GameLogger.WriteMedianFitnessData("\n\n");
 
@@ -709,10 +786,6 @@ public class GameManager : MonoBehaviour
 				paired++;
 			}
 		}
-
-		// A Recombine-ban már benne van, hogy a legjobb autó maradjon
-		//carPairs[carPairs.Length][0] = GetBestCarIndex();
-		//carPairs[carPairs.Length][1] = GetBestCarIndex();
 
 	}
 
