@@ -467,7 +467,7 @@ MonoBehaviour:
   avgFitness: []
   medianFitness: []
   GenerationCount: 0
-  CarCount: 3
+  CarCount: 20
   NeuronPerLayerCount: 6
   HiddenLayerCount: 3
   CarsRayCount: 5
@@ -1251,7 +1251,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 1, y: 1}
   m_AnchorMax: {x: 1, y: 1}
-  m_AnchoredPosition: {x: -2.9, y: -512.81}
+  m_AnchoredPosition: {x: -2.9003906, y: -512.81}
   m_SizeDelta: {x: 84.59, y: 25}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &2005259392

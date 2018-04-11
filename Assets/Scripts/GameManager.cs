@@ -1,8 +1,9 @@
-﻿using System.Collections.Generic;
-using UnityEngine;
-using System.Globalization;
-using System.Runtime.Serialization.Formatters.Binary;
+﻿using UnityEngine;
 using System.IO;
+using System.Text;
+using System.Globalization;
+using System.Collections.Generic;
+using System.Runtime.Serialization.Formatters.Binary;
 
 // Az autóhoz tartozó adatokat tárolja
 public class Car
@@ -49,6 +50,7 @@ public class GameManager : MonoBehaviour
 
 	private const float timeOut = 10.0f;
 	private const float globalTimeOut = 40.0f;
+	private string filePath;
 
 	[HideInInspector] public float freezeTimeLeft = timeOut;
 	[HideInInspector] public float globalTimeLeft = globalTimeOut;
@@ -121,9 +123,10 @@ public class GameManager : MonoBehaviour
 
 	void Start()
 	{
-
+		filePath = Application.persistentDataPath + "/NeuralNetworks.dat";
 		carNetworks = new NeuralNetwork[CarCount];
 		carsAliveCount = CarCount;
+		 
 
 		carPairs = new int[CarCount][];
 		for (int i = 0; i < carPairs.Length; i++)
@@ -218,47 +221,44 @@ public class GameManager : MonoBehaviour
 
 	}
 
+	// Kiírja fájlba a neurális hálók súlyait
 	public void Save()
 	{
-		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
-		{
-			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
-			{
-				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
-				{
-					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
-					{
-						savedCarNetwork[i][j][k][l] = 55;
-					}
-				}
-			}
-		}
-
+		// Először kiírja a jelenlegi adatokat a savedCarNetwork tömbbe, majd a tömböt fájlba írja
+		SaveNeuralNetworks();
 
 		FileStream file;
-		using (file = File.Create(Application.persistentDataPath + "/NeuralNetworks.dat"))
+		using (file = File.Create(filePath))
 		{
 			BinaryFormatter bf = new BinaryFormatter();
 			bf.Serialize(file, savedCarNetwork);
 		}
 
-		Debug.Log("Saved file: " + Application.persistentDataPath);
+		Debug.Log("Saved file: " + filePath);
 	}
 
+	// Betölti fájlból a neurális hálók súlyait, respawnolja az autókat
 	public void Load()
 	{
-		if (File.Exists(Application.persistentDataPath + "/NeuralNetworks.dat"))
+		if (File.Exists(filePath))
 		{
+			if (GenerationCount <= 1)
+			{
+				InitSavedCarNetwork();
+			}
+
 			FileStream file;
-			using (file = File.Open(Application.persistentDataPath + "/NeuralNetworks.dat", FileMode.Open))
+			using (file = File.Open(filePath, FileMode.Open))
 			{
 				BinaryFormatter bf = new BinaryFormatter();
 				savedCarNetwork = (double[][][][])bf.Deserialize(file);
 				bf.Serialize(file, savedCarNetwork);
 			}
 
-			Debug.Log("File loaded from: " + Application.persistentDataPath + "/NeuralNetworks.dat");
 
+			Debug.Log("File loaded from: " + filePath);
+
+			#region Loading data into cars
 			for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
 			{
 				for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
@@ -267,14 +267,30 @@ public class GameManager : MonoBehaviour
 					{
 						for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
 						{
-							Debug.Log(savedCarNetwork[i][j][k][l]);
+							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
+									savedCarNetwork[i][j][k][l];
 						}
 					}
 				}
 			}
+			#endregion
 
+			// Autók respawnolása
+			for (int i = 0; i < CarCount; i++)
+			{
+				Cars[i].Transform.gameObject.GetComponent<CarController>().Freeze();
+				Cars[i].LastFitness = 0;
+				SpawnFromPool(transform.position, transform.rotation);
+			}
 
+			carsAliveCount = CarCount;
+			freezeTimeLeft = timeOut;
+			globalTimeLeft = globalTimeOut;
 
+		}
+		else
+		{
+			Debug.LogError("There is no save file! Check it!");
 		}
 		
 	}
@@ -381,13 +397,14 @@ public class GameManager : MonoBehaviour
 
 	}
 
-
+	// Inicilizálja a savedCarNetwork tömböt, melyben a neurális hálók vannak tárolva.
 	private void InitSavedCarNetwork()
 	{
 		for (int i = 0; i < CarCount; i++)
 		{
 			carNetworks[i] = Cars[i].Transform.gameObject.GetComponent<NeuralNetwork>();
 		}
+
 
 		savedCarNetwork = new double[CarCount][][][];
 

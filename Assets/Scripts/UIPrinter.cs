@@ -18,6 +18,7 @@ public class UIPrinter : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI averageDifferenceText;
 	[SerializeField] private TextMeshProUGUI medianDifferenceText;
 	[SerializeField] private TextMeshProUGUI aliveCountText;
+	public GameObject button;
 
 	private List<double> avgF;
 	private List<double> medF;

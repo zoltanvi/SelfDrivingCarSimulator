@@ -1,5 +1,6 @@
 ﻿using System;
 
+[System.Serializable]
 public class NeuronLayer
 {
 	public double[][] NeuronWeights { get; set; }
