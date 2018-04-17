@@ -742,7 +742,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
+  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -776,7 +776,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
+  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -810,7 +810,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: 57de8f1de09917143bb496c0b988e47f, type: 2}
+  - {fileID: 2100000, guid: e8c081bfdcba035429f78524220cbf0e, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -844,7 +844,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
+  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -878,7 +878,7 @@ MeshRenderer:
   m_LightProbeUsage: 1
   m_ReflectionProbeUsage: 1
   m_Materials:
-  - {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
+  - {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -1019,7 +1019,9 @@ MonoBehaviour:
     index: 0
     isAlive: 0
     turnAngle: 55
-    maxTorque: 600
+    Accelerate: 650
+    Brake: 500000
+    Shunt: 450
     spring: 10000
     forwardSwiftness: 1
     sidewaysSwiftness: 1.7
@@ -1037,6 +1039,7 @@ MonoBehaviour:
   controlledByPlayer: 0
   steer: 0
   accelerate: 0
+  steerHelper: 0.6
 --- !u!114 &114606927322087156
 MonoBehaviour:
   m_ObjectHideFlags: 1

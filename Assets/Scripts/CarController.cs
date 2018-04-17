@@ -17,6 +17,14 @@ public class CarController : MonoBehaviour
 
 	[HideInInspector] public double steer;
 	[HideInInspector] public double accelerate;
+	private float oldRotation;
+	[SerializeField] private float steerHelper = 0.6f;
+
+	private Rigidbody myRigidbody;
+
+	// 1 meter/sec = 2.23693629 miles/hour	
+	public float CurrentSpeed { get { return myRigidbody.velocity.magnitude * 2.23693629f; } }
+
 
 	private Rigidbody carRigidbody;
 
@@ -28,6 +36,8 @@ public class CarController : MonoBehaviour
 
 	void Start()
 	{
+		myRigidbody = GetComponent<Rigidbody>();
+
 		// Inicializálás
 		carIndex = carStats.index;
 		carStats.isAlive = true;
@@ -79,8 +89,26 @@ public class CarController : MonoBehaviour
 			// Ha az autó nem ütközött falnak, csak akkor lehet irányítani a motort
 			if (carStats.isAlive)
 			{
-				// A motor nyomateka = max nyomatek * gyorsulas.
-				wheelColliders[i].motorTorque = carStats.maxTorque * (float)accelerate;
+				// Ha előre megy az autó
+				if (accelerate >= 0)
+				{
+					wheelColliders[i].motorTorque = carStats.Accelerate * (float)accelerate;
+					wheelColliders[i].brakeTorque = 0f;
+				}
+				// Ha előre megy az autó és a fék nyomva van
+				else if (accelerate < 0 && CurrentSpeed > 5 && Vector3.Angle(transform.forward, myRigidbody.velocity) < 50f)
+				{
+					wheelColliders[i].brakeTorque = carStats.Brake * -(float)accelerate;
+					wheelColliders[i].motorTorque = 0f;
+				}
+				// Ha tolat az autó
+				else
+				{
+					wheelColliders[i].motorTorque = carStats.Shunt * (float)accelerate;
+					wheelColliders[i].brakeTorque = 0f;
+				}
+
+
 			}
 			else
 			{
@@ -107,6 +135,16 @@ public class CarController : MonoBehaviour
 			wheelColliders[0].steerAngle = 0;
 			wheelColliders[1].steerAngle = 0;
 		}
+
+		// this if is needed to avoid gimbal lock problems that will make the car suddenly shift direction
+		if (Mathf.Abs(oldRotation - transform.eulerAngles.y) < 10f)
+		{
+			var turnadjust = (transform.eulerAngles.y - oldRotation) * steerHelper;
+			Quaternion velRotation = Quaternion.AngleAxis(turnadjust, Vector3.up);
+			carRigidbody.velocity = velRotation * carRigidbody.velocity;
+		}
+		oldRotation = transform.eulerAngles.y;
+
 
 		UpdateMeshes();
 	}

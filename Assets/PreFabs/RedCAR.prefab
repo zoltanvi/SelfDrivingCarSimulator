@@ -1000,7 +1000,9 @@ MonoBehaviour:
     index: 0
     isAlive: 0
     turnAngle: 55
-    maxTorque: 600
+    Accelerate: 650
+    Brake: 500000
+    Shunt: 450
     spring: 10000
     forwardSwiftness: 1
     sidewaysSwiftness: 1.7
@@ -1018,6 +1020,7 @@ MonoBehaviour:
   controlledByPlayer: 0
   steer: 0
   accelerate: 0
+  steerHelper: 0.6
 --- !u!114 &114379296907451262
 MonoBehaviour:
   m_ObjectHideFlags: 1

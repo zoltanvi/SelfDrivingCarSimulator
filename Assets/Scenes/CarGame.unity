@@ -467,7 +467,7 @@ MonoBehaviour:
   avgFitness: []
   medianFitness: []
   GenerationCount: 0
-  CarCount: 20
+  CarCount: 25
   NeuronPerLayerCount: 6
   HiddenLayerCount: 3
   CarsRayCount: 5
