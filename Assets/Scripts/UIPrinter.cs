@@ -18,19 +18,28 @@ public class UIPrinter : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI averageDifferenceText;
 	[SerializeField] private TextMeshProUGUI medianDifferenceText;
 	[SerializeField] private TextMeshProUGUI aliveCountText;
-	public GameObject button;
+	[SerializeField] private TextMeshProUGUI consoleText;
+	[SerializeField] private GameObject consolePanel;
+
 
 	private List<double> avgF;
 	private List<double> medF;
 	private Color green = new Color(0f, 1f, 0f, 1f);
 	private Color red = new Color(1f, 0f, 0f, 1f);
+	private int panelHeight;
+	private int numLines;
+
 
 	public double FitnessValue { get; set; }
+	public string ConsoleMessage { get; set; }
+
 	private bool controlledByPlayer = false;
 
 	void Start()
 	{
 		controlledByPlayer = GameManager.Instance.manualControl;
+		ConsoleMessage = "";
+		panelHeight = 0;
 	}
 	void Update()
 	{
@@ -40,6 +49,23 @@ public class UIPrinter : MonoBehaviour
 		freezeTimeText.text = string.Format("{0:0.0} sec", GameManager.Instance.freezeTimeLeft);
 		generationText.text = string.Format("{0:0}", GameManager.Instance.GenerationCount);
 		fitnessText.text = string.Format("{0:0.00}", FitnessValue);
+
+
+		consoleText.text = ConsoleMessage;
+		numLines = ConsoleMessage.Split('\n').Length;
+			
+		if (ConsoleMessage.Length == 0)
+		{
+			panelHeight = 0;
+		}
+		else
+		{
+			panelHeight = (15 * numLines) + 5;
+		}
+
+
+		consolePanel.GetComponent<RectTransform>().sizeDelta = new Vector2(100, panelHeight);
+		ConsoleMessage = numLines.ToString();
 
 		if (controlledByPlayer)
 		{

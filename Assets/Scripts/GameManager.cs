@@ -126,7 +126,7 @@ public class GameManager : MonoBehaviour
 		filePath = Application.persistentDataPath + "/NeuralNetworks.dat";
 		carNetworks = new NeuralNetwork[CarCount];
 		carsAliveCount = CarCount;
-		 
+
 
 		carPairs = new int[CarCount][];
 		for (int i = 0; i < carPairs.Length; i++)
@@ -292,7 +292,7 @@ public class GameManager : MonoBehaviour
 		{
 			Debug.LogError("There is no save file! Check it!");
 		}
-		
+
 	}
 
 
@@ -354,12 +354,20 @@ public class GameManager : MonoBehaviour
 			bestCarIndex = GetBestLivingCarIndex();
 			cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
 			myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
+
+			myUIPrinter.ConsoleMessage = "";
+			for (int i = 0; i < Cars[bestCarIndex].Inputs.Length; i++)
+			{
+				myUIPrinter.ConsoleMessage += string.Format("> {0:0.000}\n", Cars[bestCarIndex].Inputs[i]);
+			}
+
 		}
 		else
 		{
 			cameraFollowCar.targetCar = playerCar.transform;
 			myUIPrinter.FitnessValue = PlayerFitness;
 		}
+
 
 
 		// Új generáció létrehozása
@@ -744,16 +752,11 @@ public class GameManager : MonoBehaviour
 
 		}
 		GameLogger.WriteMedianFitnessData("\n\n");
-
+		Debug.Log("Elmentve!");
 	}
+
 
 	private void TournamentSelection()
-	{
-		//TournamentSelectionBase(0);
-		TournamentSelectionBase(1);
-	}
-
-	private void TournamentSelectionBase(int parentIndex)
 	{
 		int selectionPressure = 3;
 
@@ -799,7 +802,7 @@ public class GameManager : MonoBehaviour
 					}
 				}
 				// párosítás
-				carPairs[paired][parentIndex] = GetTournamentBestIndex(picked);
+				carPairs[paired][1] = GetTournamentBestIndex(picked);
 				paired++;
 			}
 		}
