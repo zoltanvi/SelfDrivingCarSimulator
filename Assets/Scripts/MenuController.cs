@@ -20,16 +20,16 @@ public class MenuController : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI neuronPerLayer;
 	[SerializeField] private Toggle navigator;
 
-	public int Selection { get; set; }
-	public int MutationChance { get; set; }
-	public int MutationRate { get; set; }
+	public int SelectionMethodE { get; set; }
+	public int MutationChanceE { get; set; }
+	public int MutationRateE { get; set; }
 	public int NumberOfCars { get; set; }
 	public int NumberOfLayers { get; set; }
 	public int NeuronPerLayer { get; set; }
 	public bool Navigator { get; set; }
 
 	private List<string> selections = new List<string>() {
-		"Top 50%", "Tournament method", "Tournament + worst 20% full random"
+		"Tournament method", "Top 50%", "Tournament + worst 20% full random"
 	};
 
 	private List<string> mutationChances = new List<string>() {
@@ -44,9 +44,15 @@ public class MenuController : MonoBehaviour
 	void Start()
 	{
 		PopulateDropdowns();
+
+		// Default értékek, ha nem megy bele a felhasználó a beállításokba
 		NumberOfCars = 20;
 		NumberOfLayers = 3;
 		NeuronPerLayer = 6;
+		SelectionMethodE = 0;			// Tournament
+		MutationChanceE = 2;		// 50%
+		MutationRateE = 3;		// 3.5%
+
 	}
 
 	void PopulateDropdowns()
@@ -77,7 +83,65 @@ public class MenuController : MonoBehaviour
 		numOfCars.text = NumberOfCars.ToString();
 		numOfLayers.text = NumberOfLayers.ToString();
 		neuronPerLayer.text = NeuronPerLayer.ToString();
+	}
 
+	public void SetOptionValues()
+	{
+
+		Manager.Instance.CarCount = NumberOfCars;
+		Manager.Instance.LayersCount = NumberOfLayers;
+		Manager.Instance.NeuronPerLayerCount = NeuronPerLayer;
+
+		Manager.Instance.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
+
+		// Az érték beállítása a dropdownból kinyert adat szerint
+		switch (MutationChanceE)
+		{
+			case 0:
+				Manager.Instance.MutationChance = 30;
+				break;
+			case 1:
+				Manager.Instance.MutationChance = 40;
+				break;
+			case 2:
+				Manager.Instance.MutationChance = 50;
+				break;
+			case 3:
+				Manager.Instance.MutationChance = 60;
+				break;
+			case 4:
+				Manager.Instance.MutationChance = 70;
+				break;
+		default:
+				Manager.Instance.MutationChance = 50;
+				break;
+		}
+
+		switch (MutationRateE)
+		{
+			case 0:
+				Manager.Instance.MutationRate = 2f;
+				break;
+			case 1:
+				Manager.Instance.MutationRate = 2.5f;
+				break;
+			case 2:
+				Manager.Instance.MutationRate = 3f;
+				break;
+			case 3:
+				Manager.Instance.MutationRate = 3.5f;
+				break;
+			case 4:
+				Manager.Instance.MutationRate = 4f;
+				break;
+			default:
+				Manager.Instance.MutationRate = 3f;
+				break;
+		}
+
+		Manager.Instance.GotOptionValues = true;
+
+		Debug.Log("Gave values to manager!");
 
 	}
 }

@@ -2,17 +2,25 @@
 
 public class Manager : MonoBehaviour
 {
-	public static Manager instance = null;
+	public static Manager Instance = null;
 
-	//private bool playing = false;
+	public int CarCount { get; set; }
+	public int SelectionMethod { get; set; }
+	public int MutationChance { get; set; }
+	public float MutationRate { get; set; }
+	public int LayersCount { get; set; }
+	public int NeuronPerLayerCount { get; set; }
+
+
+	public bool GotOptionValues = false;
 
 	void Awake()
 	{
-		if (instance == null)
+		if (Instance == null)
 		{
-			instance = this;
+			Instance = this;
 		}
-		else if (instance != this)
+		else if (Instance != this)
 		{
 			Destroy(gameObject);
 		}
@@ -24,10 +32,14 @@ public class Manager : MonoBehaviour
 
 	void InitGame()
 	{
-	
 
 	}
 
+	void Update()
+	{
+		
+
+	}
 
 
 }

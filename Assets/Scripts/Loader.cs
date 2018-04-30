@@ -8,7 +8,7 @@ public class Loader : MonoBehaviour
 
 	void Awake()
 	{
-		if (Manager.instance == null)
+		if (Manager.Instance == null)
 		{
 			Instantiate(manager);
 		}
