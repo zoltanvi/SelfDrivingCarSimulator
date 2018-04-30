@@ -1,8 +1,8 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class MenuController : MonoBehaviour
 {
@@ -49,9 +49,16 @@ public class MenuController : MonoBehaviour
 		NumberOfCars = 20;
 		NumberOfLayers = 3;
 		NeuronPerLayer = 6;
-		SelectionMethodE = 0;			// Tournament
-		MutationChanceE = 2;		// 50%
-		MutationRateE = 3;		// 3.5%
+		SelectionMethodE = 0;           // Tournament
+		MutationChanceE = 2;        // 50%
+		MutationRateE = 3;      // 3.5%
+
+		numOfCarsSlider.value = NumberOfCars;
+		numOfLayersSlider.value = NumberOfLayers;
+		neuronPerLayerSlider.value = NeuronPerLayer;
+		selectionDropdown.value = SelectionMethodE;
+		mutationChanceDropdown.value = MutationChanceE;
+		mutationRateDropdown.value = MutationRateE;
 
 	}
 
@@ -112,7 +119,7 @@ public class MenuController : MonoBehaviour
 			case 4:
 				Manager.Instance.MutationChance = 70;
 				break;
-		default:
+			default:
 				Manager.Instance.MutationChance = 50;
 				break;
 		}
@@ -144,4 +151,7 @@ public class MenuController : MonoBehaviour
 		Debug.Log("Gave values to manager!");
 
 	}
+
+
+
 }
