@@ -380,7 +380,7 @@ MonoBehaviour:
   transparentWheelMat: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   cameraFollowCar: {fileID: 994807528}
   myUI: {fileID: 1592389584908998, guid: 05db685a0dd880544a123d45e947b668, type: 2}
-  manualControl: 0
+  manualControl: 1
   logNetworkData: 0
   freezeTimeLeft: 10
   globalTimeLeft: 40
@@ -389,7 +389,7 @@ MonoBehaviour:
   avgFitness: []
   medianFitness: []
   GenerationCount: 0
-  CarCount: 40
+  CarCount: 10
   NeuronPerLayerCount: 6
   HiddenLayerCount: 3
   CarsRayCount: 5

@@ -999,7 +999,7 @@ MonoBehaviour:
   carStats:
     index: 0
     isAlive: 0
-    turnAngle: 55
+    turnAngle: 40
     Accelerate: 650
     Brake: 500000
     Shunt: 450

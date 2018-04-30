@@ -79,7 +79,7 @@ public class UIPrinter : MonoBehaviour
 
 		averageText.text = string.Format("{0:0.00}", (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0);
 		medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
-		mutationRateText.text = string.Format("{0:0}%", GameManager.Instance.MutationRate);
+		mutationRateText.text = string.Format("{0}%", GameManager.Instance.MutationRate);
 		populationText.text = string.Format("{0:0}", GameManager.Instance.CarCount);
 		aliveCountText.text = GameManager.Instance.carsAliveCount.ToString();
 
