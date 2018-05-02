@@ -14,6 +14,10 @@ public class Manager : MonoBehaviour
 
 	public bool GotOptionValues = false;
 
+	[SerializeField] private GameObject GAPrefab;
+	private GameObject GA;
+
+
 	void Awake()
 	{
 		if (Instance == null)
@@ -32,13 +36,18 @@ public class Manager : MonoBehaviour
 
 	void InitGame()
 	{
-
+	//	GA = Instantiate(GAPrefab, transform.position, transform.rotation);
 	}
 
 	void Update()
 	{
 		
 
+	}
+
+	void LoadGame()
+	{
+		
 	}
 
 

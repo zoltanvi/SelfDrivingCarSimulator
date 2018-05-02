@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters.Binary;
 
 // Az autóhoz tartozó adatokat tárolja
-public class Car
+public class CarOld
 {
 	public int Index { get; set; }
 	public double Fitness { get; set; }
@@ -41,7 +41,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private Material transparentWheelMat;
 	[Space(20)]
 	[SerializeField] private FollowCar cameraFollowCar;
-	[SerializeField] private GameObject myUI;
+	[SerializeField] private GameObject UIStats;
 
 	[Header("Do you want to drive a car?")]
 	public bool manualControl = false;
@@ -95,7 +95,7 @@ public class GameManager : MonoBehaviour
 	private Transform bestCar;
 
 	// Az autókat tároló tömb
-	public Car[] Cars;
+	public CarOld[] Cars;
 	// Az autók index-fitness párjait tároló tömb
 	private IndexFitness[] indexFitness;
 	// Az autók újra felhasználhatók, ezért egy poolban inicializálódnak
@@ -135,10 +135,10 @@ public class GameManager : MonoBehaviour
 		}
 
 		indexFitness = new IndexFitness[CarCount];
-		Cars = new Car[CarCount];
+		Cars = new CarOld[CarCount];
 		for (int i = 0; i < CarCount; i++)
 		{
-			Cars[i] = new Car
+			Cars[i] = new CarOld
 			{
 				Index = i,
 				Inputs = new double[CarsRayCount + 1],
@@ -151,8 +151,8 @@ public class GameManager : MonoBehaviour
 		mutationRatePercent = MutationRate / 100;
 
 		// UI panel / script inicializálása
-		myUI = GameObject.Find("myUI");
-		myUIPrinter = myUI.GetComponent<UIPrinter>();
+		UIStats = GameObject.Find("UIStats");
+		myUIPrinter = UIStats.GetComponent<UIPrinter>();
 
 		// Kicseréli a kék autó materialját áltátszóra / nem átlátszóra attól függően, hogy akarunk-e játszani
 
