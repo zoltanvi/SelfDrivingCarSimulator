@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-class CameraDrone : MonoBehaviour
+public class CameraDrone : MonoBehaviour
 {
 
 	[SerializeField] private float movementSpeed = 0.5f;
@@ -10,6 +10,11 @@ class CameraDrone : MonoBehaviour
 
 	private Vector3 offset = new Vector3(0.62f, 5.83f, -7.5f);
 	private bool isPlayerControlling = false;
+
+	void Awake()
+	{
+		DontDestroyOnLoad(gameObject);
+	}
 
 	void Start()
 	{

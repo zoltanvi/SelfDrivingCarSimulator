@@ -51,4 +51,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ad32d2bf0c86348bd954022ad2ee2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  canvas: {fileID: 1284170307754104, guid: a6d4fea632976de4789b32ec3e6c70a5, type: 2}
+  GotOptionValues: 0
+  GAPrefab: {fileID: 1408871425671536, guid: 06a9bca3419b8914cbf35fe67c304faf, type: 2}
+  TrackPrefabs:
+  - {fileID: 1134274914523264, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
+  CurrentTrack: {fileID: 0}
+  cameraDrone: {fileID: 0}

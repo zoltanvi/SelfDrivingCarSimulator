@@ -40,7 +40,7 @@ public class GameManager : MonoBehaviour
 	[SerializeField] private Material wheelMat;
 	[SerializeField] private Material transparentWheelMat;
 	[Space(20)]
-	[SerializeField] private FollowCar cameraFollowCar;
+	//[SerializeField] private FollowCar cameraFollowCar;
 	[SerializeField] private GameObject UIStats;
 
 	[Header("Do you want to drive a car?")]
@@ -207,7 +207,7 @@ public class GameManager : MonoBehaviour
 		}
 
 		// A kamera kezdetben a legelső autót követi
-		cameraFollowCar.targetCar = Cars[0].Transform;
+//		cameraFollowCar.targetCar = Cars[0].Transform;
 
 
 		// Az autók spawnolása
@@ -352,7 +352,7 @@ public class GameManager : MonoBehaviour
 		if (!manualControl)
 		{
 			bestCarIndex = GetBestLivingCarIndex();
-			cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
+//			cameraFollowCar.targetCar = Cars[bestCarIndex].Transform;
 			myUIPrinter.FitnessValue = Cars[bestCarIndex].Fitness;
 
 			myUIPrinter.ConsoleMessage = "";
@@ -364,7 +364,7 @@ public class GameManager : MonoBehaviour
 		}
 		else
 		{
-			cameraFollowCar.targetCar = playerCar.transform;
+//			cameraFollowCar.targetCar = playerCar.transform;
 			myUIPrinter.FitnessValue = PlayerFitness;
 		}
 

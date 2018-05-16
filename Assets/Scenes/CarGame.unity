@@ -379,7 +379,7 @@ MonoBehaviour:
   wheelMat: {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   transparentWheelMat: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   cameraFollowCar: {fileID: 994807528}
-  myUI: {fileID: 1592389584908998, guid: 05db685a0dd880544a123d45e947b668, type: 2}
+  UIStats: {fileID: 0}
   manualControl: 1
   logNetworkData: 0
   freezeTimeLeft: 10
