@@ -5,18 +5,7 @@ using UnityEngine;
 public abstract class GeneticAlgorithm : MonoBehaviour
 {
 
-	#region Prefabs
-	[SerializeField] protected GameObject blueCarPrefab;
-	[SerializeField] protected GameObject redCarPrefab;
-	[SerializeField] protected GameObject blueCarMesh;
-	#endregion
 
-	#region Materials
-	[SerializeField] protected Material blueMat;
-	[SerializeField] protected Material blueMatTransparent;
-	[SerializeField] protected Material wheelMat;
-	[SerializeField] protected Material wheelMatTransparent;
-	#endregion
 
 	protected CameraDrone cameraDrone;
 	protected GameObject UIStats;

@@ -7,6 +7,11 @@ public class CarController : MonoBehaviour
 	[SerializeField] private float downForce = 100.0f;
 
 	public CarStats carStats;
+
+	public int ID { get; set; }
+	public bool IsAlive { get; set; }
+
+
 	[Header("The car's center of mass")]
 	[SerializeField] private Transform centerOfMass;
 	[SerializeField] private WheelCollider[] wheelColliders = new WheelCollider[4];
