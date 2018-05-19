@@ -62,7 +62,7 @@ public class Manager : MonoBehaviour
 	private GameObject playerCar;
 	private CarController playerCarController;
 	public double PlayerFitness { get; set; }
-	private bool isPlayerAlive = false;
+	public bool isPlayerAlive = false;
 	#endregion
 
 
@@ -133,7 +133,6 @@ public class Manager : MonoBehaviour
 	void InstantiatePlayerCar()
 	{
 		playerCar = Instantiate(redCarPrefab, transform.position, transform.rotation);
-		//DontDestroyOnLoad(playerCar);
 
 		playerCarController = playerCar.GetComponent<CarController>();
 		playerCarController.IsPlayerControlled = true;
@@ -260,9 +259,6 @@ public class Manager : MonoBehaviour
 		StartGame();
 	}
 
-
-	// A START gomb hívja meg ezt a metódust
-	// TODO: sceneLoaded
 	public void InitGame()
 	{
 		Bias = 1.0;
@@ -274,16 +270,14 @@ public class Manager : MonoBehaviour
 		cameraDrone.enabled = false;
 	}
 
-	// A START gomb hívja meg ezt a metódust
-	// TODO: sceneLoaded
 	public void StartGame()
 	{
 		CheckCarMaterials();
 		InstantiateCars();
 		SpawnCars();
 
-		Debug.Log("CarCount = " + CarCount);
-
+		cameraDrone.CameraTarget = Cars[0].Transform;
+		cameraDrone.enabled = true;
 		// Első spawnolás megtörtént
 		firstStart = false;
 	}
@@ -475,6 +469,14 @@ public class Manager : MonoBehaviour
 		}
 	}
 
-
+	/// <summary>
+	/// Visszaállítja az időket + mennyi autó van életben
+	/// </summary>
+	public void SetBackTimes()
+	{
+		AliveCount = CarCount;
+		freezeTimeLeft = freezeTimeOut;
+		globalTimeLeft = globalTimeOut;
+	}
 
 }

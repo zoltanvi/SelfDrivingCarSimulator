@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 {
-	public override void RecombineAndMutate()
+	protected override void Selection()
 	{
 		Debug.Log("GeneticAlgorithmWorstRandom");
 		// TODO

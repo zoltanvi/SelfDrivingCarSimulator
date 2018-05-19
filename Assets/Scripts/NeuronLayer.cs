@@ -1,16 +1,16 @@
 ﻿using System;
 
 [System.Serializable]
-public class NeuronLayer
+public abstract class NeuronLayer
 {
 	public double[][] NeuronWeights { get; set; }
 
-	private static Random rand = new Random();
-	private int neuronCount;
-	private int inputCount;
-	private double bias;
+	protected static Random rand = new Random();
+	protected int neuronCount;
+	protected int inputCount;
+	protected double bias;
 
-	private double weight;
+	protected double weight;
 
 	/// <summary>
 	/// Creates a neuron layer.
@@ -38,7 +38,7 @@ public class NeuronLayer
 	/// Initializes the weights in the layer for all neurons to a random number
 	/// between -1 and 1.
 	/// </summary>
-	void InitWeights()
+	protected void InitWeights()
 	{
 		for (int i = 0; i < NeuronWeights.Length; i++)
 		{
@@ -77,15 +77,6 @@ public class NeuronLayer
 	}
 
 
-	/// <summary>
-	/// The activation function which is tahn(x) for us now.
-	/// </summary>
-	/// <param name="x"> The function parameter.</param>
-	/// <returns>Returns the calculated function value which is between -1 and 1.</returns>
-	private double Activate(double x)
-	{
-		// tanh(x) function
-		return (Math.Exp(x) - Math.Exp(-x)) / (Math.Exp(x) + Math.Exp(-x));
-	}
+	protected abstract double Activate(double x);
 
 }

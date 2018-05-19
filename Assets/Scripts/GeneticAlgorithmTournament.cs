@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class GeneticAlgorithmTournament : GeneticAlgorithm {
 
-	public override void RecombineAndMutate()
+	protected override void Selection()
 	{
 		Debug.Log("GeneticAlgorithmTournament");
 		// TODO

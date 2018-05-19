@@ -38,31 +38,30 @@ public class NeuralNetwork : MonoBehaviour
 		// hidden layers, +1 output layer
 		NeuronLayers = new NeuronLayer[hiddenLayerCount + 1];
 
-
 		// Initialize the hidden layers.
 		// If zero hidden layer -> there is only the output layer
 		if (hiddenLayerCount == 0)
 		{
-			NeuronLayers[0] = new NeuronLayer(2, inputCount, bias);
+			NeuronLayers[0] = new NeuronLayerTanh(2, inputCount, bias);
 		}
 		// If one hidden layer -> first layer gets the input,
 		// second layer is the output layer.
 		else if (hiddenLayerCount == 1)
 		{
-			NeuronLayers[0] = new NeuronLayer(neuronCount, inputCount, bias);
-			NeuronLayers[1] = new NeuronLayer(2, neuronCount, bias);
+			NeuronLayers[0] = new NeuronLayerTanh(neuronCount, inputCount, bias);
+			NeuronLayers[1] = new NeuronLayerTanh(2, neuronCount, bias);
 		}
 		// If two or more hidden layers -> first layer gets the input,
 		// the other ones get the output from the previous layer
 		// and the last layer is the output layer.
 		else if (hiddenLayerCount >= 2)
 		{
-			NeuronLayers[0] = new NeuronLayer(neuronCount, inputCount, bias);
+			NeuronLayers[0] = new NeuronLayerTanh(neuronCount, inputCount, bias);
 			for (int i = 1; i < NeuronLayers.Length - 1; i++)
 			{
-				NeuronLayers[i] = new NeuronLayer(neuronCount, neuronCount, bias);
+				NeuronLayers[i] = new NeuronLayerTanh(neuronCount, neuronCount, bias);
 			}
-			NeuronLayers[NeuronLayers.Length - 1] = new NeuronLayer(2, neuronCount, bias);
+			NeuronLayers[NeuronLayers.Length - 1] = new NeuronLayerTanh(2, neuronCount, bias);
 		}
 
 	}
