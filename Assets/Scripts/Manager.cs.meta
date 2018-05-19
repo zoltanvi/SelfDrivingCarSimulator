@@ -5,7 +5,18 @@ licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
-  defaultReferences: []
+  defaultReferences:
+  - blueCarPrefab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
+      type: 2}
+  - redCarPrefab: {instanceID: 0}
+  - blueCarMesh: {instanceID: 0}
+  - blueCarMat: {instanceID: 0}
+  - blueCarMatTrans: {instanceID: 0}
+  - wheelMat: {instanceID: 0}
+  - wheelMatTrans: {instanceID: 0}
+  - CurrentTrack: {instanceID: 0}
+  - CurrentWaypoint: {instanceID: 0}
+  - cameraDrone: {instanceID: 0}
   executionOrder: 0
   icon: {instanceID: 0}
   userData: 

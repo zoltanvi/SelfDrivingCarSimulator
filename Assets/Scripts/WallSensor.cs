@@ -22,8 +22,7 @@ public class WallSensor : MonoBehaviour
 	// Az erzekelok lathatatlanok, egy tombelem egy lathato vonalat tart
 	private GameObject[] rayHolders;
 
-	// Az auto sorszama - tobb autot managel a CarGameController osztaly
-	private int carIndex;
+	private int ID { get; set; }
 
 	// Az erzekelok altal mert tavolsagokat es a fitnesst  tartalmazza
 	private double[] carNeuronInputs;
@@ -33,9 +32,9 @@ public class WallSensor : MonoBehaviour
 
 	void Start()
 	{
-		rayCount = GameManager.Instance.CarsRayCount;
+		rayCount = Manager.Instance.CarSensorCount;
 		// Beallitja az auto sorszamat
-		carIndex = this.gameObject.GetComponent<CarController>().carStats.index;
+		ID = this.gameObject.GetComponent<CarController>().ID;
 
 		// Inicializalja a neuralis halo inputjait
 		carNeuronInputs = new double[rayCount + 1];
@@ -45,7 +44,7 @@ public class WallSensor : MonoBehaviour
 		// Inicializalja az erzekeloket reprezentalo vonalakat
 		InitializeLines();
 
-		if (this.gameObject.GetComponent<CarController>().controlledByPlayer)
+		if (this.gameObject.GetComponent<CarController>().IsPlayerControlled)
 		{
 			controlledByPlayer = true;
 		}
@@ -83,8 +82,8 @@ public class WallSensor : MonoBehaviour
 		if (!controlledByPlayer)
 		{
 			// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
-			GameManager.Instance.Cars[carIndex].Inputs = carNeuronInputs;
-			GameManager.Instance.Cars[carIndex].Distances = rawSensorText;
+			Manager.Instance.Cars[ID].Inputs = carNeuronInputs;
+			//Manager.Instance.Cars[ID].Distances = rawSensorText;
 		}
 		
 	}

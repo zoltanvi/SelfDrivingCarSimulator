@@ -63,7 +63,12 @@ MonoBehaviour:
   wheelMatTrans: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   GotOptionValues: 0
   ManualControl: 0
+  freezeTimeLeft: 10
+  globalTimeLeft: 40
   TrackPrefabs:
   - {fileID: 1134274914523264, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
+  WayPointPrefabs:
+  - {fileID: 1736990184806124, guid: 6f41cef01981f8549a2a33bfcec89a3e, type: 2}
   CurrentTrack: {fileID: 0}
+  CurrentWaypoint: {fileID: 0}
   cameraDrone: {fileID: 0}

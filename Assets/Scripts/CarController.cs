@@ -2,28 +2,20 @@
 
 public class CarController : MonoBehaviour
 {
-
-	[Header("The grip of the car")]
-	[SerializeField] private float downForce = 100.0f;
-
-	public CarStats carStats;
+	private CarParameters carParameters;
 
 	public int ID { get; set; }
 	public bool IsAlive { get; set; }
 
-
-	[Header("The car's center of mass")]
 	[SerializeField] private Transform centerOfMass;
 	[SerializeField] private WheelCollider[] wheelColliders = new WheelCollider[4];
 	[SerializeField] private Transform[] wheelMeshes = new Transform[4];
 	private string wallLayerName = "Environment";
-	private int carIndex;
-	public bool controlledByPlayer = false;
+	public bool IsPlayerControlled { get; set; }
 
 	[HideInInspector] public double steer;
 	[HideInInspector] public double accelerate;
 	private float oldRotation;
-	[SerializeField] private float steerHelper = 0.6f;
 
 	private Rigidbody myRigidbody;
 
@@ -39,13 +31,17 @@ public class CarController : MonoBehaviour
 	// wheelColliders / wheelMeshes [3] : Back Right
 
 
+	void Awake()
+	{
+		carParameters = new CarParameters();
+	}
+
 	void Start()
 	{
 		myRigidbody = GetComponent<Rigidbody>();
 
 		// Inicializálás
-		carIndex = carStats.index;
-		carStats.isAlive = true;
+		IsAlive = true;
 		JointSpring[] suspensions = new JointSpring[4];
 		WheelFrictionCurve[] wheelFrictionCurveForward = new WheelFrictionCurve[4];
 		WheelFrictionCurve[] wheelFrictionCurveSideways = new WheelFrictionCurve[4];
@@ -56,15 +52,15 @@ public class CarController : MonoBehaviour
 		{
 			// A rugo beallitasa.
 			suspensions[i] = wheelColliders[i].suspensionSpring;
-			suspensions[i].spring = carStats.spring;
+			suspensions[i].spring = carParameters.Spring;
 
 			// Forward Friction - swiftness beallitasa.
 			wheelFrictionCurveForward[i] = wheelColliders[i].forwardFriction;
-			wheelFrictionCurveForward[i].stiffness = carStats.forwardSwiftness;
+			wheelFrictionCurveForward[i].stiffness = carParameters.ForwardSwiftness;
 
 			// Sideways Friction - swiftness beallitasa.
 			wheelFrictionCurveSideways[i] = wheelColliders[i].sidewaysFriction;
-			wheelFrictionCurveSideways[i].stiffness = carStats.sidewaysSwiftness;
+			wheelFrictionCurveSideways[i].stiffness = carParameters.SidewaysSwiftness;
 
 			wheelColliders[i].suspensionSpring = suspensions[i];
 			wheelColliders[i].forwardFriction = wheelFrictionCurveForward[i];
@@ -80,7 +76,7 @@ public class CarController : MonoBehaviour
 	void FixedUpdate()
 	{
 		// Ha az autó játékos által van irányítva, akkor megkapja a vezérlést (billentyűzet)
-		if (controlledByPlayer)
+		if (IsPlayerControlled)
 		{
 			// Kanyarodas (balra jobbra).
 			steer = Input.GetAxis("Horizontal");
@@ -92,28 +88,26 @@ public class CarController : MonoBehaviour
 		for (int i = 0; i < 4; i++)
 		{
 			// Ha az autó nem ütközött falnak, csak akkor lehet irányítani a motort
-			if (carStats.isAlive)
+			if (IsAlive)
 			{
 				// Ha előre megy az autó
 				if (accelerate >= 0)
 				{
-					wheelColliders[i].motorTorque = carStats.Accelerate * (float)accelerate;
+					wheelColliders[i].motorTorque = carParameters.Accelerate * (float)accelerate;
 					wheelColliders[i].brakeTorque = 0f;
 				}
 				// Ha előre megy az autó és a fék nyomva van
 				else if (accelerate < 0 && CurrentSpeed > 5 && Vector3.Angle(transform.forward, myRigidbody.velocity) < 50f)
 				{
-					wheelColliders[i].brakeTorque = carStats.Brake * -(float)accelerate;
+					wheelColliders[i].brakeTorque = carParameters.Brake * -(float)accelerate;
 					wheelColliders[i].motorTorque = 0f;
 				}
 				// Ha tolat az autó
 				else
 				{
-					wheelColliders[i].motorTorque = carStats.Shunt * (float)accelerate;
+					wheelColliders[i].motorTorque = carParameters.Shunt * (float)accelerate;
 					wheelColliders[i].brakeTorque = 0f;
 				}
-
-
 			}
 			else
 			{
@@ -123,13 +117,13 @@ public class CarController : MonoBehaviour
 
 		// Jobb tapadása lesz az autónak
 		wheelColliders[0].attachedRigidbody.AddForce(
-			(-transform.up) * downForce * wheelColliders[0].attachedRigidbody.velocity.magnitude);
+			(-transform.up) * carParameters.DownForce * wheelColliders[0].attachedRigidbody.velocity.magnitude);
 
 		// Elso kerekek maximum fordulasi szoge.
-		float finalAngle = (float)steer * carStats.turnAngle;
+		float finalAngle = (float)steer * carParameters.TurnAngle;
 
 		// Ha az autó nem ütközött falnak, csak akkor lehet kormányozni a kerekeket
-		if (carStats.isAlive)
+		if (IsAlive)
 		{
 			// Az elso kerekek megkapjak a fordulasi szoget.
 			wheelColliders[0].steerAngle = finalAngle;
@@ -144,26 +138,31 @@ public class CarController : MonoBehaviour
 		// this if is needed to avoid gimbal lock problems that will make the car suddenly shift direction
 		if (Mathf.Abs(oldRotation - transform.eulerAngles.y) < 10f)
 		{
-			var turnadjust = (transform.eulerAngles.y - oldRotation) * steerHelper;
+			var turnadjust = (transform.eulerAngles.y - oldRotation) * carParameters.SteerHelper;
 			Quaternion velRotation = Quaternion.AngleAxis(turnadjust, Vector3.up);
 			carRigidbody.velocity = velRotation * carRigidbody.velocity;
 		}
 		oldRotation = transform.eulerAngles.y;
-
-
+		
 		UpdateMeshes();
 	}
 
-	// Ha az auto falnak utkozott, freeze.
+	/// <summary>
+	/// Ha az autó falnak ütközött és még nem fagyott meg,
+	/// akkor megfagyasztja
+	/// </summary>
 	void OnCollisionEnter(Collision collision)
 	{
 		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
-			GameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
+			Manager.Instance.FreezeCar(carRigidbody, ID, IsAlive);
+			IsAlive = false;
 		}
 	}
 
-	// A kerekek mesh-eit updateli
+	/// <summary>
+	/// Updateli az autó kerekeinek mesh-eit (amit látsz).
+	/// </summary>
 	void UpdateMeshes()
 	{
 		for (int i = 0; i < 4; i++)
@@ -180,9 +179,12 @@ public class CarController : MonoBehaviour
 		}
 	}
 
+	/// <summary>
+	/// Meghívja az autó ID-jére a Manager FreezeCar metódusát.
+	/// </summary>
 	public void Freeze()
 	{
-		GameManager.Instance.FreezeCar(carRigidbody, carIndex, this.transform, ref carStats.isAlive);
+		Manager.Instance.FreezeCar(carRigidbody, ID, IsAlive);
 	}
 
 }

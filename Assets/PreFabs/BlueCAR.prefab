@@ -1014,17 +1014,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f3d0b480c2b6f9c4fa5ba89a5d8a1d73, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  downForce: 150
-  carStats:
-    index: 0
-    isAlive: 0
-    turnAngle: 55
-    Accelerate: 650
-    Brake: 500000
-    Shunt: 450
-    spring: 10000
-    forwardSwiftness: 1
-    sidewaysSwiftness: 1.7
   centerOfMass: {fileID: 4087171190521606}
   wheelColliders:
   - {fileID: 146488191492311512}
@@ -1036,10 +1025,8 @@ MonoBehaviour:
   - {fileID: 4266944939828808}
   - {fileID: 4418005467305298}
   - {fileID: 4777262355996256}
-  controlledByPlayer: 0
   steer: 0
   accelerate: 0
-  steerHelper: 0.6
 --- !u!114 &114606927322087156
 MonoBehaviour:
   m_ObjectHideFlags: 1

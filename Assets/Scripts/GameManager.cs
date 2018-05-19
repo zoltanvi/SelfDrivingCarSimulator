@@ -185,7 +185,7 @@ public class GameManager : MonoBehaviour
 		for (int i = 0; i < CarCount; i++)
 		{
 			GameObject obj = Instantiate(blueCarPrefab, transform.position, transform.rotation);
-			obj.GetComponent<CarController>().carStats.index = i;
+			obj.GetComponent<CarController>().ID = i;
 
 			obj.SetActive(false);
 			pool.Enqueue(obj);
@@ -198,9 +198,9 @@ public class GameManager : MonoBehaviour
 		{
 
 			playerCar = Instantiate(redCarPrefab, transform.position, transform.rotation);
-			playerCar.GetComponent<CarController>().controlledByPlayer = true;
+			playerCar.GetComponent<CarController>().IsPlayerControlled = true;
 			playerCar.SetActive(false);
-			playerCar.GetComponent<CarController>().carStats.index = -1;
+			playerCar.GetComponent<CarController>().ID = -1;
 
 			SpawnPlayerCar(transform.position, transform.rotation);
 
@@ -301,7 +301,7 @@ public class GameManager : MonoBehaviour
 	public GameObject SpawnFromPool(Vector3 position, Quaternion rotation)
 	{
 		GameObject objectToSpawn = pool.Dequeue();
-		objectToSpawn.GetComponent<CarController>().carStats.isAlive = true;
+		objectToSpawn.GetComponent<CarController>().IsAlive = true;
 		Rigidbody objectRigidbody = objectToSpawn.GetComponent<Rigidbody>();
 		objectRigidbody.isKinematic = false;
 		objectRigidbody.velocity = new Vector3(0, 0, 0);
@@ -325,7 +325,7 @@ public class GameManager : MonoBehaviour
 	// Az autók pozíció adatait stb. visszaállítja defaultra.
 	public GameObject SpawnPlayerCar(Vector3 position, Quaternion rotation)
 	{
-		playerCar.GetComponent<CarController>().carStats.isAlive = true;
+		playerCar.GetComponent<CarController>().IsAlive = true;
 		Rigidbody objectRigidbody = playerCar.GetComponent<Rigidbody>();
 		objectRigidbody.isKinematic = false;
 		objectRigidbody.velocity = new Vector3(0, 0, 0);
@@ -449,7 +449,7 @@ public class GameManager : MonoBehaviour
 
 		for (int i = CarCount - 1; i >= 0; i--)
 		{
-			if (Cars[indexFitness[i].Index].Transform.gameObject.GetComponent<CarController>().carStats.isAlive)
+			if (Cars[indexFitness[i].Index].Transform.gameObject.GetComponent<CarController>().IsAlive)
 			{
 				index = indexFitness[i].Index;
 			}
@@ -476,7 +476,7 @@ public class GameManager : MonoBehaviour
 
 
 	// Lefagyasztja az autót, majd logolja az autóhoz tartozó neurális háló súlyait + az autó fitnessét.
-	public void FreezeCar(Rigidbody carRigidbody, int carIndex, Transform carTransform, ref bool isAlive)
+	public void FreezeCar(Rigidbody carRigidbody, int carID, bool isAlive)
 	{
 
 		if (isAlive)
@@ -484,16 +484,16 @@ public class GameManager : MonoBehaviour
 			carRigidbody.isKinematic = true;
 			isAlive = false;
 
-			if (carIndex != -1)
+			if (carID != -1)
 			{
 				carsAliveCount--;
 
 				if (logNetworkData)
 				{
-					NeuralNetwork tmp2 = Cars[carIndex].Transform.gameObject.GetComponent<NeuralNetwork>();
+					NeuralNetwork tmp2 = Cars[carID].Transform.gameObject.GetComponent<NeuralNetwork>();
 
 					#region Súlyok és fitness értékek fájlba írása
-					string carNNWeights = carIndex + ". car:\n";
+					string carNNWeights = carID + ". car:\n";
 					for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
 					{
 						carNNWeights += (i + 1) + ". layer: \n";
@@ -511,7 +511,7 @@ public class GameManager : MonoBehaviour
 
 
 					GameLogger.WriteData(carNNWeights);
-					string dataText = "Maximum fitness: " + Cars[carIndex].Fitness + "\n\n";
+					string dataText = "Maximum fitness: " + Cars[carID].Fitness + "\n\n";
 					GameLogger.WriteData(dataText);
 					#endregion
 				}
