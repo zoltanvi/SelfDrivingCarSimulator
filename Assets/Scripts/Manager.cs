@@ -89,10 +89,14 @@ public class Manager : MonoBehaviour
 	{
 		SceneManager.sceneLoaded += OnSceneLoaded;
 	}
+
 	// Meghívódik minden képfrissítéskor
 	void FixedUpdate()
 	{
 		ManageTime();
+
+		// TODO: UI-ra kiírni a dolgokat!
+
 	}
 
 
