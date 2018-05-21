@@ -63,6 +63,9 @@ MonoBehaviour:
   wheelMatTrans: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   GotOptionValues: 0
   ManualControl: 0
+  UIStats: {fileID: 0}
+  myUIPrinter: {fileID: 0}
+  bestCarID: 0
   freezeTimeLeft: 10
   globalTimeLeft: 40
   TrackPrefabs:
@@ -72,3 +75,4 @@ MonoBehaviour:
   CurrentTrack: {fileID: 0}
   CurrentWaypoint: {fileID: 0}
   cameraDrone: {fileID: 0}
+  isPlayerAlive: 0

@@ -4,9 +4,39 @@ using UnityEngine;
 
 public class GeneticAlgorithmTopHalf : GeneticAlgorithm
 {
+	private int[] topHalfID;
+
 	protected override void Selection()
 	{
-		Debug.Log("GeneticAlgorithmTopHalf");
-		// TODO
+		int r = 0;
+		topHalfID = new int[PopulationSize/2];
+
+		for (int i = 0; i < topHalfID.Length; i++)
+		{
+			topHalfID[i] = stats[i].ID;
+		}
+
+		for (int i = 0; i < PopulationSize; i++)
+		{
+			// A top 50%-ból kirandomol egyet, ő lesz a bal szülő
+			r = Random.Range(0, topHalfID.Length);
+			carPairs[i][0] = topHalfID[r];
+
+			do
+			{
+				// A top 50%-ból kirandomol egyet, ő lesz a jobb szülő
+				// Ha megegyezik a bal szülővel, újat randomol.
+				r = Random.Range(0, topHalfID.Length);
+				carPairs[i][1] = topHalfID[r];
+			} while (carPairs[i][0] == carPairs[i][1]);
+		}
+
+		string tmp = "";
+		for (int i = 0; i < carPairs.Length; i++)
+		{
+			tmp += carPairs[i][0] + " :: " + carPairs[i][1] + "\n";
+		}
+
+		Debug.Log(tmp);
 	}
 }

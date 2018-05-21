@@ -157,6 +157,7 @@ public class CarController : MonoBehaviour
 		{
 			Manager.Instance.FreezeCar(carRigidbody, ID, IsAlive);
 			IsAlive = false;
+			Manager.Instance.Cars[ID].IsAlive = false;
 		}
 	}
 

@@ -55,6 +55,15 @@ public class GeneticAlgorithmTournament : GeneticAlgorithm {
 				paired++;
 			}
 		}
+
+		string tmp = "";
+		for (int i = 0; i < carPairs.Length; i++)
+		{
+			tmp += carPairs[i][0] + " :: " + carPairs[i][1] + "\n";
+		}
+
+		Debug.Log(tmp);
+
 	}
 
 	private int GetTournamentBestIndex(List<int> picked)

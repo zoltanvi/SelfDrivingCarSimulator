@@ -2,9 +2,11 @@
 
 public class CameraDrone : MonoBehaviour
 {
+	[Range(0f, 5f)]
+	[SerializeField] private float movementSpeed = 3.2f;
 
-	[SerializeField] private float movementSpeed = 0.5f;
-	[SerializeField] private float rotationSpeed = 0.5f;
+	[Range(0f, 5f)]
+	[SerializeField] private float rotationSpeed = 3.8f;
 
 	public Transform CameraTarget;
 

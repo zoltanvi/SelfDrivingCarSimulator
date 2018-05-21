@@ -5,8 +5,7 @@ using UnityEngine;
 public abstract class GeneticAlgorithm : MonoBehaviour
 {
 
-	protected CameraDrone cameraDrone;
-	protected GameObject UIStats;
+	private UIPrinter myUIPrinter;
 
 	public int PopulationSize { get; set; }
 
@@ -87,6 +86,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		for (int i = 0; i < PopulationSize; i++)
 		{
 			Manager.Instance.Cars[i].PrevFitness = 0;
+			Manager.Instance.Cars[i].IsAlive = true;
 			Manager.Instance.SpawnFromPool(
 				Manager.Instance.transform.position,
 				Manager.Instance.transform.rotation);
@@ -101,6 +101,9 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		}
 
 		Manager.Instance.SetBackTimes();
+		// Növeli a generáció számlálót
+		GenerationCount++;
+		Manager.Instance.myUIPrinter.GenerationCount = GenerationCount;
 	}
 
 	/// <summary>

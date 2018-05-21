@@ -37,16 +37,19 @@ public class Manager : MonoBehaviour
 
 	public bool ManualControl = false;
 
-
 	private GameObject GAGameObject;
-	private GeneticAlgorithm GA;
+	private GeneticAlgorithm GA = null;
 	private Queue<GameObject> carPool;
 	private bool firstStart = true;
+	[SerializeField] private GameObject UIStats;
+	public UIPrinter myUIPrinter;
+
+	public int bestCarID = 0;
 	private const float freezeTimeOut = 10.0f;
 	private const float globalTimeOut = 40.0f;
 
-	[HideInInspector] public float freezeTimeLeft = freezeTimeOut;
-	[HideInInspector] public float globalTimeLeft = globalTimeOut;
+	public float freezeTimeLeft = freezeTimeOut;
+	public float globalTimeLeft = globalTimeOut;
 
 	[SerializeField] private GameObject[] TrackPrefabs;
 	[SerializeField] private GameObject[] WayPointPrefabs;
@@ -88,12 +91,40 @@ public class Manager : MonoBehaviour
 	void Start()
 	{
 		SceneManager.sceneLoaded += OnSceneLoaded;
+		DontDestroyOnLoad(UIStats);
+		myUIPrinter = UIStats.GetComponent<UIPrinter>();
+		UIStats.SetActive(false);
 	}
 
 	// Meghívódik minden képfrissítéskor
 	void FixedUpdate()
 	{
-		ManageTime();
+		// Csak ha elindult a szimuláció, akkor fussanak le a következők
+		if (!firstStart)
+		{
+			ManageTime();
+
+			if (!ManualControl)
+			{
+				bestCarID = GetBestID();
+				myUIPrinter.FitnessValue = Cars[bestCarID].Fitness;
+				cameraDrone.CameraTarget = Cars[bestCarID].Transform;
+
+				myUIPrinter.ConsoleMessage = "";
+				for (int i = 0; i < Cars[bestCarID].Inputs.Length; i++)
+				{
+					myUIPrinter.ConsoleMessage += string.Format("> {0:0.000}\n", Cars[bestCarID].Inputs[i]);
+				}
+			}
+			else
+			{
+				myUIPrinter.FitnessValue = PlayerFitness;
+			}
+
+
+		}
+
+		
 
 		// TODO: UI-ra kiírni a dolgokat!
 
@@ -115,9 +146,6 @@ public class Manager : MonoBehaviour
 		{
 			GameObject obj = Instantiate(blueCarPrefab, transform.position, transform.rotation);
 
-		//	DontDestroyOnLoad(obj);
-
-
 			obj.SetActive(false);
 			carPool.Enqueue(obj);
 
@@ -127,6 +155,7 @@ public class Manager : MonoBehaviour
 			Cars[i].CarController.ID = i;
 			Cars[i].Transform = obj.transform;
 			Cars[i].Transform.name = "Car_" + i;
+			Cars[i].IsAlive = true;
 		}
 	}
 
@@ -272,6 +301,7 @@ public class Manager : MonoBehaviour
 
 		AliveCount = CarCount;
 		cameraDrone.enabled = false;
+
 	}
 
 	public void StartGame()
@@ -279,6 +309,8 @@ public class Manager : MonoBehaviour
 		CheckCarMaterials();
 		InstantiateCars();
 		SpawnCars();
+
+		UIStats.SetActive(true);
 
 		cameraDrone.CameraTarget = Cars[0].Transform;
 		cameraDrone.enabled = true;
@@ -294,7 +326,7 @@ public class Manager : MonoBehaviour
 	{
 		// Példányosít egy GeneticAlgorithm objektumot
 		GAGameObject = new GameObject();
-		//DontDestroyOnLoad(GAGameObject);
+		GAGameObject.transform.name = "GeneticAlgorithm";
 
 		switch (SelectionMethod)
 		{
@@ -481,6 +513,31 @@ public class Manager : MonoBehaviour
 		AliveCount = CarCount;
 		freezeTimeLeft = freezeTimeOut;
 		globalTimeLeft = globalTimeOut;
+	}
+
+	/// <summary>
+	/// Visszaadja a legmagasabb fitness értékkel rendelkező
+	/// életben lévő autó ID-jét.
+	/// </summary>
+	/// <returns>A legjobb autó ID-jét adja vissza.</returns>
+	private int GetBestID()
+	{
+		int bestID = 0;
+		double maxFitness = double.MinValue;
+
+		for (int i = 0; i < CarCount; i++)
+		{
+			if (Cars[i].IsAlive)
+			{
+				if (maxFitness < Cars[i].Fitness)
+				{
+					maxFitness = Cars[i].Fitness;
+					bestID = Cars[i].ID;
+				}
+			}
+		}
+
+		return bestID;
 	}
 
 }

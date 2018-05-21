@@ -11,6 +11,7 @@ public class Car
 	public NeuralNetwork NeuralNetwork { get; set; }
 	public double PrevFitness { get; set; }
 	public string InputText { get; set; }
+	public bool IsAlive { get; set; }
 
 }
 
