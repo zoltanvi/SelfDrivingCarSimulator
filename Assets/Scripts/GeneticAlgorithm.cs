@@ -207,7 +207,6 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		float mutationRateMinimum = (100 - MutationRate) / 100;
 		float mutationRateMaximum = (100 + MutationRate) / 100;
 
-
 		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
 		{
 			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
@@ -229,8 +228,8 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 							// carPairs[i] a két szülő indexét tartalmazza
 							index = carPairs[i][Random.Range(0, 2)];
 
-							// 50% eséllyel mutálódik
-							if (Random.Range(0, 2) == 0)
+							// A MutationChance értékétől függően változik a mutáció valószínűsége
+							if (Random.Range(1, 100) <= MutationChance)
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
 								savedCarNetwork[index][j][k][l] * mutation;
