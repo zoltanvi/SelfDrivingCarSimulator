@@ -51,6 +51,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1ad32d2bf0c86348bd954022ad2ee2c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  CarSensorCount: 5
+  CarSensorLength: 25
   blueCarPrefab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
     type: 2}
   redCarPrefab: {fileID: 1931166108372316, guid: 73c49525d14a3e94aa3324351e8231b2,
@@ -61,13 +63,13 @@ MonoBehaviour:
   blueCarMatTrans: {fileID: 2100000, guid: e8c081bfdcba035429f78524220cbf0e, type: 2}
   wheelMat: {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   wheelMatTrans: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
-  GotOptionValues: 0
+  GotOptionValues: 1
   ManualControl: 0
   UIStats: {fileID: 0}
   myUIPrinter: {fileID: 0}
-  bestCarID: 0
-  freezeTimeLeft: 10
-  globalTimeLeft: 40
+  bestCarID: 1
+  freezeTimeLeft: 8.659969
+  globalTimeLeft: 38.65997
   TrackPrefabs:
   - {fileID: 1134274914523264, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
   WayPointPrefabs:
@@ -76,3 +78,5 @@ MonoBehaviour:
   CurrentWaypoint: {fileID: 0}
   cameraDrone: {fileID: 0}
   isPlayerAlive: 0
+  maxFitness: []
+  medianFitness: []

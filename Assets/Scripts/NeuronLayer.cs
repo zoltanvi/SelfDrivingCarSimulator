@@ -1,11 +1,10 @@
-﻿using System;
+﻿using UnityEngine;
 
 [System.Serializable]
 public abstract class NeuronLayer
 {
 	public double[][] NeuronWeights { get; set; }
 
-	protected static Random rand = new Random();
 	protected int neuronCount;
 	protected int inputCount;
 	protected double bias;
@@ -45,7 +44,7 @@ public abstract class NeuronLayer
 			for (int j = 0; j < NeuronWeights[i].Length; j++)
 			{
 				// Get a random number between -1 and 1
-				NeuronWeights[i][j] = (double)(rand.Next(-10, 11)) / 10;
+				NeuronWeights[i][j] = Random.Range(-1f, 1f);
 			}
 		}
 	}

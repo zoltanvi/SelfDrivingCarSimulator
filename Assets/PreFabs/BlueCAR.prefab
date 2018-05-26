@@ -1051,7 +1051,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   rayOriginPoint: {fileID: 4837871962500276}
-  lineLength: 25
   rayLayerName: Environment
   fitnessMeter: {fileID: 114033591220110584}
   carRigidbody: {fileID: 54672947877242660}

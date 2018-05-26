@@ -5,8 +5,7 @@ public class WallSensor : MonoBehaviour
 	// Az autohoz tartozo erzekelok kezdopontja
 	[SerializeField] private Transform rayOriginPoint;
 	// Az erzekelo sugarak hossza
-	[Range(0f, 50f)]
-	[SerializeField] private float lineLength = 25f;
+	private float lineLength;
 	// Az autohoz tartozo erzekelok darabszama
 
 	private int rayCount;
@@ -33,6 +32,7 @@ public class WallSensor : MonoBehaviour
 	void Start()
 	{
 		rayCount = Manager.Instance.CarSensorCount;
+		lineLength = Manager.Instance.CarSensorLength;
 		// Beallitja az auto sorszamat
 		ID = this.gameObject.GetComponent<CarController>().ID;
 

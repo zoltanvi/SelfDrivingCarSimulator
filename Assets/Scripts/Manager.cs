@@ -18,7 +18,11 @@ public class Manager : MonoBehaviour
 	public int LayersCount { get; set; }
 	public int NeuronPerLayerCount { get; set; }
 	public int TrackNumber { get; set; }
-	public int CarSensorCount { get; set; }
+	[Range(1, 30)]
+	public int CarSensorCount = 5;
+	[Range(10, 40)]
+	public int CarSensorLength = 25;
+
 	public double Bias { get; set; }
 	#endregion
 
@@ -34,7 +38,6 @@ public class Manager : MonoBehaviour
 	#endregion
 
 	public bool GotOptionValues = false;
-
 	public bool ManualControl = false;
 
 	private GameObject GAGameObject;
@@ -42,7 +45,7 @@ public class Manager : MonoBehaviour
 	private Queue<GameObject> carPool;
 	private bool firstStart = true;
 	[SerializeField] private GameObject UIStats;
-	public UIPrinter myUIPrinter;
+	[HideInInspector] public UIPrinter myUIPrinter;
 
 	public int bestCarID = 0;
 	private const float freezeTimeOut = 10.0f;
@@ -65,9 +68,11 @@ public class Manager : MonoBehaviour
 	private GameObject playerCar;
 	private CarController playerCarController;
 	public double PlayerFitness { get; set; }
-	public bool isPlayerAlive = false;
+	[HideInInspector] public bool isPlayerAlive = false;
 	#endregion
 
+	[HideInInspector] public List<double> maxFitness = new List<double>();
+	[HideInInspector] public List<double> medianFitness = new List<double>();
 
 	[HideInInspector] public int AliveCount { get; set; }
 
@@ -124,9 +129,6 @@ public class Manager : MonoBehaviour
 
 		}
 
-		
-
-		// TODO: UI-ra kiírni a dolgokat!
 
 	}
 
@@ -374,8 +376,6 @@ public class Manager : MonoBehaviour
 		// TODO: Inputs tömb mérete nagyobb, ha az autó inputként
 		// megkapja a sarkokat is!!
 
-		CarSensorCount = 5;
-
 		Cars = new Car[CarCount];
 		for (int i = 0; i < CarCount; i++)
 		{
@@ -515,6 +515,7 @@ public class Manager : MonoBehaviour
 		globalTimeLeft = globalTimeOut;
 	}
 
+
 	/// <summary>
 	/// Visszaadja a legmagasabb fitness értékkel rendelkező
 	/// életben lévő autó ID-jét.
@@ -539,5 +540,8 @@ public class Manager : MonoBehaviour
 
 		return bestID;
 	}
+
+
+
 
 }

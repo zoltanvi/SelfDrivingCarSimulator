@@ -11,21 +11,24 @@ public class UIPrinter : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI generationText;
 	[SerializeField] private TextMeshProUGUI fitnessText;
 	[SerializeField] private TextMeshProUGUI creatureIDText;
-	[SerializeField] private TextMeshProUGUI averageText;
+	[SerializeField] private TextMeshProUGUI maxText;
 	[SerializeField] private TextMeshProUGUI medianText;
 	[SerializeField] private TextMeshProUGUI mutationRateText;
 	[SerializeField] private TextMeshProUGUI populationText;
-	[SerializeField] private TextMeshProUGUI averageDifferenceText;
+	[SerializeField] private TextMeshProUGUI maxDifferenceText;
 	[SerializeField] private TextMeshProUGUI medianDifferenceText;
 	[SerializeField] private TextMeshProUGUI aliveCountText;
 	[SerializeField] private TextMeshProUGUI consoleText;
 	[SerializeField] private GameObject consolePanel;
 
+	// Maximum Fitness
+	private List<double> maxF;
+	private List<double> medF;
 
-	//private List<double> avgF;
-	//private List<double> medF;
 	private Color green = new Color(0f, 1f, 0f, 1f);
 	private Color red = new Color(1f, 0f, 0f, 1f);
+
+
 	private int panelHeight;
 	private int numLines;
 
@@ -43,8 +46,8 @@ public class UIPrinter : MonoBehaviour
 	}
 	void Update()
 	{
-		//avgF = GameManager.Instance.avgFitness;
-		//medF = GameManager.Instance.medianFitness;
+		maxF = Manager.Instance.maxFitness;
+		medF = Manager.Instance.medianFitness;
 		remainingTimeText.text = string.Format("{0:0.0} sec", Manager.Instance.globalTimeLeft);
 		freezeTimeText.text = string.Format("{0:0.0} sec", Manager.Instance.freezeTimeLeft);
 		generationText.text = string.Format("{0:0}", GenerationCount);
@@ -77,40 +80,40 @@ public class UIPrinter : MonoBehaviour
 		}
 
 
-		//averageText.text = string.Format("{0:0.00}", (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0);
-		//medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
+		maxText.text = string.Format("{0:0.00}", (maxF.Count - 1 >= 0) ? maxF[maxF.Count - 1] : 0);
+		medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
 		mutationRateText.text = string.Format("{0}%", Manager.Instance.MutationRate);
 		populationText.text = string.Format("{0:0}", Manager.Instance.CarCount);
 		aliveCountText.text = Manager.Instance.AliveCount.ToString();
 
-		//double prevAvg = (avgF.Count - 2 >= 0) ? avgF[avgF.Count - 2] : 0;
-		//double currentAvg = (avgF.Count - 1 >= 0) ? avgF[avgF.Count - 1] : 0;
+		double prevMax = (maxF.Count - 2 >= 0) ? maxF[maxF.Count - 2] : 0;
+		double currentMax = (maxF.Count - 1 >= 0) ? maxF[maxF.Count - 1] : 0;
 
-		//double prevMed = (medF.Count - 2 >= 0) ? medF[medF.Count - 2] : 0;
-		//double currentMed = (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0;
+		double prevMed = (medF.Count - 2 >= 0) ? medF[medF.Count - 2] : 0;
+		double currentMed = (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0;
 
 
-		//if ((prevAvg - currentAvg) <= 0)
-		//{
-		//	averageDifferenceText.color = green;
-		//	averageDifferenceText.text = string.Format("+{0:0.0}", (currentAvg - prevAvg));
-		//}
-		//else
-		//{
-		//	averageDifferenceText.color = red;
-		//	averageDifferenceText.text = string.Format("-{0:0.0}", (prevAvg - currentAvg));
-		//}
+		if ((prevMax - currentMax) <= 0)
+		{
+			maxDifferenceText.color = green;
+			maxDifferenceText.text = string.Format("+{0:0.0}", (currentMax - prevMax));
+		}
+		else
+		{
+			maxDifferenceText.color = red;
+			maxDifferenceText.text = string.Format("-{0:0.0}", (prevMax - currentMax));
+		}
 
-		//if ((prevMed - currentMed) <= 0)
-		//{
-		//	medianDifferenceText.color = green;
-		//	medianDifferenceText.text = string.Format("+{0:0.0}", (currentMed - prevMed));
-		//}
-		//else
-		//{
-		//	medianDifferenceText.color = red;
-		//	medianDifferenceText.text = string.Format("-{0:0.0}", (prevMed - currentMed));
-		//}
+		if ((prevMed - currentMed) <= 0)
+		{
+			medianDifferenceText.color = green;
+			medianDifferenceText.text = string.Format("+{0:0.0}", (currentMed - prevMed));
+		}
+		else
+		{
+			medianDifferenceText.color = red;
+			medianDifferenceText.text = string.Format("-{0:0.0}", (prevMed - currentMed));
+		}
 
 	}
 

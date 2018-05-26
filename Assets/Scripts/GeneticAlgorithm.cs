@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 
 public abstract class GeneticAlgorithm : MonoBehaviour
 {
@@ -9,7 +7,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 	public int PopulationSize { get; set; }
 
-	protected Stat[] stats;
+	public Stat[] stats;
 
 	#region Genetic algorithm settings
 	public float MutationChance { get; set; }
@@ -67,6 +65,10 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 			// Rendezi az autókat fitness értékük szerint csökkenő sorrendben
 			SortCarsByFitness();
+
+			// Kiszámolja a maximum és a medián fitnessét az autóknak
+			CalculateStats();
+
 
 			// Kiválasztja a következő generáció egyedeinek szüleit
 			Selection();
@@ -248,6 +250,27 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 	}
 
+	public void CalculateStats()
+	{
+		double max = double.MinValue;
+		double median = double.MinValue;
+
+		for (int i = 0; i < PopulationSize; i++)
+		{
+			if (max < Manager.Instance.Cars[i].Fitness)
+			{
+				max = Manager.Instance.Cars[i].Fitness;
+			}
+		}
+
+		// A stats tömb sorba lesz rendezve,
+		// így onnan tudjuk, hogy melyik a középső autó
+		median = Manager.Instance.Cars[
+			stats[PopulationSize / 2].ID].Fitness;
 
 
+		Manager.Instance.maxFitness.Add(max);
+		Manager.Instance.medianFitness.Add(median);
+
+	}
 }
