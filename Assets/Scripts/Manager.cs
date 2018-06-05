@@ -45,6 +45,8 @@ public class Manager : MonoBehaviour
 	private Queue<GameObject> carPool;
 	private bool firstStart = true;
 	[SerializeField] private GameObject UIStats;
+	[SerializeField] private GameObject inGameMenu;
+
 	[HideInInspector] public UIPrinter myUIPrinter;
 
 	public int bestCarID = 0;
@@ -97,13 +99,21 @@ public class Manager : MonoBehaviour
 	{
 		SceneManager.sceneLoaded += OnSceneLoaded;
 		DontDestroyOnLoad(UIStats);
+		DontDestroyOnLoad(inGameMenu);
 		myUIPrinter = UIStats.GetComponent<UIPrinter>();
 		UIStats.SetActive(false);
+		inGameMenu.SetActive(false);
+	}
+
+	void Update()
+	{
+		ControlMenu();
 	}
 
 	// Meghívódik minden képfrissítéskor
 	void FixedUpdate()
 	{
+
 		// Csak ha elindult a szimuláció, akkor fussanak le a következők
 		if (!firstStart)
 		{
@@ -541,7 +551,27 @@ public class Manager : MonoBehaviour
 		return bestID;
 	}
 
+	private void ControlMenu()
+	{
+		// Ha az ESC billentyűt lenyomták
+		if (Input.GetButtonDown("Cancel"))
+		{
+			// Ha már nem a főmenüben áll
+			if (GotOptionValues)
+			{
+				// Ha aktív volt, eltünteti, ha nem volt aktív, előhozza
+				if (inGameMenu.activeSelf)
+				{
+					inGameMenu.SetActive(false);
+				}
+				else
+				{
+					inGameMenu.SetActive(true);
+				}
+			}
+		}
 
+	}
 
 
 }

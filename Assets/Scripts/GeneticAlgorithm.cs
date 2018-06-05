@@ -202,7 +202,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	protected abstract void Selection();
 
 
-	protected void RecombineAndMutate()
+	protected virtual void RecombineAndMutate()
 	{
 		int index;
 		float mutation;
