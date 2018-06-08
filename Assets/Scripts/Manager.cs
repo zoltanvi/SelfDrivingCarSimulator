@@ -38,12 +38,15 @@ public class Manager : MonoBehaviour
 	#endregion
 
 	public bool GotOptionValues = false;
+	public bool inGame = false;
 	public bool ManualControl = false;
 
 	private GameObject GAGameObject;
 	private GeneticAlgorithm GA = null;
 	private Queue<GameObject> carPool;
 	private bool firstStart = true;
+	private bool playerFirstStart = true;
+
 	[SerializeField] private GameObject UIStats;
 	[SerializeField] private GameObject inGameMenu;
 
@@ -134,11 +137,11 @@ public class Manager : MonoBehaviour
 			else
 			{
 				myUIPrinter.FitnessValue = PlayerFitness;
+				myUIPrinter.ConsoleMessage = "";
+				cameraDrone.CameraTarget = playerCar.transform;
 			}
 
-
 		}
-
 
 	}
 
@@ -250,7 +253,7 @@ public class Manager : MonoBehaviour
 		isPlayerAlive = true;
 		// Ha már volt első spawnolás, akkor az autó fitness értékeinek visszaállítása.
 		// (Errort dobna ha első spawnoláskor elérné ezt a kódot!)
-		if (!firstStart)
+		if (!playerFirstStart)
 		{
 			playerCar.GetComponent<FitnessMeter>().Reset();
 		}
@@ -260,8 +263,19 @@ public class Manager : MonoBehaviour
 	// TODO!!
 	public void JoinGame()
 	{
-		ManualControl = !ManualControl;
+		ManualControl = true;
 		CheckCarMaterials();
+		SpawnPlayerCar(transform.position, transform.rotation);
+		CheckCarMaterials();
+		playerFirstStart = false;
+	}
+
+	public void DisconnectGame()
+	{
+		ManualControl = false;
+		isPlayerAlive = false;
+		playerCar.SetActive(false);
+		playerFirstStart = true;
 
 	}
 
@@ -271,7 +285,7 @@ public class Manager : MonoBehaviour
 	/// </summary>
 	private void CheckCarMaterials()
 	{
-
+		// TODO: ezek csak akkor változnak, ha példányosítja őket.. játék közben így nem tud változni!
 		// Kicseréli az autó materialokat attól függően, hogy játszik-e a player
 		if (!ManualControl)
 		{
@@ -320,6 +334,8 @@ public class Manager : MonoBehaviour
 	{
 		CheckCarMaterials();
 		InstantiateCars();
+		// A player autóját is példányosítja a játék indulásakor
+		InstantiatePlayerCar();
 		SpawnCars();
 
 		UIStats.SetActive(true);
@@ -328,6 +344,7 @@ public class Manager : MonoBehaviour
 		cameraDrone.enabled = true;
 		// Első spawnolás megtörtént
 		firstStart = false;
+		inGame = true;
 	}
 
 	/// <summary>
@@ -556,8 +573,8 @@ public class Manager : MonoBehaviour
 		// Ha az ESC billentyűt lenyomták
 		if (Input.GetButtonDown("Cancel"))
 		{
-			// Ha már nem a főmenüben áll
-			if (GotOptionValues)
+			// Ha már a játékba belépett, előhozhatja az in-game menüt
+			if (inGame)
 			{
 				// Ha aktív volt, eltünteti, ha nem volt aktív, előhozza
 				if (inGameMenu.activeSelf)

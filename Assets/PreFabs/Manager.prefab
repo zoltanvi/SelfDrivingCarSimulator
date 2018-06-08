@@ -64,6 +64,7 @@ MonoBehaviour:
   wheelMat: {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   wheelMatTrans: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
   GotOptionValues: 0
+  inGame: 0
   ManualControl: 0
   UIStats: {fileID: 0}
   inGameMenu: {fileID: 0}

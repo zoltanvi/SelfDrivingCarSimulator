@@ -143,7 +143,7 @@ public class CarController : MonoBehaviour
 			carRigidbody.velocity = velRotation * carRigidbody.velocity;
 		}
 		oldRotation = transform.eulerAngles.y;
-		
+
 		UpdateMeshes();
 	}
 
@@ -157,7 +157,10 @@ public class CarController : MonoBehaviour
 		{
 			Manager.Instance.FreezeCar(carRigidbody, ID, IsAlive);
 			IsAlive = false;
-			Manager.Instance.Cars[ID].IsAlive = false;
+			if (ID != -1)
+			{
+				Manager.Instance.Cars[ID].IsAlive = false;
+			}
 		}
 	}
 
