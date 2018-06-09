@@ -11,17 +11,12 @@ public class CameraDrone : MonoBehaviour
 	public Transform CameraTarget;
 
 	private Vector3 offset = new Vector3(0.62f, 5.83f, -7.5f);
-	private bool isPlayerControlling = false;
-
+	
 	void Awake()
 	{
 		DontDestroyOnLoad(gameObject);
 	}
-
-	void Start()
-	{
-		isPlayerControlling = Manager.Instance.ManualControl;
-	}
+	
 
 	void FixedUpdate()
 	{
@@ -32,7 +27,7 @@ public class CameraDrone : MonoBehaviour
 		transform.position = smoothedPosition;
 
 		// Ha irányítjuk az egyik autót, akkor a kamera az autóra néz, nem fog annyira forogni
-		if (isPlayerControlling)
+		if (Manager.Instance.ManualControl && Manager.Instance.isPlayerAlive)
 		{
 			Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, CameraTarget.rotation, Time.deltaTime * rotationSpeed);
 			transform.rotation = smoothedRotation;

@@ -43,6 +43,18 @@ public class UIPrinter : MonoBehaviour
 		controlledByPlayer = Manager.Instance.ManualControl;
 		ConsoleMessage = "";
 		panelHeight = 0;
+		// TODO: változik majd a navigátorral
+		if (Manager.Instance.ManualControl)
+		{
+			panelHeight = 0;
+		}
+		else
+		{
+			numLines = Manager.Instance.CarSensorCount + 1;
+			panelHeight = (15 * numLines) + 5;
+		}
+
+		consolePanel.GetComponent<RectTransform>().sizeDelta = new Vector2(100, panelHeight);
 	}
 	void Update()
 	{
@@ -55,20 +67,6 @@ public class UIPrinter : MonoBehaviour
 
 
 		consoleText.text = ConsoleMessage;
-		numLines = ConsoleMessage.Split('\n').Length;
-
-		if (ConsoleMessage.Length == 0)
-		{
-			panelHeight = 0;
-		}
-		else
-		{
-			panelHeight = (15 * numLines) + 5;
-		}
-
-
-		consolePanel.GetComponent<RectTransform>().sizeDelta = new Vector2(100, panelHeight);
-		ConsoleMessage = numLines.ToString();
 
 		if (controlledByPlayer)
 		{

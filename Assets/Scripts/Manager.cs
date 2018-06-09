@@ -122,7 +122,15 @@ public class Manager : MonoBehaviour
 		{
 			ManageTime();
 
-			if (!ManualControl)
+			// Ha játszik a játékos és még életben van, őt követi a kamera..
+			// Különben a legjobb élő autót
+			if (ManualControl && isPlayerAlive)
+			{
+				cameraDrone.CameraTarget = playerCar.transform;
+				myUIPrinter.FitnessValue = PlayerFitness;
+				myUIPrinter.ConsoleMessage = "";
+			}
+			else
 			{
 				bestCarID = GetBestID();
 				myUIPrinter.FitnessValue = Cars[bestCarID].Fitness;
@@ -133,12 +141,6 @@ public class Manager : MonoBehaviour
 				{
 					myUIPrinter.ConsoleMessage += string.Format("> {0:0.000}\n", Cars[bestCarID].Inputs[i]);
 				}
-			}
-			else
-			{
-				myUIPrinter.FitnessValue = PlayerFitness;
-				myUIPrinter.ConsoleMessage = "";
-				cameraDrone.CameraTarget = playerCar.transform;
 			}
 
 		}
