@@ -64,11 +64,27 @@ public class NeuralNetwork : MonoBehaviour
 			NeuronLayers[NeuronLayers.Length - 1] = new NeuronLayerTanh(2, neuronCount, bias);
 		}
 
+		if (Manager.Instance.wasItALoad)
+		{
+			for (int i = 0; i < NeuronLayers.Length; i++)
+			{
+				for (int j = 0; j < NeuronLayers[i].NeuronWeights.Length; j++)
+				{
+					for (int k = 0; k < NeuronLayers[i].NeuronWeights[j].Length; k++)
+					{
+						NeuronLayers[i].NeuronWeights[j][k] = Manager.Instance.Save.SavedCarNetworks[carID][i][j][k];
+					}
+				}
+			}
+		}
+
+
 	}
 
 
 	void FixedUpdate()
 	{
+
 		// The inputs array contains the car's sensor datas and it's current speed.
 		carInputs = Manager.Instance.Cars[carID].Inputs;
 

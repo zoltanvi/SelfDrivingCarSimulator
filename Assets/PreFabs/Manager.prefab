@@ -63,11 +63,22 @@ MonoBehaviour:
   blueCarMatTrans: {fileID: 2100000, guid: e8c081bfdcba035429f78524220cbf0e, type: 2}
   wheelMat: {fileID: 2100000, guid: daf3caabd309d1440af8fe9c6b9a1669, type: 2}
   wheelMatTrans: {fileID: 2100000, guid: 8f077bbfdc73e6341929c7337cdb93fc, type: 2}
+  Save:
+    SelectionMethod: 0
+    MutationChance: 0
+    MutationRate: 0
+    CarCount: 0
+    LayersCount: 0
+    NeuronPerLayerCount: 0
+    Navigator: 0
+    TrackNumber: 0
+    GenerationCount: 0
   GotOptionValues: 0
   inGame: 0
   ManualControl: 0
   UIStats: {fileID: 0}
   inGameMenu: {fileID: 0}
+  loadingScreen: {fileID: 0}
   myUIPrinter: {fileID: 0}
   bestCarID: 1
   freezeTimeLeft: 8.659969

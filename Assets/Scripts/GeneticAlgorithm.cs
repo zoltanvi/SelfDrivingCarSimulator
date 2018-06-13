@@ -24,14 +24,13 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 	// 4D tömbben tárolja az összes autó neurális hálójának értékeit,
 	// mert rekombinációkor az eredeti értékekkel kell dolgozni.
-	protected double[][][][] savedCarNetwork;
+	public double[][][][] SavedCarNetworks;
 
 
 
 	void Awake()
 	{
 		PopulationSize = Manager.Instance.CarCount;
-		// Megfelelő SelectionMethod switch-case
 		MutationChance = Manager.Instance.MutationChance; // 30-70 int %
 		MutationRate = Manager.Instance.MutationRate;   // 2-4 float %
 
@@ -57,6 +56,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 	void FixedUpdate()
 	{
+
 		// Ha minden autó megfagyott, jöhet az új generáció
 		if (Manager.Instance.AliveCount <= 0 && Manager.Instance.isPlayerAlive == false)
 		{
@@ -69,7 +69,6 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 			// Kiszámolja a maximum és a medián fitnessét az autóknak
 			CalculateStats();
 
-
 			// Kiválasztja a következő generáció egyedeinek szüleit
 			Selection();
 
@@ -78,6 +77,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 			// Respawnolja az új egyedeket
 			RespawnCars();
+
 		}
 
 	}
@@ -111,33 +111,33 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	/// <summary>
 	/// Inicilizálja a savedCarNetwork tömböt, melyben a neurális hálók vannak tárolva.
 	/// </summary>
-	protected void InitSavedCarNetwork()
+	public void InitSavedCarNetwork()
 	{
 		for (int i = 0; i < PopulationSize; i++)
 		{
 			carNetworks[i] = Manager.Instance.Cars[i].NeuralNetwork;
 		}
 
-		savedCarNetwork = new double[PopulationSize][][][];
+		SavedCarNetworks = new double[PopulationSize][][][];
 
-		for (int i = 0; i < savedCarNetwork.Length; i++)
+		for (int i = 0; i < SavedCarNetworks.Length; i++)
 		{
-			savedCarNetwork[i] = new double[carNetworks[i].NeuronLayers.Length][][];
+			SavedCarNetworks[i] = new double[carNetworks[i].NeuronLayers.Length][][];
 		}
-		for (int i = 0; i < savedCarNetwork.Length; i++)
+		for (int i = 0; i < SavedCarNetworks.Length; i++)
 		{
-			for (int j = 0; j < savedCarNetwork[i].Length; j++)
+			for (int j = 0; j < SavedCarNetworks[i].Length; j++)
 			{
-				savedCarNetwork[i][j] = new double[carNetworks[i].NeuronLayers[j].NeuronWeights.Length][];
+				SavedCarNetworks[i][j] = new double[carNetworks[i].NeuronLayers[j].NeuronWeights.Length][];
 			}
 		}
-		for (int i = 0; i < savedCarNetwork.Length; i++)
+		for (int i = 0; i < SavedCarNetworks.Length; i++)
 		{
-			for (int j = 0; j < savedCarNetwork[i].Length; j++)
+			for (int j = 0; j < SavedCarNetworks[i].Length; j++)
 			{
-				for (int k = 0; k < savedCarNetwork[i][j].Length; k++)
+				for (int k = 0; k < SavedCarNetworks[i][j].Length; k++)
 				{
-					savedCarNetwork[i][j][k] = new double[carNetworks[i].NeuronLayers[j].NeuronWeights[k].Length];
+					SavedCarNetworks[i][j][k] = new double[carNetworks[i].NeuronLayers[j].NeuronWeights[k].Length];
 				}
 			}
 		}
@@ -146,7 +146,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	/// <summary>
 	/// Elmenti a neurális háló adatait a savedCarNetwork tömbbe
 	/// </summary>
-	protected void SaveNeuralNetworks()
+	public void SaveNeuralNetworks()
 	{
 		if (GenerationCount <= 1)
 		{
@@ -154,15 +154,15 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		}
 
 
-		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
+		for (int i = 0; i < SavedCarNetworks.Length; i++)    // melyik autó
 		{
-			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
+			for (int j = 0; j < SavedCarNetworks[i].Length; j++) // melyik neuronréteg
 			{
-				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
+				for (int k = 0; k < SavedCarNetworks[i][j].Length; k++) // melyik neuron
 				{
-					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
+					for (int l = 0; l < SavedCarNetworks[i][j][k].Length; l++) // melyik súlya
 					{
-						savedCarNetwork[i][j][k][l] = carNetworks[i].NeuronLayers[j].NeuronWeights[k][l];
+						SavedCarNetworks[i][j][k][l] = carNetworks[i].NeuronLayers[j].NeuronWeights[k][l];
 					}
 				}
 			}
@@ -209,18 +209,18 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		float mutationRateMinimum = (100 - MutationRate) / 100;
 		float mutationRateMaximum = (100 + MutationRate) / 100;
 
-		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
+		for (int i = 0; i < SavedCarNetworks.Length; i++)    // melyik autó
 		{
-			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
+			for (int j = 0; j < SavedCarNetworks[i].Length; j++) // melyik neuronréteg
 			{
-				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
+				for (int k = 0; k < SavedCarNetworks[i][j].Length; k++) // melyik neuron
 				{
-					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
+					for (int l = 0; l < SavedCarNetworks[i][j][k].Length; l++) // melyik súlya
 					{
 						if (i == stats[0].ID)
 						{
 							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[i][j][k][l];
+								SavedCarNetworks[i][j][k][l];
 						}
 						else
 						{
@@ -234,12 +234,12 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 							if (Random.Range(1, 100) <= MutationChance)
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[index][j][k][l] * mutation;
+								SavedCarNetworks[index][j][k][l] * mutation;
 							}
 							else
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-									savedCarNetwork[index][j][k][l];
+									SavedCarNetworks[index][j][k][l];
 							}
 						}
 					}
@@ -273,4 +273,6 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		Manager.Instance.medianFitness.Add(median);
 
 	}
+
+
 }

@@ -1,6 +1,8 @@
 ﻿using UnityEngine;
+using System.IO;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
+using System.Runtime.Serialization.Formatters.Binary;
 
 public class Manager : MonoBehaviour
 {
@@ -22,7 +24,6 @@ public class Manager : MonoBehaviour
 	public int CarSensorCount = 5;
 	[Range(10, 40)]
 	public int CarSensorLength = 25;
-
 	public double Bias { get; set; }
 	#endregion
 
@@ -37,19 +38,24 @@ public class Manager : MonoBehaviour
 	[SerializeField] protected Material wheelMatTrans;
 	#endregion
 
+	public GameSave Save;
+	private string filePath;
+
 	public bool GotOptionValues = false;
 	public bool inGame = false;
 	public bool ManualControl = false;
 
 	private GameObject GAGameObject;
-	private GeneticAlgorithm GA = null;
+	private GeneticAlgorithm GA;
 	private Queue<GameObject> carPool;
 	private bool firstStart = true;
 	private bool playerFirstStart = true;
+	public bool wasItALoad = false;
+
 
 	[SerializeField] private GameObject UIStats;
 	[SerializeField] private GameObject inGameMenu;
-
+	[SerializeField] private GameObject loadingScreen;
 	[HideInInspector] public UIPrinter myUIPrinter;
 
 	public int bestCarID = 0;
@@ -100,12 +106,16 @@ public class Manager : MonoBehaviour
 
 	void Start()
 	{
+
+		filePath = Application.persistentDataPath + "/cargame.save";
+
 		SceneManager.sceneLoaded += OnSceneLoaded;
 		DontDestroyOnLoad(UIStats);
 		DontDestroyOnLoad(inGameMenu);
 		myUIPrinter = UIStats.GetComponent<UIPrinter>();
 		UIStats.SetActive(false);
 		inGameMenu.SetActive(false);
+		Save = new GameSave();
 	}
 
 	void Update()
@@ -203,7 +213,6 @@ public class Manager : MonoBehaviour
 		}
 	}
 
-
 	/// <summary>
 	/// Az inicializált autókból a sorra következőt lespawnolja a kezdőpozícióba.
 	/// Az autók pozíció adatait, stb. visszaállítja defaultra.
@@ -261,8 +270,8 @@ public class Manager : MonoBehaviour
 		}
 		return playerCar;
 	}
+	
 
-	// TODO!!
 	public void JoinGame()
 	{
 		ManualControl = true;
@@ -324,8 +333,9 @@ public class Manager : MonoBehaviour
 	{
 		Bias = 1.0;
 		InitTrack();
-		InitGenetic();
 		InitCars();
+		InitGenetic();
+
 
 		AliveCount = CarCount;
 		cameraDrone.enabled = false;
@@ -347,6 +357,10 @@ public class Manager : MonoBehaviour
 		// Első spawnolás megtörtént
 		firstStart = false;
 		inGame = true;
+
+		
+
+
 	}
 
 	/// <summary>
@@ -418,14 +432,65 @@ public class Manager : MonoBehaviour
 		}
 	}
 
-	void LoadGame()
+	public void LoadGame()
 	{
-		// TODO
+		// TODO: ide egy file választó
+		if (File.Exists(filePath))
+		{
+
+			FileStream file;
+
+			using (file = File.Open(filePath, FileMode.Open))
+			{
+				BinaryFormatter bf = new BinaryFormatter();
+				Save = (GameSave)bf.Deserialize(file);
+				Debug.Log("The save file has been opened.");
+			}
+
+			SelectionMethod = Save.SelectionMethod;
+			MutationChance = Save.MutationChance;
+			MutationRate = Save.MutationRate;
+			CarCount = Save.CarCount;
+			LayersCount = Save.LayersCount;
+			NeuronPerLayerCount = Save.NeuronPerLayerCount;
+			// navigator = save.navigator;
+			TrackNumber = Save.TrackNumber;
+
+			GotOptionValues = true;
+			wasItALoad = true;
+			loadingScreen.SetActive(true);
+
+			Debug.Log("The game is starting...");
+
+		}
 	}
 
-	void SaveGame()
+	public void SaveGame()
 	{
-		// TODO
+		// TODO: ide egy fájl választó
+		// Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
+		GA.SaveNeuralNetworks();
+		
+		Save.SelectionMethod = SelectionMethod;
+		Save.MutationChance = MutationChance;
+		Save.MutationRate = MutationRate;
+		Save.CarCount = CarCount;
+		Save.LayersCount = LayersCount;
+		Save.NeuronPerLayerCount = NeuronPerLayerCount;
+		// save.navigator = navigator;
+		Save.TrackNumber = TrackNumber;
+		Save.SavedCarNetworks = GA.SavedCarNetworks;
+		Save.GenerationCount = GA.GenerationCount;
+
+		
+		FileStream file;
+		using (file = File.Create(filePath))
+		{
+			BinaryFormatter bf = new BinaryFormatter();
+			bf.Serialize(file, Save);
+		}
+
+		Debug.Log("Saved file: " + filePath);
 	}
 
 	/// <summary>

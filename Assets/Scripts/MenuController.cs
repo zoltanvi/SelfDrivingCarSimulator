@@ -26,7 +26,6 @@ public class MenuController : MonoBehaviour
 	public int NumberOfLayers { get; set; }
 	public int NeuronPerLayer { get; set; }
 	public bool Navigator { get; set; }
-	public int TrackNumber { get; set; }
 
 	private List<string> selections = new List<string>() {
 		"Tournament method", "Top 50%", "Tournament + worst 20% full random"

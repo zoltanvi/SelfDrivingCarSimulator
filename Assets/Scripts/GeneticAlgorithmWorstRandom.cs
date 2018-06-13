@@ -99,18 +99,18 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 		float mutationRateMaximum = (100 + MutationRate) / 100;
 		top80 = (int)(PopulationSize * 0.8f);
 
-		for (int i = 0; i < savedCarNetwork.Length; i++)    // melyik autó
+		for (int i = 0; i < SavedCarNetworks.Length; i++)    // melyik autó
 		{
-			for (int j = 0; j < savedCarNetwork[i].Length; j++) // melyik neuronréteg
+			for (int j = 0; j < SavedCarNetworks[i].Length; j++) // melyik neuronréteg
 			{
-				for (int k = 0; k < savedCarNetwork[i][j].Length; k++) // melyik neuron
+				for (int k = 0; k < SavedCarNetworks[i][j].Length; k++) // melyik neuron
 				{
-					for (int l = 0; l < savedCarNetwork[i][j][k].Length; l++) // melyik súlya
+					for (int l = 0; l < SavedCarNetworks[i][j][k].Length; l++) // melyik súlya
 					{
 						if (i == stats[0].ID)
 						{
 							carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[i][j][k][l];
+								SavedCarNetworks[i][j][k][l];
 						}
 						else if (i >= top80)
 						{
@@ -129,12 +129,12 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 							if (Random.Range(1, 100) <= MutationChance)
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-								savedCarNetwork[index][j][k][l] * mutation;
+								SavedCarNetworks[index][j][k][l] * mutation;
 							}
 							else
 							{
 								carNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
-									savedCarNetwork[index][j][k][l];
+									SavedCarNetworks[index][j][k][l];
 							}
 						}
 					}
