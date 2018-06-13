@@ -63,6 +63,12 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 			// Elmenti az összes autó neurális hálóját
 			SaveNeuralNetworks();
 
+			if (Manager.Instance.wasItALoad)
+			{
+				GenerationCount = Manager.Instance.Save.GenerationCount;
+				Manager.Instance.wasItALoad = false;
+			}
+
 			// Rendezi az autókat fitness értékük szerint csökkenő sorrendben
 			SortCarsByFitness();
 

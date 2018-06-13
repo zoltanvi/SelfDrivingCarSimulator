@@ -1,4 +1,6 @@
-﻿[System.Serializable]
+﻿using System.Collections.Generic;
+
+[System.Serializable]
 public class GameSave{
 
 	#region Manager értékei
@@ -16,6 +18,11 @@ public class GameSave{
 	// Az összes autó neurális hálójának értékeit tárolja
 	public double[][][][] SavedCarNetworks;
 	public int GenerationCount;
+	#endregion
+
+	#region Statisztikai adatok
+	public List<double> maxFitness;
+	public List<double> medianFitness;
 	#endregion
 
 }

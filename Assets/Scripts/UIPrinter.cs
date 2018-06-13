@@ -62,7 +62,15 @@ public class UIPrinter : MonoBehaviour
 		medF = Manager.Instance.medianFitness;
 		remainingTimeText.text = string.Format("{0:0.0} sec", Manager.Instance.globalTimeLeft);
 		freezeTimeText.text = string.Format("{0:0.0} sec", Manager.Instance.freezeTimeLeft);
-		generationText.text = string.Format("{0:0}", GenerationCount);
+		if (Manager.Instance.wasItALoad)
+		{
+			generationText.text = string.Format("{0:0}", Manager.Instance.Save.GenerationCount);
+		}
+		else
+		{
+			generationText.text = string.Format("{0:0}", GenerationCount);
+		}
+
 		fitnessText.text = string.Format("{0:0.00}", FitnessValue);
 
 

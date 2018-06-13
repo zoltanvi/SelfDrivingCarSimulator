@@ -358,9 +358,6 @@ public class Manager : MonoBehaviour
 		firstStart = false;
 		inGame = true;
 
-		
-
-
 	}
 
 	/// <summary>
@@ -455,12 +452,12 @@ public class Manager : MonoBehaviour
 			NeuronPerLayerCount = Save.NeuronPerLayerCount;
 			// navigator = save.navigator;
 			TrackNumber = Save.TrackNumber;
+			medianFitness = Save.medianFitness;
+			maxFitness = Save.maxFitness;
 
 			GotOptionValues = true;
 			wasItALoad = true;
 			loadingScreen.SetActive(true);
-
-			Debug.Log("The game is starting...");
 
 		}
 	}
@@ -477,11 +474,12 @@ public class Manager : MonoBehaviour
 		Save.CarCount = CarCount;
 		Save.LayersCount = LayersCount;
 		Save.NeuronPerLayerCount = NeuronPerLayerCount;
-		// save.navigator = navigator;
+		//Save.Navigator = Navigator;
 		Save.TrackNumber = TrackNumber;
 		Save.SavedCarNetworks = GA.SavedCarNetworks;
 		Save.GenerationCount = GA.GenerationCount;
-
+		Save.maxFitness = maxFitness;
+		Save.medianFitness = medianFitness;
 		
 		FileStream file;
 		using (file = File.Create(filePath))
