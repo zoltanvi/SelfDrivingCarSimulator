@@ -1,8 +1,10 @@
 ﻿using UnityEngine;
 using System.IO;
+using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters.Binary;
+using UnityEditor;
 
 public class Manager : MonoBehaviour
 {
@@ -38,8 +40,8 @@ public class Manager : MonoBehaviour
 	[SerializeField] protected Material wheelMatTrans;
 	#endregion
 
+	// Ebben az objektumban van tárolva az elmentett / betöltött adatok.
 	public GameSave Save;
-	private string filePath;
 
 	public bool GotOptionValues = false;
 	public bool inGame = false;
@@ -106,8 +108,6 @@ public class Manager : MonoBehaviour
 
 	void Start()
 	{
-
-		filePath = Application.persistentDataPath + "/cargame.save";
 
 		SceneManager.sceneLoaded += OnSceneLoaded;
 		DontDestroyOnLoad(UIStats);
@@ -431,40 +431,56 @@ public class Manager : MonoBehaviour
 
 	public void LoadGame()
 	{
-		// TODO: ide egy file választó
-		if (File.Exists(filePath))
+
+		string loadPath = EditorUtility.OpenFilePanel("Select a save file", "", "save");
+
+		if (Path.GetExtension(loadPath).Equals(".save"))
 		{
-
-			FileStream file;
-
-			using (file = File.Open(filePath, FileMode.Open))
+			if (File.Exists(loadPath))
 			{
-				BinaryFormatter bf = new BinaryFormatter();
-				Save = (GameSave)bf.Deserialize(file);
-				Debug.Log("The save file has been opened.");
+
+				FileStream file;
+
+				using (file = File.Open(loadPath, FileMode.Open))
+				{
+					BinaryFormatter bf = new BinaryFormatter();
+					Save = (GameSave)bf.Deserialize(file);
+				}
+
+				SelectionMethod = Save.SelectionMethod;
+				MutationChance = Save.MutationChance;
+				MutationRate = Save.MutationRate;
+				CarCount = Save.CarCount;
+				LayersCount = Save.LayersCount;
+				NeuronPerLayerCount = Save.NeuronPerLayerCount;
+				// navigator = save.navigator;
+				TrackNumber = Save.TrackNumber;
+				medianFitness = Save.medianFitness;
+				maxFitness = Save.maxFitness;
+
+				GotOptionValues = true;
+				wasItALoad = true;
+				loadingScreen.SetActive(true);
+
 			}
-
-			SelectionMethod = Save.SelectionMethod;
-			MutationChance = Save.MutationChance;
-			MutationRate = Save.MutationRate;
-			CarCount = Save.CarCount;
-			LayersCount = Save.LayersCount;
-			NeuronPerLayerCount = Save.NeuronPerLayerCount;
-			// navigator = save.navigator;
-			TrackNumber = Save.TrackNumber;
-			medianFitness = Save.medianFitness;
-			maxFitness = Save.maxFitness;
-
-			GotOptionValues = true;
-			wasItALoad = true;
-			loadingScreen.SetActive(true);
-
 		}
+		else
+		{
+			Debug.LogError("You tried to open a wrong file!");
+		}
+		
 	}
 
 	public void SaveGame()
 	{
-		// TODO: ide egy fájl választó
+		DateTime dateTime = DateTime.Now;
+		string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
+		string savePath = EditorUtility.SaveFilePanel(
+				"Save game",
+				"",
+				 "CarGame_" + timeStamp + ".save",
+				"save");
+		
 		// Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
 		GA.SaveNeuralNetworks();
 		
@@ -482,13 +498,13 @@ public class Manager : MonoBehaviour
 		Save.medianFitness = medianFitness;
 		
 		FileStream file;
-		using (file = File.Create(filePath))
+		using (file = File.Create(savePath))
 		{
 			BinaryFormatter bf = new BinaryFormatter();
 			bf.Serialize(file, Save);
 		}
 
-		Debug.Log("Saved file: " + filePath);
+		Debug.Log("Saved file: " + savePath);
 	}
 
 	/// <summary>
