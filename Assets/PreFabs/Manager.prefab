@@ -73,12 +73,19 @@ MonoBehaviour:
     Navigator: 0
     TrackNumber: 0
     GenerationCount: 0
+    maxFitness: []
+    medianFitness: []
   GotOptionValues: 0
   inGame: 0
   ManualControl: 0
+  wasItALoad: 0
+  FileExtensions: []
   UIStats: {fileID: 0}
   inGameMenu: {fileID: 0}
   loadingScreen: {fileID: 0}
+  canvas: {fileID: 0}
+  fileBrowserPrefab: {fileID: 1760643962491650, guid: 4599b5ba3543545db92bb18160cea721,
+    type: 2}
   myUIPrinter: {fileID: 0}
   bestCarID: 1
   freezeTimeLeft: 8.659969

@@ -1430,7 +1430,7 @@ GameObject:
   - component: {fileID: 170921011}
   - component: {fileID: 170921015}
   m_Layer: 5
-  m_Name: MainMenu
+  m_Name: MainMenuCanvas
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -3271,7 +3271,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -56, y: 16}
+  m_AnchoredPosition: {x: -56.00006, y: 16}
   m_SizeDelta: {x: 1015.4, y: 120.5}
   m_Pivot: {x: 0, y: 0}
 --- !u!114 &582580482
@@ -7088,7 +7088,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 53, y: -9.997864}
+  m_AnchoredPosition: {x: 53, y: -9.997803}
   m_SizeDelta: {x: 769.2, y: -20.004}
   m_Pivot: {x: 0, y: 0.5}
 --- !u!1 &1282625814
@@ -7179,6 +7179,11 @@ Prefab:
       propertyPath: loadingScreen
       value: 
       objectReference: {fileID: 660921335}
+    - target: {fileID: 114057008519178672, guid: 8bb78303fa93d2143a218c876bf46a79,
+        type: 2}
+      propertyPath: canvas
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 114057008519178672, guid: 8bb78303fa93d2143a218c876bf46a79,
         type: 2}
       propertyPath: cameraDrone

@@ -1,10 +1,10 @@
 ﻿using UnityEngine;
 using System.IO;
-using System;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters.Binary;
-using UnityEditor;
+using Crosstales.FB;
+using System;
 
 public class Manager : MonoBehaviour
 {
@@ -53,7 +53,6 @@ public class Manager : MonoBehaviour
 	private bool firstStart = true;
 	private bool playerFirstStart = true;
 	public bool wasItALoad = false;
-
 
 	[SerializeField] private GameObject UIStats;
 	[SerializeField] private GameObject inGameMenu;
@@ -108,7 +107,6 @@ public class Manager : MonoBehaviour
 
 	void Start()
 	{
-
 		SceneManager.sceneLoaded += OnSceneLoaded;
 		DontDestroyOnLoad(UIStats);
 		DontDestroyOnLoad(inGameMenu);
@@ -270,7 +268,7 @@ public class Manager : MonoBehaviour
 		}
 		return playerCar;
 	}
-	
+
 
 	public void JoinGame()
 	{
@@ -396,7 +394,6 @@ public class Manager : MonoBehaviour
 
 	}
 
-
 	void InitTrack()
 	{
 		// TODO: pálya választó
@@ -431,17 +428,17 @@ public class Manager : MonoBehaviour
 
 	public void LoadGame()
 	{
+		string extensions = "save";
+		string path = FileBrowser.OpenSingleFile("Select a saved game to load", "", extensions);
+		Debug.Log("Selected file: " + path);
 
-		string loadPath = EditorUtility.OpenFilePanel("Select a save file", "", "save");
-
-		if (Path.GetExtension(loadPath).Equals(".save"))
+		if (Path.GetExtension(path).Equals(".save"))
 		{
-			if (File.Exists(loadPath))
+			if (File.Exists(path))
 			{
-
 				FileStream file;
 
-				using (file = File.Open(loadPath, FileMode.Open))
+				using (file = File.Open(path, FileMode.Open))
 				{
 					BinaryFormatter bf = new BinaryFormatter();
 					Save = (GameSave)bf.Deserialize(file);
@@ -464,48 +461,54 @@ public class Manager : MonoBehaviour
 
 			}
 		}
+		else if (path.Length == 0)
+		{
+			Debug.Log("No file selected.");
+		}
 		else
 		{
 			Debug.LogError("You tried to open a wrong file!");
 		}
-		
+
 	}
 
 	public void SaveGame()
 	{
+		string extensions = "save";
 		DateTime dateTime = DateTime.Now;
 		string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
-		string savePath = EditorUtility.SaveFilePanel(
-				"Save game",
-				"",
-				 "CarGame_" + timeStamp + ".save",
-				"save");
-		
-		// Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
-		GA.SaveNeuralNetworks();
-		
-		Save.SelectionMethod = SelectionMethod;
-		Save.MutationChance = MutationChance;
-		Save.MutationRate = MutationRate;
-		Save.CarCount = CarCount;
-		Save.LayersCount = LayersCount;
-		Save.NeuronPerLayerCount = NeuronPerLayerCount;
-		//Save.Navigator = Navigator;
-		Save.TrackNumber = TrackNumber;
-		Save.SavedCarNetworks = GA.SavedCarNetworks;
-		Save.GenerationCount = GA.GenerationCount;
-		Save.maxFitness = maxFitness;
-		Save.medianFitness = medianFitness;
-		
-		FileStream file;
-		using (file = File.Create(savePath))
-		{
-			BinaryFormatter bf = new BinaryFormatter();
-			bf.Serialize(file, Save);
-		}
+		string path = FileBrowser.SaveFile("Select the save location", "", "CarGame_" + timeStamp, extensions);
+		Debug.Log("Save file: " + path);
 
-		Debug.Log("Saved file: " + savePath);
+		if (path.Length != 0)
+		{
+			// Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
+			GA.SaveNeuralNetworks();
+
+			Save.SelectionMethod = SelectionMethod;
+			Save.MutationChance = MutationChance;
+			Save.MutationRate = MutationRate;
+			Save.CarCount = CarCount;
+			Save.LayersCount = LayersCount;
+			Save.NeuronPerLayerCount = NeuronPerLayerCount;
+			//Save.Navigator = Navigator;
+			Save.TrackNumber = TrackNumber;
+			Save.SavedCarNetworks = GA.SavedCarNetworks;
+			Save.GenerationCount = GA.GenerationCount;
+			Save.maxFitness = maxFitness;
+			Save.medianFitness = medianFitness;
+
+			FileStream file;
+			using (file = File.Create(path))
+			{
+				BinaryFormatter bf = new BinaryFormatter();
+				bf.Serialize(file, Save);
+			}
+		}
+		
+
 	}
+
 
 	/// <summary>
 	/// Az időket kezeli, meghívja az ellenőrző/fagyasztó metódusokat
@@ -622,7 +625,6 @@ public class Manager : MonoBehaviour
 		freezeTimeLeft = freezeTimeOut;
 		globalTimeLeft = globalTimeOut;
 	}
-
 
 	/// <summary>
 	/// Visszaadja a legmagasabb fitness értékkel rendelkező
