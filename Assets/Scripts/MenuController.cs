@@ -19,12 +19,20 @@ public class MenuController : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI neuronPerLayer;
 	[SerializeField] private Toggle navigator;
 
+	[SerializeField] private Image track01Image;
+	[SerializeField] private Image track02Image;
+
+	private Color white = new Color(1.0f, 1.0f, 1.0f);
+	private Color gray = new Color(0.254717f, 0.254717f, 0.254717f);
+
+
 	public int SelectionMethodE { get; set; }
 	public int MutationChanceE { get; set; }
 	public int MutationRateE { get; set; }
 	public int NumberOfCars { get; set; }
 	public int NumberOfLayers { get; set; }
 	public int NeuronPerLayer { get; set; }
+	public int TrackNumber { get; set; }
 	public bool Navigator { get; set; }
 
 	private List<string> selections = new List<string>() {
@@ -50,7 +58,7 @@ public class MenuController : MonoBehaviour
 		NeuronPerLayer = 6;
 		SelectionMethodE = 0;           // Tournament
 		MutationChanceE = 2;        // 50%
-		MutationRateE = 3;      // 3.5%
+		MutationRateE = 2;      // 3.5%
 
 		numOfCarsSlider.value = NumberOfCars;
 		numOfLayersSlider.value = NumberOfLayers;
@@ -89,6 +97,24 @@ public class MenuController : MonoBehaviour
 		numOfCars.text = NumberOfCars.ToString();
 		numOfLayers.text = NumberOfLayers.ToString();
 		neuronPerLayer.text = NeuronPerLayer.ToString();
+
+		switch (TrackNumber)
+		{
+			case 0:
+				track01Image.color = white;
+				track02Image.color = gray;
+				break;
+
+			case 1:
+				track01Image.color = gray;
+				track02Image.color = white;
+				break;
+
+			default:
+				track01Image.color = white;
+				track02Image.color = gray;
+				break;
+		}
 	}
 
 	public void SetOptionValues()
@@ -97,7 +123,7 @@ public class MenuController : MonoBehaviour
 		Manager.Instance.CarCount = NumberOfCars;
 		Manager.Instance.LayersCount = NumberOfLayers;
 		Manager.Instance.NeuronPerLayerCount = NeuronPerLayer;
-
+		Manager.Instance.TrackNumber = TrackNumber;
 		Manager.Instance.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
 
 		// Az érték beállítása a dropdownból kinyert adat szerint

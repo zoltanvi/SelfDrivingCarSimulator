@@ -58,6 +58,7 @@ public class Manager : MonoBehaviour
 	[SerializeField] private GameObject inGameMenu;
 	[SerializeField] private GameObject loadingScreen;
 	[HideInInspector] public UIPrinter myUIPrinter;
+	[SerializeField] private GameObject minimapCamera;
 
 	public int bestCarID = 0;
 	private const float freezeTimeOut = 10.0f;
@@ -110,6 +111,7 @@ public class Manager : MonoBehaviour
 		SceneManager.sceneLoaded += OnSceneLoaded;
 		DontDestroyOnLoad(UIStats);
 		DontDestroyOnLoad(inGameMenu);
+		DontDestroyOnLoad(minimapCamera);
 		myUIPrinter = UIStats.GetComponent<UIPrinter>();
 		UIStats.SetActive(false);
 		inGameMenu.SetActive(false);
@@ -396,8 +398,21 @@ public class Manager : MonoBehaviour
 
 	void InitTrack()
 	{
-		// TODO: pálya választó
-		TrackNumber = 0;
+		switch (TrackNumber)
+		{
+			case 0:
+				minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
+				break;
+
+			case 1:
+				minimapCamera.transform.position = new Vector3(-1.0f, 7.0f, -2.5f);
+				break;
+
+			default:
+				minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
+				break;
+		}
+
 
 		CurrentTrack = Instantiate(TrackPrefabs[TrackNumber], transform.position, transform.rotation);
 		CurrentWaypoint = Instantiate(WayPointPrefabs[TrackNumber], transform.position, transform.rotation);
