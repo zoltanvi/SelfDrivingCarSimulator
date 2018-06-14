@@ -674,4 +674,10 @@ public class Manager : MonoBehaviour
 	}
 
 
+	public void ExitGame()
+	{
+		Debug.Log("Kilépés...");
+		Application.Quit();
+	}
+	
 }
