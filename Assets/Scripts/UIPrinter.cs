@@ -50,7 +50,14 @@ public class UIPrinter : MonoBehaviour
 		}
 		else
 		{
-			numLines = Manager.Instance.CarSensorCount + 1;
+			if (Manager.Instance.Navigator)
+			{
+				numLines = Manager.Instance.CarSensorCount + 4;
+			}
+			else
+			{
+				numLines = Manager.Instance.CarSensorCount + 1;
+			}
 			panelHeight = (15 * numLines) + 5;
 		}
 

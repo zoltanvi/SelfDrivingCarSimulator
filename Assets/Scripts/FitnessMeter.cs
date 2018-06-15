@@ -8,7 +8,7 @@ public class FitnessMeter : MonoBehaviour
 
 	[HideInInspector] public Transform[] waypoints;
 	[HideInInspector] public Transform prevPoint, currentPoint, nextPoint;
-	private int nextPointIndex = 1;
+	public int nextPointIndex = 1;
 
 	// AbsoluteFitness: a palyahoz viszonyitott fitness.
 	[HideInInspector] public double absoluteFitness = 0;
@@ -20,6 +20,7 @@ public class FitnessMeter : MonoBehaviour
 	// Az auto sorszama - tobb autot managel a CarGameController osztaly
 	private int carID;
 	private bool controlledByPlayer = false;
+
 
 	void Start()
 	{
@@ -48,6 +49,8 @@ public class FitnessMeter : MonoBehaviour
 		prevPoint = waypoints[waypoints.Length - 1];
 		currentPoint = waypoints[0];
 		nextPoint = waypoints[1];
+
+
 	}
 
 	public void Reset()
@@ -155,5 +158,7 @@ public class FitnessMeter : MonoBehaviour
 			Manager.Instance.PlayerFitness = absoluteFitness;
 		}
 	}
+
+
 
 }

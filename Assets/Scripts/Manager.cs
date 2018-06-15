@@ -27,6 +27,7 @@ public class Manager : MonoBehaviour
 	[Range(10, 40)]
 	public int CarSensorLength = 25;
 	public double Bias { get; set; }
+	public bool Navigator { get; set; }
 	#endregion
 
 	#region Prefabs & materials
@@ -296,6 +297,7 @@ public class Manager : MonoBehaviour
 	/// </summary>
 	private void CheckCarMaterials()
 	{
+		// TODO: utilitybe kiszervezni
 		// TODO: ezek csak akkor változnak, ha példányosítja őket.. játék közben így nem tud változni!
 		// Kicseréli az autó materialokat attól függően, hogy játszik-e a player
 		if (!ManualControl)
@@ -427,6 +429,16 @@ public class Manager : MonoBehaviour
 	{
 		// TODO: Inputs tömb mérete nagyobb, ha az autó inputként
 		// megkapja a sarkokat is!!
+		int inputCount;
+
+		if (Navigator)
+		{
+			inputCount = CarSensorCount + 4;
+		}
+		else
+		{
+			inputCount = CarSensorCount + 1;
+		}
 
 		Cars = new Car[CarCount];
 		for (int i = 0; i < CarCount; i++)
@@ -435,7 +447,7 @@ public class Manager : MonoBehaviour
 			{
 				ID = i,
 				Fitness = 0,
-				Inputs = new double[CarSensorCount + 1],
+				Inputs =  new double[inputCount],
 				PrevFitness = 0
 			};
 		}
@@ -465,7 +477,7 @@ public class Manager : MonoBehaviour
 				CarCount = Save.CarCount;
 				LayersCount = Save.LayersCount;
 				NeuronPerLayerCount = Save.NeuronPerLayerCount;
-				// navigator = save.navigator;
+				Navigator = Save.Navigator;
 				TrackNumber = Save.TrackNumber;
 				medianFitness = Save.medianFitness;
 				maxFitness = Save.maxFitness;
@@ -506,7 +518,7 @@ public class Manager : MonoBehaviour
 			Save.CarCount = CarCount;
 			Save.LayersCount = LayersCount;
 			Save.NeuronPerLayerCount = NeuronPerLayerCount;
-			//Save.Navigator = Navigator;
+			Save.Navigator = Navigator;
 			Save.TrackNumber = TrackNumber;
 			Save.SavedCarNetworks = GA.SavedCarNetworks;
 			Save.GenerationCount = GA.GenerationCount;

@@ -20,14 +20,22 @@ public class NeuralNetwork : MonoBehaviour
 	// control[0] = kanyarodas , control[1] = gyorsulas 
 	double[] control = new double[2];
 
-
 	void Start()
 	{
 		bias = Manager.Instance.Bias;
 		carID = this.gameObject.GetComponent<CarController>().ID;
 		hiddenLayerCount = Manager.Instance.LayersCount;
 		neuronCount = Manager.Instance.NeuronPerLayerCount;
-		inputCount = Manager.Instance.CarSensorCount + 1;
+
+		if (Manager.Instance.Navigator)
+		{
+			inputCount = Manager.Instance.CarSensorCount + 4;
+		}
+		else
+		{
+			inputCount = Manager.Instance.CarSensorCount + 1;
+		}
+
 
 		transferData = new double[hiddenLayerCount][];
 		for (int i = 0; i < transferData.Length; i++)
@@ -77,7 +85,6 @@ public class NeuralNetwork : MonoBehaviour
 				}
 			}
 		}
-
 
 	}
 

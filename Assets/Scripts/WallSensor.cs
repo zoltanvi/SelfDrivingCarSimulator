@@ -29,6 +29,15 @@ public class WallSensor : MonoBehaviour
 	// A raycastHit-ben vannak az erzekelok adatai tarolva.
 	private RaycastHit[] raycastHit;
 
+	#region Navigator változói
+	private Vector3[] points;
+	private int one, two, three, four;
+	private Vector3 first, second, third, fourth;
+	private double firstAngle, secondAngle, thirdAngle;
+	private FitnessMeter fm;
+	public Transform[] waypoints;
+	#endregion
+
 	void Start()
 	{
 		rayCount = Manager.Instance.CarSensorCount;
@@ -36,8 +45,6 @@ public class WallSensor : MonoBehaviour
 		// Beallitja az auto sorszamat
 		ID = this.gameObject.GetComponent<CarController>().ID;
 
-		// Inicializalja a neuralis halo inputjait
-		carNeuronInputs = new double[rayCount + 1];
 		// Inicializalja az erzekeloket
 		raycastHit = new RaycastHit[rayCount];
 		rayHolders = new GameObject[rayCount];
@@ -48,6 +55,35 @@ public class WallSensor : MonoBehaviour
 		{
 			controlledByPlayer = true;
 		}
+
+		if (Manager.Instance.Navigator)
+		{
+			// Inicializalja a neuralis halo inputjait
+			carNeuronInputs = new double[rayCount + 4];
+
+			fm = gameObject.GetComponent<FitnessMeter>();
+			points = new Vector3[5];
+			for (int i = 0; i < points.Length; i++)
+			{
+				points[i] = new Vector3();
+			}
+
+
+			waypoints = new Transform[Manager.Instance.CurrentWaypoint.transform.childCount];
+
+			int index = 0;
+			foreach (Transform wp in Manager.Instance.CurrentWaypoint.transform)
+			{
+				waypoints[index++] = wp;
+			}
+
+		}
+		else
+		{
+			// Inicializalja a neuralis halo inputjait
+			carNeuronInputs = new double[rayCount + 1];
+		}
+
 	}
 
 
@@ -58,7 +94,7 @@ public class WallSensor : MonoBehaviour
 
 		// Erzekelo adatok tarolasa a carNeuronInputs tombben
 		rawSensorText = "";
-		for (int i = 0; i < carNeuronInputs.Length - 1; i++)
+		for (int i = 0; i < rayCount; i++)
 		{
 			// Ha valamivel utkozik az erzekelo sugar akkor a mert adat tarolasa
 			// a carNeuronInputs tombben, ellenben a vonal hosszat tarolja.
@@ -76,16 +112,19 @@ public class WallSensor : MonoBehaviour
 				string.Format("{0:0.0000}", carNeuronInputs[i]) + "\n";
 		}
 		// A neuralis halo utolso inputja az auto sebessege
-		carNeuronInputs[carNeuronInputs.Length - 1] = carRigidbody.velocity.magnitude;
-		//Debug.Log(this.transform.name + " speed: " + carNeuronInputs[carNeuronInputs.Length - 1]);
+		carNeuronInputs[rayCount] = carRigidbody.velocity.magnitude;
 
 		if (!controlledByPlayer)
 		{
 			// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
 			Manager.Instance.Cars[ID].Inputs = carNeuronInputs;
-			//Manager.Instance.Cars[ID].Distances = rawSensorText;
 		}
-		
+
+		if (Manager.Instance.Navigator)
+		{
+			SetAnglesInput();
+		}
+
 	}
 
 	// Letrehozza az erzekelo sugarakat.
@@ -159,6 +198,40 @@ public class WallSensor : MonoBehaviour
 			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(1.0f, 0.705f, 0.0f, 0.06f);
 
 		}
+	}
+
+	private void SetAnglesInput()
+	{
+
+		// Indexek
+		one = ((fm.nextPointIndex + 1) > waypoints.Length - 1) ? 0 : (fm.nextPointIndex + 1);
+		two = ((one + 1) > waypoints.Length - 1) ? 0 : (one + 1);
+		three = ((two + 1) > waypoints.Length - 1) ? 0 : (two + 1);
+		four = ((three + 1) > waypoints.Length - 1) ? 0 : (three + 1);
+
+		// Pontok
+		points[0] = waypoints[fm.nextPointIndex].position;
+		points[1] = waypoints[one].position;
+		points[2] = waypoints[two].position;
+		points[3] = waypoints[three].position;
+		points[4] = waypoints[four].position;
+
+		// Vektorok
+		first = points[1] - points[0];
+		second = points[2] - points[1];
+		third = points[3] - points[2];
+		fourth = points[4] - points[3];
+
+		// Szögek
+		firstAngle = Vector3.Angle(first, second);
+		secondAngle = Vector3.Angle(second, third);
+		thirdAngle = Vector3.Angle(third, fourth);
+
+		// Beírja az input tömbbe a szögeket
+		Manager.Instance.Cars[ID].Inputs[Manager.Instance.CarSensorCount + 1] = firstAngle;
+		Manager.Instance.Cars[ID].Inputs[Manager.Instance.CarSensorCount + 2] = secondAngle;
+		Manager.Instance.Cars[ID].Inputs[Manager.Instance.CarSensorCount + 3] = thirdAngle;
+
 	}
 
 }

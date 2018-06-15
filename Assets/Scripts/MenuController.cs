@@ -22,6 +22,10 @@ public class MenuController : MonoBehaviour
 	[SerializeField] private Image track01Image;
 	[SerializeField] private Image track02Image;
 
+	[SerializeField] private TextMeshProUGUI tooltipTitle;
+	[SerializeField] private TextMeshProUGUI tooltipText;
+
+
 	private Color white = new Color(1.0f, 1.0f, 1.0f);
 	private Color gray = new Color(0.254717f, 0.254717f, 0.254717f);
 
@@ -47,6 +51,7 @@ public class MenuController : MonoBehaviour
 		"2%", "2.5%", "3%", "3.5%", "4%"
 	};
 
+
 	// Use this for initialization
 	void Start()
 	{
@@ -66,6 +71,7 @@ public class MenuController : MonoBehaviour
 		selectionDropdown.value = SelectionMethodE;
 		mutationChanceDropdown.value = MutationChanceE;
 		mutationRateDropdown.value = MutationRateE;
+		navigator.isOn = Navigator;
 
 	}
 
@@ -125,6 +131,7 @@ public class MenuController : MonoBehaviour
 		Manager.Instance.NeuronPerLayerCount = NeuronPerLayer;
 		Manager.Instance.TrackNumber = TrackNumber;
 		Manager.Instance.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
+		Manager.Instance.Navigator = Navigator;
 
 		// Az érték beállítása a dropdownból kinyert adat szerint
 		switch (MutationChanceE)
@@ -176,5 +183,64 @@ public class MenuController : MonoBehaviour
 		Debug.Log("Gave values to manager!");
 
 	}
+
+	public void ShowTooltipMsg(int tooltip)
+	{
+		switch (tooltip)
+		{
+			// Number of cars
+			case 0:
+				tooltipTitle.text = "Number of cars";
+				tooltipText.text = "The size of the population.";
+				break;
+			// Selection method
+			case 1:
+				tooltipTitle.text = "Selection method";
+				tooltipText.text = "Selection is the stage of a genetic algorithm " +
+					"in which individual genomes are chosen from a population for " +
+					"later breeding (using the crossover operator).";
+				break;
+			// Mutation possibility
+			case 2:
+				tooltipTitle.text = "Mutation possibility";
+				tooltipText.text = "The chance that the mutation will occur during recombination.";
+				break;
+			// Mutation rate
+			case 3:
+				tooltipTitle.text = "Mutation rate";
+				tooltipText.text = "The rate of the mutation that will occur during recombination.";
+				break;
+			// Number of layers
+			case 4:
+				tooltipTitle.text = "Number of layers";
+				tooltipText.text = "It specifies how many neuron layers will be in a single neural network. " +
+					"\n\nA car's brain is it's neural network. " +
+					"These cars' neural networks are built up by neural layers " +
+					"which are built up by neurons.";
+				break;
+			// Neuron per layer
+			case 5:
+				tooltipTitle.text = "Neuron per layer";
+				tooltipText.text = "It specifies how many neurons will be in a single neuron layer. " + 
+					"A car's brain is it's neural network. " +
+					"These cars' neural networks are built up by neural layers " +
+					"which are built up by neurons.";
+				break;
+			// Navigator
+			case 6:
+				tooltipTitle.text = "Navigator";
+				tooltipText.text = "A map have checkpoints between it's walls, roughly in the middle. " +
+					"If you connect the next two points, they form lines. The lines form angles." +
+					"If the navigator option is checked, the cars will get the next 3 angle as its input.";
+				break;
+			default:
+				tooltipTitle.text = "";
+				tooltipText.text = "";
+				break;
+		}
+	}
+
+
+
 
 }
