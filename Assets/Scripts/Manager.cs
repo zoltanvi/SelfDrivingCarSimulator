@@ -54,6 +54,7 @@ public class Manager : MonoBehaviour
 	private bool firstStart = true;
 	private bool playerFirstStart = true;
 	public bool wasItALoad = false;
+	public bool CreateDemoSave;
 
 	[SerializeField] private GameObject UIStats;
 	[SerializeField] private GameObject inGameMenu;
@@ -410,6 +411,10 @@ public class Manager : MonoBehaviour
 				minimapCamera.transform.position = new Vector3(-1.0f, 7.0f, -2.5f);
 				break;
 
+			case 2:
+				minimapCamera.transform.position = new Vector3(10.0f, 7.0f, 5.0f);
+				break;
+				
 			default:
 				minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
 				break;
@@ -521,9 +526,19 @@ public class Manager : MonoBehaviour
 			Save.Navigator = Navigator;
 			Save.TrackNumber = TrackNumber;
 			Save.SavedCarNetworks = GA.SavedCarNetworks;
-			Save.GenerationCount = GA.GenerationCount;
-			Save.maxFitness = maxFitness;
-			Save.medianFitness = medianFitness;
+
+			if (CreateDemoSave)
+			{
+				Save.GenerationCount = 0;
+				Save.maxFitness = new List<double>();
+				Save.medianFitness = new List<double>();
+			}
+			else {
+				Save.GenerationCount = GA.GenerationCount;
+				Save.maxFitness = maxFitness;
+				Save.medianFitness = medianFitness;
+			}
+			
 
 			FileStream file;
 			using (file = File.Create(path))

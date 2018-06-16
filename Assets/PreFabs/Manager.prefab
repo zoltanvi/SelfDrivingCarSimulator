@@ -79,6 +79,7 @@ MonoBehaviour:
   inGame: 0
   ManualControl: 0
   wasItALoad: 0
+  CreateDemoSave: 0
   UIStats: {fileID: 0}
   inGameMenu: {fileID: 0}
   loadingScreen: {fileID: 0}
@@ -90,9 +91,11 @@ MonoBehaviour:
   TrackPrefabs:
   - {fileID: 1134274914523264, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
   - {fileID: 1679501569141142, guid: 03c951b530d044045b3b50a8712c66a5, type: 2}
+  - {fileID: 1362309794849700, guid: cb86c7183e8ddec4b8b69d09e4f3f0d5, type: 2}
   WayPointPrefabs:
   - {fileID: 1736990184806124, guid: 6f41cef01981f8549a2a33bfcec89a3e, type: 2}
   - {fileID: 1132939013464934, guid: 232979a3921c83443926674670c7ec21, type: 2}
+  - {fileID: 1327224571015784, guid: ad161e6a96497454aa2dd2f97094a26e, type: 2}
   CurrentTrack: {fileID: 0}
   CurrentWaypoint: {fileID: 0}
   cameraDrone: {fileID: 0}

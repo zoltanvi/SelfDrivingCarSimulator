@@ -21,6 +21,7 @@ public class MenuController : MonoBehaviour
 
 	[SerializeField] private Image track01Image;
 	[SerializeField] private Image track02Image;
+	[SerializeField] private Image track03Image;
 
 	[SerializeField] private TextMeshProUGUI tooltipTitle;
 	[SerializeField] private TextMeshProUGUI tooltipText;
@@ -109,16 +110,25 @@ public class MenuController : MonoBehaviour
 			case 0:
 				track01Image.color = white;
 				track02Image.color = gray;
+				track03Image.color = gray;
 				break;
 
 			case 1:
 				track01Image.color = gray;
 				track02Image.color = white;
+				track03Image.color = gray;
 				break;
-
+				
+			case 2:
+				track01Image.color = gray;
+				track02Image.color = gray;
+				track03Image.color = white;
+				break;
+				
 			default:
 				track01Image.color = white;
 				track02Image.color = gray;
+				track03Image.color = gray;
 				break;
 		}
 	}
