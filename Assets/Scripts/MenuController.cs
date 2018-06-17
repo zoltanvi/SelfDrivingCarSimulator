@@ -39,6 +39,7 @@ public class MenuController : MonoBehaviour
 	public int NeuronPerLayer { get; set; }
 	public int TrackNumber { get; set; }
 	public bool Navigator { get; set; }
+	public bool DemoMode { get; set; }
 
 	private List<string> selections = new List<string>() {
 		"Tournament method", "Top 50%", "Tournament + worst 20% full random"
@@ -142,6 +143,7 @@ public class MenuController : MonoBehaviour
 		Manager.Instance.TrackNumber = TrackNumber;
 		Manager.Instance.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
 		Manager.Instance.Navigator = Navigator;
+		Manager.Instance.DemoMode = DemoMode;
 
 		// Az érték beállítása a dropdownból kinyert adat szerint
 		switch (MutationChanceE)
@@ -243,13 +245,18 @@ public class MenuController : MonoBehaviour
 					"If you connect the next two points, they form lines. The lines form angles." +
 					"If the navigator option is checked, the cars will get the next 3 angle as its input.";
 				break;
+			case 7:
+				tooltipTitle.text = "Demo mode";
+				tooltipText.text = "-- If this is checked, it overwrites all of your settings! --\n" +
+					"Neural networks start with values from a state reached in a previous run.\n" +
+					"(For faster demonstration)";
+				break;
 			default:
 				tooltipTitle.text = "";
 				tooltipText.text = "";
 				break;
 		}
 	}
-
 
 
 

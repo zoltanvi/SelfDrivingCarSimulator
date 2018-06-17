@@ -28,6 +28,7 @@ public class Manager : MonoBehaviour
 	public int CarSensorLength = 25;
 	public double Bias { get; set; }
 	public bool Navigator { get; set; }
+	public bool DemoMode { get; set; }
 	#endregion
 
 	#region Prefabs & materials
@@ -118,6 +119,7 @@ public class Manager : MonoBehaviour
 		UIStats.SetActive(false);
 		inGameMenu.SetActive(false);
 		Save = new GameSave();
+
 	}
 
 	void Update()
@@ -328,6 +330,26 @@ public class Manager : MonoBehaviour
 	/// </summary>
 	void OnSceneLoaded(Scene scene, LoadSceneMode mode)
 	{
+		// Ha demó módban van, akkor betölti a resource mappából a demó mentést
+		if (DemoMode)
+		{
+			TextAsset asset = Resources.Load("demoSave") as TextAsset;
+			MemoryStream stream = new MemoryStream(asset.bytes);
+			BinaryFormatter bf = new BinaryFormatter();
+			Save = (GameSave)bf.Deserialize(stream);
+
+			SelectionMethod = Save.SelectionMethod;
+			MutationChance = Save.MutationChance;
+			MutationRate = Save.MutationRate;
+			CarCount = Save.CarCount;
+			LayersCount = Save.LayersCount;
+			NeuronPerLayerCount = Save.NeuronPerLayerCount;
+			Navigator = Save.Navigator;
+			TrackNumber = Save.TrackNumber;
+			wasItALoad = true;
+		}
+
+
 		InitGame();
 		StartGame();
 	}
@@ -460,11 +482,11 @@ public class Manager : MonoBehaviour
 
 	public void LoadGame()
 	{
-		string extensions = "save";
+		string extensions = "bytes";
 		string path = FileBrowser.OpenSingleFile("Select a saved game to load", "", extensions);
 		Debug.Log("Selected file: " + path);
 
-		if (Path.GetExtension(path).Equals(".save"))
+		if (Path.GetExtension(path).Equals(".bytes"))
 		{
 			if (File.Exists(path))
 			{
@@ -506,10 +528,10 @@ public class Manager : MonoBehaviour
 
 	public void SaveGame()
 	{
-		string extensions = "save";
+		string extensions = "bytes";
 		DateTime dateTime = DateTime.Now;
 		string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
-		string path = FileBrowser.SaveFile("Select the save location", "", "CarGame_" + timeStamp, extensions);
+		string path = FileBrowser.SaveFile("Select the save location", "", "CarGameSave_" + timeStamp, extensions);
 		Debug.Log("Save file: " + path);
 
 		if (path.Length != 0)
