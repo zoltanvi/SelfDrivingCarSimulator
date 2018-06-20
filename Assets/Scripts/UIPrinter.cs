@@ -8,7 +8,7 @@ public class UIPrinter : MonoBehaviour
 
 	[SerializeField] private TextMeshProUGUI remainingTimeText;
 	[SerializeField] private TextMeshProUGUI freezeTimeText;
-	[SerializeField] private TextMeshProUGUI generationText;
+	[SerializeField] public TextMeshProUGUI generationText;
 	[SerializeField] private TextMeshProUGUI fitnessText;
 	[SerializeField] private TextMeshProUGUI creatureIDText;
 	[SerializeField] private TextMeshProUGUI maxText;

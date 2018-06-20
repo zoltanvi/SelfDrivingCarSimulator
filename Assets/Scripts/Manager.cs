@@ -5,6 +5,7 @@ using UnityEngine.SceneManagement;
 using System.Runtime.Serialization.Formatters.Binary;
 using Crosstales.FB;
 using System;
+using System.Globalization;
 
 public class Manager : MonoBehaviour
 {
@@ -482,11 +483,11 @@ public class Manager : MonoBehaviour
 
 	public void LoadGame()
 	{
-		string extensions = "bytes";
+		string extensions = "SAVE";
 		string path = FileBrowser.OpenSingleFile("Select a saved game to load", "", extensions);
 		Debug.Log("Selected file: " + path);
 
-		if (Path.GetExtension(path).Equals(".bytes"))
+		if (Path.GetExtension(path).Equals(".SAVE"))
 		{
 			if (File.Exists(path))
 			{
@@ -528,10 +529,10 @@ public class Manager : MonoBehaviour
 
 	public void SaveGame()
 	{
-		string extensions = "bytes";
+		string extensions = "SAVE";
 		DateTime dateTime = DateTime.Now;
 		string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
-		string path = FileBrowser.SaveFile("Select the save location", "", "CarGameSave_" + timeStamp, extensions);
+		string path = FileBrowser.SaveFile("Select the save location", "", "CGSave_" + timeStamp, extensions);
 		Debug.Log("Save file: " + path);
 
 		if (path.Length != 0)
@@ -573,6 +574,49 @@ public class Manager : MonoBehaviour
 
 	}
 
+
+	public void SaveStats()
+	{
+		string extensions = "txt";
+		DateTime dateTime = DateTime.Now;
+		string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
+		string path = FileBrowser.SaveFile("Select the save location", "", "CGStats_" + timeStamp, extensions);
+		Debug.Log("Save file: " + path);
+
+		if (path.Length != 0)
+		{
+			string tmp =
+				"==============================================\n" +
+				"GENERATION\t" + myUIPrinter.generationText.text + "\n" +
+				"MAP\t" + TrackNumber + "\n" +
+				"NUMBER OF CARS\t" + CarCount + "\n" +
+				"SELECTION METHOD\t" + SelectionMethod + "\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random)\n" +
+				"MUTATION POSSIBILITY\t" + MutationChance + "%\n" +
+				"MUTATION RATE\t" + MutationRate + "%\n" +
+				"NUMBER OF LAYERS\t" + LayersCount + "\n" +
+				"NEURON PER LAYER\t" + NeuronPerLayerCount + "\n" +
+				"NAVIGATOR\t" + Navigator + "\n" +
+				"==============================================\n";
+
+			tmp += "\n== MAX FITNESS ==\n";
+			foreach (double item in maxFitness)
+			{
+				tmp += item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n";
+			}
+
+			tmp += "\n== MEDIAN FITNESS ==\n";
+			foreach (double item in medianFitness)
+			{
+				tmp += item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n";
+			}
+
+			using (StreamWriter file = new StreamWriter(path, true))
+			{
+				file.Write(tmp);
+			}
+
+		}
+	}
 
 	/// <summary>
 	/// Az időket kezeli, meghívja az ellenőrző/fagyasztó metódusokat
