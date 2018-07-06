@@ -125,6 +125,7 @@ public class Manager : MonoBehaviour
 
 	void Update()
 	{
+
 		ControlMenu();
 	}
 
@@ -437,7 +438,7 @@ public class Manager : MonoBehaviour
 			case 2:
 				minimapCamera.transform.position = new Vector3(10.0f, 7.0f, 5.0f);
 				break;
-				
+
 			default:
 				minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
 				break;
@@ -475,7 +476,7 @@ public class Manager : MonoBehaviour
 			{
 				ID = i,
 				Fitness = 0,
-				Inputs =  new double[inputCount],
+				Inputs = new double[inputCount],
 				PrevFitness = 0
 			};
 		}
@@ -556,12 +557,13 @@ public class Manager : MonoBehaviour
 				Save.maxFitness = new List<double>();
 				Save.medianFitness = new List<double>();
 			}
-			else {
+			else
+			{
 				Save.GenerationCount = GA.GenerationCount;
 				Save.maxFitness = maxFitness;
 				Save.medianFitness = medianFitness;
 			}
-			
+
 
 			FileStream file;
 			using (file = File.Create(path))
@@ -570,7 +572,7 @@ public class Manager : MonoBehaviour
 				bf.Serialize(file, Save);
 			}
 		}
-		
+
 
 	}
 
@@ -781,11 +783,23 @@ public class Manager : MonoBehaviour
 
 	}
 
+	/// <summary>
+	/// Beállítja a szimuláció sebességet
+	/// </summary>
+	public void SetTimeScale(float scale = 1.0f)
+	{
+		Time.timeScale = scale;
+	}
+
 
 	public void ExitGame()
 	{
 		Debug.Log("Kilépés...");
-		Application.Quit();
+#if UNITY_EDITOR
+		UnityEditor.EditorApplication.isPlaying = false;
+#else
+         Application.Quit();
+#endif
 	}
-	
+
 }

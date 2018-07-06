@@ -42,7 +42,7 @@ public class MenuController : MonoBehaviour
 	public bool DemoMode { get; set; }
 
 	private List<string> selections = new List<string>() {
-		"Tournament method", "Top 50%", "Tournament + worst 20% full random"
+		"Tournament method", "Top 50%", "Tournament and 20% random each round"
 	};
 
 	private List<string> mutationChances = new List<string>() {
@@ -63,7 +63,7 @@ public class MenuController : MonoBehaviour
 		NumberOfCars = 20;
 		NumberOfLayers = 3;
 		NeuronPerLayer = 6;
-		SelectionMethodE = 0;           // Tournament
+		SelectionMethodE = 1;           // Top 50%
 		MutationChanceE = 2;        // 50%
 		MutationRateE = 2;      // 3.5%
 
