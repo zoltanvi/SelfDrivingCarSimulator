@@ -507,7 +507,8 @@ public class Manager : MonoBehaviour
 				LayersCount = Save.LayersCount;
 				NeuronPerLayerCount = Save.NeuronPerLayerCount;
 				Navigator = Save.Navigator;
-				TrackNumber = Save.TrackNumber;
+				// TODO: ezt visszaállítani ha nem megy.
+				//TrackNumber = Save.TrackNumber;
 				medianFitness = Save.medianFitness;
 				maxFitness = Save.maxFitness;
 

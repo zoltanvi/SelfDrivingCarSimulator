@@ -23,6 +23,10 @@ public class MenuController : MonoBehaviour
 	[SerializeField] private Image track02Image;
 	[SerializeField] private Image track03Image;
 
+	[SerializeField] private Image track01ImageLoad;
+	[SerializeField] private Image track02ImageLoad;
+	[SerializeField] private Image track03ImageLoad;
+
 	[SerializeField] private TextMeshProUGUI tooltipTitle;
 	[SerializeField] private TextMeshProUGUI tooltipText;
 
@@ -112,26 +116,47 @@ public class MenuController : MonoBehaviour
 				track01Image.color = white;
 				track02Image.color = gray;
 				track03Image.color = gray;
+
+				track01ImageLoad.color = white;
+				track02ImageLoad.color = gray;
+				track03ImageLoad.color = gray;
 				break;
 
 			case 1:
 				track01Image.color = gray;
 				track02Image.color = white;
 				track03Image.color = gray;
+
+				track01ImageLoad.color = gray;
+				track02ImageLoad.color = white;
+				track03ImageLoad.color = gray;
 				break;
 				
 			case 2:
 				track01Image.color = gray;
 				track02Image.color = gray;
 				track03Image.color = white;
+
+				track01ImageLoad.color = gray;
+				track02ImageLoad.color = gray;
+				track03ImageLoad.color = white;
 				break;
 				
 			default:
 				track01Image.color = white;
 				track02Image.color = gray;
 				track03Image.color = gray;
+
+				track01ImageLoad.color = white;
+				track02ImageLoad.color = gray;
+				track03ImageLoad.color = gray;
 				break;
 		}
+	}
+
+	public void SetLoadTrackNumber()
+	{
+		Manager.Instance.TrackNumber = TrackNumber;
 	}
 
 	public void SetOptionValues()
