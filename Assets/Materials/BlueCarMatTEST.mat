@@ -6,15 +6,14 @@ Material:
   m_ObjectHideFlags: 0
   m_PrefabParentObject: {fileID: 0}
   m_PrefabInternal: {fileID: 0}
-  m_Name: BlueTransparentCarMat
-  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
-  m_ShaderKeywords: _ALPHAPREMULTIPLY_ON _EMISSION _SUNDISK_HIGH_QUALITY
+  m_Name: BlueCarMatTEST
+  m_Shader: {fileID: 4800000, guid: daa8db101e9d7c34ca28f01ea0e85e54, type: 3}
+  m_ShaderKeywords: _EMISSION _SUNDISK_HIGH_QUALITY
   m_LightmapFlags: 1
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
-  stringTagMap:
-    RenderType: Transparent
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
   disabledShaderPasses:
   - ALWAYS
   m_SavedProperties:
@@ -112,7 +111,7 @@ Material:
     - _DistortionEnabled: 0
     - _DistortionStrength: 1
     - _DistortionStrengthScaled: 0
-    - _DstBlend: 10
+    - _DstBlend: 0
     - _EmissionEnabled: 0
     - _EnableExternalAlpha: 0
     - _Exposure: 1
@@ -123,7 +122,7 @@ Material:
     - _InvFade: 0.29
     - _LightingEnabled: 1
     - _Metallic: 0.38
-    - _Mode: 3
+    - _Mode: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _Rotation: 0
@@ -140,10 +139,10 @@ Material:
     - _UVSec: 0
     - _WindQuality: 0
     - _WireThickness: 100
-    - _ZWrite: 0
+    - _ZWrite: 1
     m_Colors:
     - _CameraFadeParams: {r: 0, g: Infinity, b: 0, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 0.24705882}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _ColorAddSubDiff: {r: 0, g: 0, b: 0, a: 0}
     - _Emission: {r: 0, g: 0, b: 0, a: 0}
     - _EmissionColor: {r: 0.04411763, g: 0.04411763, b: 0.04411763, a: 1}

@@ -32,16 +32,9 @@ public class Manager : MonoBehaviour
 	public bool DemoMode { get; set; }
 	#endregion
 
-	#region Prefabs & materials
 	[SerializeField] protected GameObject blueCarPrefab;
 	[SerializeField] protected GameObject redCarPrefab;
-	[SerializeField] protected GameObject blueCarMesh;
 
-	[SerializeField] protected Material blueCarMat;
-	[SerializeField] protected Material blueCarMatTrans;
-	[SerializeField] protected Material wheelMat;
-	[SerializeField] protected Material wheelMatTrans;
-	#endregion
 
 	// Ebben az objektumban van tárolva az elmentett / betöltött adatok.
 	public GameSave Save;
@@ -78,6 +71,13 @@ public class Manager : MonoBehaviour
 	[HideInInspector] public GameObject CurrentWaypoint;
 
 	[SerializeField] private CameraDrone cameraDrone;
+
+
+	private Shader standardShader;
+	private Shader transparentShader;
+	private Color visibleColor;
+	private Color transparentColor;
+
 
 	public Car[] Cars;
 
@@ -120,6 +120,10 @@ public class Manager : MonoBehaviour
 		UIStats.SetActive(false);
 		inGameMenu.SetActive(false);
 		Save = new GameSave();
+		transparentShader = Shader.Find("Legacy Shaders/Transparent/Bumped Diffuse");
+		standardShader = Shader.Find("Standard");
+		visibleColor = new Color(1, 1, 1, 1.0f);
+		transparentColor = new Color(1, 1, 1, 0.2f);
 
 	}
 
@@ -283,13 +287,13 @@ public class Manager : MonoBehaviour
 		ManualControl = true;
 		CheckCarMaterials();
 		SpawnPlayerCar(transform.position, transform.rotation);
-		CheckCarMaterials();
 		playerFirstStart = false;
 	}
 
 	public void DisconnectGame()
 	{
 		ManualControl = false;
+		CheckCarMaterials();
 		isPlayerAlive = false;
 		playerCar.SetActive(false);
 		playerFirstStart = true;
@@ -302,26 +306,39 @@ public class Manager : MonoBehaviour
 	/// </summary>
 	private void CheckCarMaterials()
 	{
-		// TODO: utilitybe kiszervezni
-		// TODO: ezek csak akkor változnak, ha példányosítja őket.. játék közben így nem tud változni!
-		// Kicseréli az autó materialokat attól függően, hogy játszik-e a player
+		// Átlátszóra állítja az autókat, ha a játékos becsatlakozott, 
+		// visszaállítja, ha már nem játszik.
+
+		Component[] comps;
+
 		if (!ManualControl)
 		{
-			Transform blueCarWheels = blueCarMesh.transform.GetChild(1);
-			blueCarMesh.transform.GetChild(0).GetComponent<MeshRenderer>().material = blueCarMat;
-			blueCarWheels.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
-			blueCarWheels.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
-			blueCarWheels.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
-			blueCarWheels.GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = wheelMat;
+			for (int i = 0; i < CarCount; i++)
+			{
+				comps = Cars[i].Transform.GetComponentsInChildren<Renderer>();
+
+				foreach (Renderer renderer in comps)
+				{
+					renderer.material.shader = standardShader;
+					renderer.material.SetColor("_Color", visibleColor);
+				}
+
+			}
 		}
 		else
 		{
-			Transform blueCarWheels = blueCarMesh.transform.GetChild(1);
-			blueCarMesh.transform.GetChild(0).GetComponent<MeshRenderer>().material = blueCarMatTrans;
-			blueCarWheels.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = wheelMatTrans;
-			blueCarWheels.GetChild(1).GetChild(0).GetComponent<MeshRenderer>().material = wheelMatTrans;
-			blueCarWheels.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = wheelMatTrans;
-			blueCarWheels.GetChild(3).GetChild(0).GetComponent<MeshRenderer>().material = wheelMatTrans;
+
+			for (int i = 0; i < CarCount; i++)
+			{
+				comps = Cars[i].Transform.GetComponentsInChildren<Renderer>();
+
+				foreach (Renderer renderer in comps)
+				{
+					renderer.material.shader = transparentShader;
+					renderer.material.SetColor("_Color", transparentColor);
+				}
+
+			}
 		}
 
 	}
@@ -371,7 +388,7 @@ public class Manager : MonoBehaviour
 
 	public void StartGame()
 	{
-		CheckCarMaterials();
+		//CheckCarMaterials();
 		InstantiateCars();
 		// A player autóját is példányosítja a játék indulásakor
 		InstantiatePlayerCar();
@@ -456,8 +473,7 @@ public class Manager : MonoBehaviour
 
 	void InitCars()
 	{
-		// TODO: Inputs tömb mérete nagyobb, ha az autó inputként
-		// megkapja a sarkokat is!!
+		// Inputs tömb mérete nagyobb, ha az autó inputként megkapja a sarkokat is!!
 		int inputCount;
 
 		if (Navigator)
@@ -507,7 +523,6 @@ public class Manager : MonoBehaviour
 				LayersCount = Save.LayersCount;
 				NeuronPerLayerCount = Save.NeuronPerLayerCount;
 				Navigator = Save.Navigator;
-				// TODO: ezt visszaállítani ha nem megy.
 				//TrackNumber = Save.TrackNumber;
 				medianFitness = Save.medianFitness;
 				maxFitness = Save.maxFitness;
