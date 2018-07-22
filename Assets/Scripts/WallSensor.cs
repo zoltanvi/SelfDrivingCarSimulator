@@ -190,12 +190,12 @@ public class WallSensor : MonoBehaviour
 			rayHolders[i].AddComponent<LineRenderer>();
 			rayHolders[i].GetComponent<LineRenderer>().positionCount = 2;
 			rayHolders[i].GetComponent<LineRenderer>().numCapVertices = 5;
-			rayHolders[i].GetComponent<LineRenderer>().startWidth = 0.08f;
-			rayHolders[i].GetComponent<LineRenderer>().endWidth = 0.08f;
+			rayHolders[i].GetComponent<LineRenderer>().startWidth = 0.05f;
+			rayHolders[i].GetComponent<LineRenderer>().endWidth = 0.05f;
 			rayHolders[i].GetComponent<LineRenderer>().useWorldSpace = false;
 			rayHolders[i].GetComponent<LineRenderer>().material = lineMat;
-			rayHolders[i].GetComponent<LineRenderer>().startColor = new Color(0.0f, 1.0f, 0.0f, 0.06f);
-			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(1.0f, 0.705f, 0.0f, 0.06f);
+			rayHolders[i].GetComponent<LineRenderer>().startColor = new Color(0.8378353f, 0f, 1.0f, 0.02f);
+			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(0f, 0.8818119f, 1f, 0f);
 
 		}
 	}

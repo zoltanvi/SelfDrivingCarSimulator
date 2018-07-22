@@ -6,16 +6,35 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Crosstales.FB;
 using System;
 using System.Globalization;
+using UnityEngine.PostProcessing;
 
 public class Manager : MonoBehaviour
 {
-	public static Manager Instance = null;
-
-	#region Developer options
-	public bool LogNetworkData { get; set; }
+	#region VISIBLE IN INSPECTOR
+	[Range(1, 30)] public int CarSensorCount = 5;
+	[Range(10, 40)]	public int CarSensorLength = 25;
+	[SerializeField] protected GameObject blueCarPrefab;
+	[SerializeField] protected GameObject redCarPrefab;
+	// Ebben az objektumban van tárolva az elmentett / betöltött adatok.
+	public GameSave Save;
+	[Tooltip("Ha ez be van jelölve, akkor a mentésben nem lesz benne " +
+		"a generáció számláló, illetve a statisztikai adatok sem.")]
+	public bool CreateDemoSave;
+	[SerializeField] private GameObject UIStats;
+	[SerializeField] private GameObject inGameMenu;
+	[SerializeField] private GameObject loadingScreen;
+	[SerializeField] private GameObject minimapCamera;
+	[SerializeField] private GameObject[] TrackPrefabs;
+	[SerializeField] private GameObject[] WayPointPrefabs;
+	[SerializeField] private CameraDrone cameraDrone;
+	public GameObject Camera;
+	public Car[] Cars;
 	#endregion
 
-	#region Options
+
+
+	#region PUBLIC BUT NOT VISIBLE IN INSPECTOR
+	public static Manager Instance = null;
 	public int CarCount { get; set; }
 	public int SelectionMethod { get; set; }
 	public int MutationChance { get; set; }
@@ -23,75 +42,46 @@ public class Manager : MonoBehaviour
 	public int LayersCount { get; set; }
 	public int NeuronPerLayerCount { get; set; }
 	public int TrackNumber { get; set; }
-	[Range(1, 30)]
-	public int CarSensorCount = 5;
-	[Range(10, 40)]
-	public int CarSensorLength = 25;
 	public double Bias { get; set; }
 	public bool Navigator { get; set; }
 	public bool DemoMode { get; set; }
+	[HideInInspector] public bool GotOptionValues = false;
+	[HideInInspector] public bool inGame = false;
+	[HideInInspector] public bool ManualControl = false;
+	[HideInInspector] public bool wasItALoad = false;
+	[HideInInspector] public UIPrinter myUIPrinter;
+	[HideInInspector] public List<double> maxFitness = new List<double>();
+	[HideInInspector] public List<double> medianFitness = new List<double>();
+	[HideInInspector] public int AliveCount { get; set; }
+	[HideInInspector] public int bestCarID = 0;
+	[HideInInspector] public float freezeTimeLeft = freezeTimeOut;
+	[HideInInspector] public float globalTimeLeft = globalTimeOut;
+	[HideInInspector] public GameObject CurrentTrack;
+	[HideInInspector] public GameObject CurrentWaypoint;
+	[HideInInspector] public double PlayerFitness { get; set; }
+	[HideInInspector] public bool isPlayerAlive = false;
 	#endregion
 
-	[SerializeField] protected GameObject blueCarPrefab;
-	[SerializeField] protected GameObject redCarPrefab;
 
-
-	// Ebben az objektumban van tárolva az elmentett / betöltött adatok.
-	public GameSave Save;
-
-	public bool GotOptionValues = false;
-	public bool inGame = false;
-	public bool ManualControl = false;
-
+	#region PRIVATE
 	private GameObject GAGameObject;
 	private GeneticAlgorithm GA;
 	private Queue<GameObject> carPool;
 	private bool firstStart = true;
 	private bool playerFirstStart = true;
-	public bool wasItALoad = false;
-	public bool CreateDemoSave;
-
-	[SerializeField] private GameObject UIStats;
-	[SerializeField] private GameObject inGameMenu;
-	[SerializeField] private GameObject loadingScreen;
-	[HideInInspector] public UIPrinter myUIPrinter;
-	[SerializeField] private GameObject minimapCamera;
-
-	public int bestCarID = 0;
+	private GameObject playerCar;
+	private CarController playerCarController;
 	private const float freezeTimeOut = 10.0f;
 	private const float globalTimeOut = 40.0f;
-
-	public float freezeTimeLeft = freezeTimeOut;
-	public float globalTimeLeft = globalTimeOut;
-
-	[SerializeField] private GameObject[] TrackPrefabs;
-	[SerializeField] private GameObject[] WayPointPrefabs;
-
-	[HideInInspector] public GameObject CurrentTrack;
-	[HideInInspector] public GameObject CurrentWaypoint;
-
-	[SerializeField] private CameraDrone cameraDrone;
-
-
 	private Shader standardShader;
 	private Shader transparentShader;
 	private Color visibleColor;
 	private Color transparentColor;
-
-
-	public Car[] Cars;
-
-	#region Player változói
-	private GameObject playerCar;
-	private CarController playerCarController;
-	public double PlayerFitness { get; set; }
-	[HideInInspector] public bool isPlayerAlive = false;
 	#endregion
 
-	[HideInInspector] public List<double> maxFitness = new List<double>();
-	[HideInInspector] public List<double> medianFitness = new List<double>();
 
-	[HideInInspector] public int AliveCount { get; set; }
+
+
 
 	/// <summary>
 	/// Példányosít egyet önmagából (Singleton)
@@ -120,10 +110,12 @@ public class Manager : MonoBehaviour
 		UIStats.SetActive(false);
 		inGameMenu.SetActive(false);
 		Save = new GameSave();
-		transparentShader = Shader.Find("Legacy Shaders/Transparent/Bumped Diffuse");
+		//transparentShader = Shader.Find("Legacy Shaders/Transparent/Bumped Diffuse");
+		transparentShader = Shader.Find("Standard (Specular setup)");
 		standardShader = Shader.Find("Standard");
 		visibleColor = new Color(1, 1, 1, 1.0f);
-		transparentColor = new Color(1, 1, 1, 0.2f);
+		//transparentColor = new Color(1, 1, 1, 0.2f);
+		transparentColor = new Color(1, 1, 1, 0.0f);
 
 	}
 
@@ -321,6 +313,15 @@ public class Manager : MonoBehaviour
 				{
 					renderer.material.shader = standardShader;
 					renderer.material.SetColor("_Color", visibleColor);
+					renderer.material.SetFloat("_Mode", 0);
+
+					renderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+					renderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+					renderer.material.SetInt("_ZWrite", 1);
+					renderer.material.DisableKeyword("_ALPHATEST_ON");
+					renderer.material.DisableKeyword("_ALPHABLEND_ON");
+					renderer.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+					renderer.material.renderQueue = -1;
 				}
 
 			}
@@ -336,6 +337,15 @@ public class Manager : MonoBehaviour
 				{
 					renderer.material.shader = transparentShader;
 					renderer.material.SetColor("_Color", transparentColor);
+					renderer.material.SetFloat("_Mode", 3);
+
+					renderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+					renderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+					renderer.material.SetInt("_ZWrite", 0);
+					renderer.material.DisableKeyword("_ALPHATEST_ON");
+					renderer.material.DisableKeyword("_ALPHABLEND_ON");
+					renderer.material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+					renderer.material.renderQueue = 3000;
 				}
 
 			}
@@ -383,7 +393,8 @@ public class Manager : MonoBehaviour
 
 		AliveCount = CarCount;
 		cameraDrone.enabled = false;
-
+		Camera.GetComponent<PostProcessingBehaviour>().enabled = true;
+		
 	}
 
 	public void StartGame()
@@ -704,35 +715,35 @@ public class Manager : MonoBehaviour
 			if (carID != -1)
 			{
 				AliveCount--;
+				#region Súlyok és fitness értékek fájlba írása
+				//if (LogNetworkData)
+				//{
+				//	NeuralNetwork tmp2 = Cars[carID].Transform.gameObject.GetComponent<NeuralNetwork>();
 
-				if (LogNetworkData)
-				{
-					NeuralNetwork tmp2 = Cars[carID].Transform.gameObject.GetComponent<NeuralNetwork>();
-
-					#region Súlyok és fitness értékek fájlba írása
-					string carNNWeights = carID + ". car:\n";
-					for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
-					{
-						carNNWeights += (i + 1) + ". layer: \n";
-						for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
-						{
-							for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
-							{
-								string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
-								carNNWeights += tmp + "\t";
-							}
-							carNNWeights += "\n";
-						}
-						carNNWeights += "\n";
-					}
+					
+				//	string carNNWeights = carID + ". car:\n";
+				//	for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
+				//	{
+				//		carNNWeights += (i + 1) + ". layer: \n";
+				//		for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
+				//		{
+				//			for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
+				//			{
+				//				string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
+				//				carNNWeights += tmp + "\t";
+				//			}
+				//			carNNWeights += "\n";
+				//		}
+				//		carNNWeights += "\n";
+				//	}
 
 
-					GameLogger.WriteData(carNNWeights);
-					string dataText = "Maximum fitness: " + Cars[carID].Fitness + "\n\n";
-					GameLogger.WriteData(dataText);
-					#endregion
-				}
-
+				//	GameLogger.WriteData(carNNWeights);
+				//	string dataText = "Maximum fitness: " + Cars[carID].Fitness + "\n\n";
+				//	GameLogger.WriteData(dataText);
+					
+				//}
+				#endregion
 			}
 			else
 			{

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.44657874, g: 0.49641258, b: 0.5748172, a: 1}
+  m_IndirectSpecularColor: {r: 0.16788355, g: 0.21073574, b: 0.2899406, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -1366,12 +1366,12 @@ Prefab:
     - target: {fileID: 224095426962442742, guid: f50203bba3a86e448b75bfc70dc0d7fd,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -55.99948
+      value: -55.99951
       objectReference: {fileID: 0}
     - target: {fileID: 224849191688981826, guid: f50203bba3a86e448b75bfc70dc0d7fd,
         type: 2}
       propertyPath: m_AnchoredPosition.x
-      value: -109.34982
+      value: -109.34985
       objectReference: {fileID: 0}
     - target: {fileID: 224963953357829650, guid: f50203bba3a86e448b75bfc70dc0d7fd,
         type: 2}
@@ -1445,6 +1445,22 @@ Prefab:
       propertyPath: cameraDrone
       value: 
       objectReference: {fileID: 1405357887}
+    - target: {fileID: 114057008519178672, guid: 8bb78303fa93d2143a218c876bf46a79,
+        type: 2}
+      propertyPath: TrackPrefabs.Array.data[0]
+      value: 
+      objectReference: {fileID: 1649514755920574, guid: 00a9137d3d0f5b342bb6128df9298f72,
+        type: 2}
+    - target: {fileID: 114057008519178672, guid: 8bb78303fa93d2143a218c876bf46a79,
+        type: 2}
+      propertyPath: postProcessing
+      value: 
+      objectReference: {fileID: 1405357882}
+    - target: {fileID: 114057008519178672, guid: 8bb78303fa93d2143a218c876bf46a79,
+        type: 2}
+      propertyPath: Camera
+      value: 
+      objectReference: {fileID: 1405357882}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 8bb78303fa93d2143a218c876bf46a79, type: 2}
   m_IsPrefabParent: 0
@@ -1466,6 +1482,7 @@ GameObject:
   - component: {fileID: 1405357884}
   - component: {fileID: 1405357883}
   - component: {fileID: 1405357887}
+  - component: {fileID: 1405357888}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -1550,6 +1567,18 @@ MonoBehaviour:
   movementSpeed: 3.2
   rotationSpeed: 3.8
   CameraTarget: {fileID: 0}
+--- !u!114 &1405357888
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 1405357882}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ff26db721962cdf4a8edcdfa9a767d2a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  profile: {fileID: 11400000, guid: 7dc1ef35c274c9d449a705890c1aed1a, type: 2}
 --- !u!1001 &1551499223
 Prefab:
   m_ObjectHideFlags: 0
