@@ -11,29 +11,34 @@ using UnityEngine.PostProcessing;
 public class Manager : MonoBehaviour
 {
 	#region VISIBLE IN INSPECTOR
+	[Header("Car settings")]
 	[Range(1, 30)] public int CarSensorCount = 5;
 	[Range(10, 40)]	public int CarSensorLength = 25;
+	[Header("Car prefabs")]
 	[SerializeField] protected GameObject blueCarPrefab;
 	[SerializeField] protected GameObject redCarPrefab;
+	[Header("Save object - this contains the saved data")]
 	// Ebben az objektumban van tárolva az elmentett / betöltött adatok.
 	public GameSave Save;
-	[Tooltip("Ha ez be van jelölve, akkor a mentésben nem lesz benne " +
-		"a generáció számláló, illetve a statisztikai adatok sem.")]
+	[Header("If you want to create a demo save file")]
+	[Tooltip("If it is checked, the save file won't contains the statistics and the generation counter.")]
 	public bool CreateDemoSave;
+	[Header("Component references")]
 	[SerializeField] private GameObject UIStats;
 	[SerializeField] private GameObject inGameMenu;
 	[SerializeField] private GameObject loadingScreen;
 	[SerializeField] private GameObject minimapCamera;
+	[SerializeField] private CameraDrone cameraDrone;
+	[SerializeField] private GameObject Camera;
+	[Header("Track prefabs")]
 	[SerializeField] private GameObject[] TrackPrefabs;
 	[SerializeField] private GameObject[] WayPointPrefabs;
-	[SerializeField] private CameraDrone cameraDrone;
-	public GameObject Camera;
-	public Car[] Cars;
 	#endregion
 
 
 
 	#region PUBLIC BUT NOT VISIBLE IN INSPECTOR
+	public Car[] Cars;
 	public static Manager Instance = null;
 	public int CarCount { get; set; }
 	public int SelectionMethod { get; set; }
@@ -78,9 +83,6 @@ public class Manager : MonoBehaviour
 	private Color visibleColor;
 	private Color transparentColor;
 	#endregion
-
-
-
 
 
 	/// <summary>
@@ -162,9 +164,7 @@ public class Manager : MonoBehaviour
 
 	/// <summary>
 	/// Létrehozza az autókat a poolba. Ezek még nem aktív autók!
-	/// 
 	/// Aktiválni EGY autót a SpawnFromPool metódussal lehet.
-	/// 
 	/// Aktiválni AZ ÖSSZES autót a SpawnCars metódussal lehet.
 	/// </summary>
 	void InstantiateCars()

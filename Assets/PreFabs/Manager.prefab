@@ -69,30 +69,31 @@ MonoBehaviour:
     GenerationCount: 0
     maxFitness: []
     medianFitness: []
-  GotOptionValues: 0
-  inGame: 0
-  ManualControl: 0
-  wasItALoad: 0
   CreateDemoSave: 0
   UIStats: {fileID: 0}
   inGameMenu: {fileID: 0}
   loadingScreen: {fileID: 0}
-  myUIPrinter: {fileID: 0}
   minimapCamera: {fileID: 0}
-  bestCarID: 1
-  freezeTimeLeft: 8.659969
-  globalTimeLeft: 38.65997
   TrackPrefabs:
-  - {fileID: 1134274914523264, guid: 9c7a70d14ea03b347818e5e223175c2d, type: 2}
-  - {fileID: 1679501569141142, guid: 03c951b530d044045b3b50a8712c66a5, type: 2}
-  - {fileID: 1362309794849700, guid: cb86c7183e8ddec4b8b69d09e4f3f0d5, type: 2}
+  - {fileID: 1649514755920574, guid: 00a9137d3d0f5b342bb6128df9298f72, type: 2}
+  - {fileID: 1554295981998122, guid: f4d6553140e80954883a33fdc11f88fc, type: 2}
+  - {fileID: 1671860117573672, guid: de7376f4515cdf445b9b84b795131998, type: 2}
   WayPointPrefabs:
   - {fileID: 1736990184806124, guid: 6f41cef01981f8549a2a33bfcec89a3e, type: 2}
   - {fileID: 1132939013464934, guid: 232979a3921c83443926674670c7ec21, type: 2}
   - {fileID: 1922220400934308, guid: fb3c6dcb543082f4c9de7f64429ffee4, type: 2}
-  CurrentTrack: {fileID: 0}
-  CurrentWaypoint: {fileID: 0}
   cameraDrone: {fileID: 0}
-  isPlayerAlive: 0
+  Camera: {fileID: 0}
+  GotOptionValues: 0
+  inGame: 0
+  ManualControl: 0
+  wasItALoad: 0
+  myUIPrinter: {fileID: 0}
   maxFitness: []
   medianFitness: []
+  bestCarID: 1
+  freezeTimeLeft: 8.659969
+  globalTimeLeft: 38.65997
+  CurrentTrack: {fileID: 0}
+  CurrentWaypoint: {fileID: 0}
+  isPlayerAlive: 0
