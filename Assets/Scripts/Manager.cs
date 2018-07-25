@@ -73,8 +73,6 @@ public class Manager : MonoBehaviour
 
     void Start()
     {
-        SceneManager.sceneLoaded += OnSceneLoaded;
-
         myUIPrinter = Master.Instance.UIStats.GetComponent<UIPrinter>();
 
         Save = new GameSave();
@@ -321,36 +319,6 @@ public class Manager : MonoBehaviour
 
     }
 
-    /// <summary>
-    /// Meghívódik, amikor betöltött a következő scene.
-    /// Ez indítja a játékot!
-    /// </summary>
-    void OnSceneLoaded(Scene scene, LoadSceneMode mode)
-    {
-        // Ha demó módban van, akkor betölti a resource mappából a demó mentést
-        if (DemoMode)
-        {
-            TextAsset asset = Resources.Load("demoSave") as TextAsset;
-            MemoryStream stream = new MemoryStream(asset.bytes);
-            BinaryFormatter bf = new BinaryFormatter();
-            Save = (GameSave)bf.Deserialize(stream);
-
-            SelectionMethod = Save.SelectionMethod;
-            MutationChance = Save.MutationChance;
-            MutationRate = Save.MutationRate;
-            CarCount = Save.CarCount;
-            LayersCount = Save.LayersCount;
-            NeuronPerLayerCount = Save.NeuronPerLayerCount;
-            Navigator = Save.Navigator;
-            TrackNumber = Save.TrackNumber;
-            wasItALoad = true;
-        }
-
-
-        InitGame();
-        PlayGame();
-    }
-
 	public void StartGame(){
 		 // Ha demó módban van, akkor betölti a resource mappából a demó mentést
         if (DemoMode)
@@ -391,7 +359,6 @@ public class Manager : MonoBehaviour
 
     public void PlayGame()
     {
-        //CheckCarMaterials();
         InstantiateCars();
         // A player autóját is példányosítja a játék indulásakor
         InstantiatePlayerCar();
@@ -533,8 +500,10 @@ public class Manager : MonoBehaviour
 
                 GotOptionValues = true;
                 wasItALoad = true;
-                Master.Instance.loadingScreen.SetActive(true);
 
+                Master.Instance.StartNewGame();
+                Master.Instance.mainMenuCanvas.SetActive(false);
+                Master.Instance.bgLights.SetActive(false);
             }
         }
         else if (path.Length == 0)
@@ -608,7 +577,6 @@ public class Manager : MonoBehaviour
         if (path.Length != 0)
         {
             string tmp =
-                "==============================================\n" +
                 "GENERATION\t" + myUIPrinter.generationText.text + "\n" +
                 "MAP\t" + TrackNumber + "\n" +
                 "NUMBER OF CARS\t" + CarCount + "\n" +
@@ -617,8 +585,7 @@ public class Manager : MonoBehaviour
                 "MUTATION RATE\t" + MutationRate + "%\n" +
                 "NUMBER OF LAYERS\t" + LayersCount + "\n" +
                 "NEURON PER LAYER\t" + NeuronPerLayerCount + "\n" +
-                "NAVIGATOR\t" + Navigator + "\n" +
-                "==============================================\n";
+                "NAVIGATOR\t" + Navigator + "\n";
 
             tmp += "\n== MAX FITNESS ==\n";
             foreach (double item in maxFitness)

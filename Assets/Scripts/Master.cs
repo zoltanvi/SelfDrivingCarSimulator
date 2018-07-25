@@ -32,8 +32,6 @@ public class Master : MonoBehaviour
     public GameObject[] TrackPrefabs;
     public GameObject[] WayPointPrefabs;
 
-    private bool isPlaying = false;
-
     void Awake()
     {
         if (Instance == null)
@@ -81,9 +79,12 @@ public class Master : MonoBehaviour
 
     public void SaveGame()
     {
-        Manager.DisconnectGame();
+        Manager.SaveGame();
     }
 
+    public void LoadGame(){
+        Manager.LoadGame();
+    }
 
     public void SaveStats()
     {
