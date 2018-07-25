@@ -155,11 +155,11 @@ public class CarController : MonoBehaviour
 	{
 		if (collision.collider.gameObject.layer == LayerMask.NameToLayer(wallLayerName))
 		{
-			Manager.Instance.FreezeCar(carRigidbody, ID, IsAlive);
+			Master.Instance.Manager.FreezeCar(carRigidbody, ID, IsAlive);
 			IsAlive = false;
 			if (ID != -1)
 			{
-				Manager.Instance.Cars[ID].IsAlive = false;
+				Master.Instance.Manager.Cars[ID].IsAlive = false;
 			}
 		}
 	}
@@ -188,7 +188,7 @@ public class CarController : MonoBehaviour
 	/// </summary>
 	public void Freeze()
 	{
-		Manager.Instance.FreezeCar(carRigidbody, ID, IsAlive);
+		Master.Instance.Manager.FreezeCar(carRigidbody, ID, IsAlive);
 	}
 
 }

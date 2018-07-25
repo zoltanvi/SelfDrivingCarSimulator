@@ -24,17 +24,17 @@ public class FitnessMeter : MonoBehaviour
 
 	void Start()
 	{
-		waypointsRoot = Manager.Instance.CurrentWaypoint;
+		waypointsRoot = Master.Instance.Manager.CurrentWaypoint;
 
 		if (!this.gameObject.GetComponent<CarController>().IsPlayerControlled)
 		{
 			carID = this.gameObject.GetComponent<CarController>().ID;
-			Manager.Instance.Cars[carID].Fitness = absoluteFitness;
+			Master.Instance.Manager.Cars[carID].Fitness = absoluteFitness;
 		}
 		else
 		{
 			controlledByPlayer = true;
-			Manager.Instance.PlayerFitness = absoluteFitness;
+			Master.Instance.Manager.PlayerFitness = absoluteFitness;
 		}
 
 		waypoints = new Transform[waypointsRoot.transform.childCount];
@@ -151,11 +151,11 @@ public class FitnessMeter : MonoBehaviour
 		// Az auto fitness erteket atadja a CarGameManager-nek
 		if (!controlledByPlayer)
 		{
-			Manager.Instance.Cars[carID].Fitness = absoluteFitness;
+			Master.Instance.Manager.Cars[carID].Fitness = absoluteFitness;
 		}
 		else
 		{
-			Manager.Instance.PlayerFitness = absoluteFitness;
+			Master.Instance.Manager.PlayerFitness = absoluteFitness;
 		}
 	}
 

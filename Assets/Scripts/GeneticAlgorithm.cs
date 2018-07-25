@@ -30,9 +30,9 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 	void Awake()
 	{
-		PopulationSize = Manager.Instance.CarCount;
-		MutationChance = Manager.Instance.MutationChance; // 30-70 int %
-		MutationRate = Manager.Instance.MutationRate;   // 2-4 float %
+		PopulationSize = Master.Instance.Manager.CarCount;
+		MutationChance = Master.Instance.Manager.MutationChance; // 30-70 int %
+		MutationRate = Master.Instance.Manager.MutationRate;   // 2-4 float %
 
 	}
 
@@ -58,15 +58,15 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	{
 
 		// Ha minden autó megfagyott, jöhet az új generáció
-		if (Manager.Instance.AliveCount <= 0 && Manager.Instance.isPlayerAlive == false)
+		if (Master.Instance.Manager.AliveCount <= 0 && Master.Instance.Manager.isPlayerAlive == false)
 		{
 			// Elmenti az összes autó neurális hálóját
 			SaveNeuralNetworks();
 
-			if (Manager.Instance.wasItALoad)
+			if (Master.Instance.Manager.wasItALoad)
 			{
-				GenerationCount = Manager.Instance.Save.GenerationCount;
-				Manager.Instance.wasItALoad = false;
+				GenerationCount = Master.Instance.Manager.Save.GenerationCount;
+				Master.Instance.Manager.wasItALoad = false;
 			}
 
 			// Rendezi az autókat fitness értékük szerint csökkenő sorrendben
@@ -93,25 +93,25 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		// Respawnolja az összes autót 
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			Manager.Instance.Cars[i].PrevFitness = 0;
-			Manager.Instance.Cars[i].IsAlive = true;
-			Manager.Instance.SpawnFromPool(
-				Manager.Instance.transform.position,
-				Manager.Instance.transform.rotation);
+			Master.Instance.Manager.Cars[i].PrevFitness = 0;
+			Master.Instance.Manager.Cars[i].IsAlive = true;
+			Master.Instance.Manager.SpawnFromPool(
+				Master.Instance.Manager.transform.position,
+				Master.Instance.Manager.transform.rotation);
 		}
 
 		// Ha a player játszik, a piros autót is respawnolja
-		if (Manager.Instance.ManualControl)
+		if (Master.Instance.Manager.ManualControl)
 		{
-			Manager.Instance.SpawnPlayerCar(
-				Manager.Instance.transform.position,
-				Manager.Instance.transform.rotation);
+			Master.Instance.Manager.SpawnPlayerCar(
+				Master.Instance.Manager.transform.position,
+				Master.Instance.Manager.transform.rotation);
 		}
 
-		Manager.Instance.SetBackTimes();
+		Master.Instance.Manager.SetBackTimes();
 		// Növeli a generáció számlálót
 		GenerationCount++;
-		Manager.Instance.myUIPrinter.GenerationCount = GenerationCount;
+		Master.Instance.Manager.myUIPrinter.GenerationCount = GenerationCount;
 	}
 
 	/// <summary>
@@ -121,7 +121,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	{
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			carNetworks[i] = Manager.Instance.Cars[i].NeuralNetwork;
+			carNetworks[i] = Master.Instance.Manager.Cars[i].NeuralNetwork;
 		}
 
 		SavedCarNetworks = new double[PopulationSize][][][];
@@ -184,8 +184,8 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		// Először összegyűjti az adatokat (ID + hozzá tartozó fitness) ...
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			stats[i].ID = Manager.Instance.Cars[i].ID;
-			stats[i].Fitness = Manager.Instance.Cars[i].Fitness;
+			stats[i].ID = Master.Instance.Manager.Cars[i].ID;
+			stats[i].Fitness = Master.Instance.Manager.Cars[i].Fitness;
 		}
 
 		//  ... majd rendezi a stats tömböt
@@ -263,20 +263,20 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			if (max < Manager.Instance.Cars[i].Fitness)
+			if (max < Master.Instance.Manager.Cars[i].Fitness)
 			{
-				max = Manager.Instance.Cars[i].Fitness;
+				max = Master.Instance.Manager.Cars[i].Fitness;
 			}
 		}
 
 		// A stats tömb sorba lesz rendezve,
 		// így onnan tudjuk, hogy melyik a középső autó
-		median = Manager.Instance.Cars[
+		median = Master.Instance.Manager.Cars[
 			stats[PopulationSize / 2].ID].Fitness;
 
 
-		Manager.Instance.maxFitness.Add(max);
-		Manager.Instance.medianFitness.Add(median);
+		Master.Instance.Manager.maxFitness.Add(max);
+		Master.Instance.Manager.medianFitness.Add(median);
 
 	}
 

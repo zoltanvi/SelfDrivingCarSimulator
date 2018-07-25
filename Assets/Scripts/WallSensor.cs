@@ -40,8 +40,8 @@ public class WallSensor : MonoBehaviour
 
 	void Start()
 	{
-		rayCount = Manager.Instance.CarSensorCount;
-		lineLength = Manager.Instance.CarSensorLength;
+		rayCount = Master.Instance.Manager.CarSensorCount;
+		lineLength = Master.Instance.Manager.CarSensorLength;
 		// Beallitja az auto sorszamat
 		ID = this.gameObject.GetComponent<CarController>().ID;
 
@@ -56,7 +56,7 @@ public class WallSensor : MonoBehaviour
 			controlledByPlayer = true;
 		}
 
-		if (Manager.Instance.Navigator)
+		if (Master.Instance.Manager.Navigator)
 		{
 			// Inicializalja a neuralis halo inputjait
 			carNeuronInputs = new double[rayCount + 4];
@@ -69,10 +69,10 @@ public class WallSensor : MonoBehaviour
 			}
 
 
-			waypoints = new Transform[Manager.Instance.CurrentWaypoint.transform.childCount];
+			waypoints = new Transform[Master.Instance.Manager.CurrentWaypoint.transform.childCount];
 
 			int index = 0;
-			foreach (Transform wp in Manager.Instance.CurrentWaypoint.transform)
+			foreach (Transform wp in Master.Instance.Manager.CurrentWaypoint.transform)
 			{
 				waypoints[index++] = wp;
 			}
@@ -117,10 +117,10 @@ public class WallSensor : MonoBehaviour
 		if (!controlledByPlayer)
 		{
 			// Atadja az erzekelo adatokat es az auto sebesseget a CarGameManagernek
-			Manager.Instance.Cars[ID].Inputs = carNeuronInputs;
+			Master.Instance.Manager.Cars[ID].Inputs = carNeuronInputs;
 		}
 
-		if (Manager.Instance.Navigator)
+		if (Master.Instance.Manager.Navigator)
 		{
 			SetAnglesInput();
 		}
@@ -183,19 +183,20 @@ public class WallSensor : MonoBehaviour
 	private void InitializeLines()
 	{
 		Material lineMat = new Material(Shader.Find("Sprites/Default"));
-
+		LineRenderer lineRenderer;
 		for (int i = 0; i < rayHolders.Length; i++)
 		{
-			rayHolders[i] = new GameObject();
-			rayHolders[i].AddComponent<LineRenderer>();
-			rayHolders[i].GetComponent<LineRenderer>().positionCount = 2;
-			rayHolders[i].GetComponent<LineRenderer>().numCapVertices = 5;
-			rayHolders[i].GetComponent<LineRenderer>().startWidth = 0.05f;
-			rayHolders[i].GetComponent<LineRenderer>().endWidth = 0.05f;
-			rayHolders[i].GetComponent<LineRenderer>().useWorldSpace = false;
-			rayHolders[i].GetComponent<LineRenderer>().material = lineMat;
-			rayHolders[i].GetComponent<LineRenderer>().startColor = new Color(0.8378353f, 0f, 1.0f, 0.02f);
-			rayHolders[i].GetComponent<LineRenderer>().endColor = new Color(0f, 0.8818119f, 1f, 0f);
+			rayHolders[i] = new GameObject("RayHolder_" + ID);
+			rayHolders[i].transform.parent = Master.Instance.Manager.rayHolderRoot.transform;
+			lineRenderer = rayHolders[i].AddComponent<LineRenderer>();
+			lineRenderer.positionCount = 2;
+			lineRenderer.numCapVertices = 5;
+			lineRenderer.startWidth = 0.05f;
+			lineRenderer.endWidth = 0.05f;
+			lineRenderer.useWorldSpace = false;
+			lineRenderer.material = lineMat;
+			lineRenderer.startColor = new Color(0.8378353f, 0f, 1.0f, 0.02f);
+			lineRenderer.endColor = new Color(0f, 0.8818119f, 1f, 0f);
 
 		}
 	}
@@ -228,9 +229,9 @@ public class WallSensor : MonoBehaviour
 		thirdAngle = Vector3.Angle(third, fourth);
 
 		// Beírja az input tömbbe a szögeket
-		Manager.Instance.Cars[ID].Inputs[Manager.Instance.CarSensorCount + 1] = firstAngle;
-		Manager.Instance.Cars[ID].Inputs[Manager.Instance.CarSensorCount + 2] = secondAngle;
-		Manager.Instance.Cars[ID].Inputs[Manager.Instance.CarSensorCount + 3] = thirdAngle;
+		Master.Instance.Manager.Cars[ID].Inputs[Master.Instance.Manager.CarSensorCount + 1] = firstAngle;
+		Master.Instance.Manager.Cars[ID].Inputs[Master.Instance.Manager.CarSensorCount + 2] = secondAngle;
+		Master.Instance.Manager.Cars[ID].Inputs[Master.Instance.Manager.CarSensorCount + 3] = thirdAngle;
 
 	}
 

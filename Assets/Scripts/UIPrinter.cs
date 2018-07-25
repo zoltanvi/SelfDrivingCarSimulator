@@ -40,23 +40,23 @@ public class UIPrinter : MonoBehaviour
 
 	void Start()
 	{
-		controlledByPlayer = Manager.Instance.ManualControl;
+		controlledByPlayer = Master.Instance.Manager.ManualControl;
 		ConsoleMessage = "";
 		panelHeight = 0;
 		// TODO: változik majd a navigátorral
-		if (Manager.Instance.ManualControl)
+		if (Master.Instance.Manager.ManualControl)
 		{
 			panelHeight = 0;
 		}
 		else
 		{
-			if (Manager.Instance.Navigator)
+			if (Master.Instance.Manager.Navigator)
 			{
-				numLines = Manager.Instance.CarSensorCount + 4;
+				numLines = Master.Instance.Manager.CarSensorCount + 4;
 			}
 			else
 			{
-				numLines = Manager.Instance.CarSensorCount + 1;
+				numLines = Master.Instance.Manager.CarSensorCount + 1;
 			}
 			panelHeight = (15 * numLines) + 5;
 		}
@@ -65,13 +65,13 @@ public class UIPrinter : MonoBehaviour
 	}
 	void Update()
 	{
-		maxF = Manager.Instance.maxFitness;
-		medF = Manager.Instance.medianFitness;
-		remainingTimeText.text = string.Format("{0:0.0} sec", Manager.Instance.globalTimeLeft);
-		freezeTimeText.text = string.Format("{0:0.0} sec", Manager.Instance.freezeTimeLeft);
-		if (Manager.Instance.wasItALoad)
+		maxF = Master.Instance.Manager.maxFitness;
+		medF = Master.Instance.Manager.medianFitness;
+		remainingTimeText.text = string.Format("{0:0.0} sec", Master.Instance.Manager.globalTimeLeft);
+		freezeTimeText.text = string.Format("{0:0.0} sec", Master.Instance.Manager.freezeTimeLeft);
+		if (Master.Instance.Manager.wasItALoad)
 		{
-			generationText.text = string.Format("{0:0}", Manager.Instance.Save.GenerationCount);
+			generationText.text = string.Format("{0:0}", Master.Instance.Manager.Save.GenerationCount);
 		}
 		else
 		{
@@ -89,15 +89,15 @@ public class UIPrinter : MonoBehaviour
 		}
 		else
 		{
-			creatureIDText.text = string.Format("#{0:0}", Manager.Instance.bestCarID);
+			creatureIDText.text = string.Format("#{0:0}", Master.Instance.Manager.bestCarID);
 		}
 
 
 		maxText.text = string.Format("{0:0.00}", (maxF.Count - 1 >= 0) ? maxF[maxF.Count - 1] : 0);
 		medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
-		mutationRateText.text = string.Format("{0}%", Manager.Instance.MutationRate);
-		populationText.text = string.Format("{0:0}", Manager.Instance.CarCount);
-		aliveCountText.text = Manager.Instance.AliveCount.ToString();
+		mutationRateText.text = string.Format("{0}%", Master.Instance.Manager.MutationRate);
+		populationText.text = string.Format("{0:0}", Master.Instance.Manager.CarCount);
+		aliveCountText.text = Master.Instance.Manager.AliveCount.ToString();
 
 		double prevMax = (maxF.Count - 2 >= 0) ? maxF[maxF.Count - 2] : 0;
 		double currentMax = (maxF.Count - 1 >= 0) ? maxF[maxF.Count - 1] : 0;

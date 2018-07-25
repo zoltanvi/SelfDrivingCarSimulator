@@ -156,66 +156,66 @@ public class MenuController : MonoBehaviour
 
 	public void SetLoadTrackNumber()
 	{
-		Manager.Instance.TrackNumber = TrackNumber;
+		Master.Instance.Manager.TrackNumber = TrackNumber;
 	}
 
 	public void SetOptionValues()
 	{
 
-		Manager.Instance.CarCount = NumberOfCars;
-		Manager.Instance.LayersCount = NumberOfLayers;
-		Manager.Instance.NeuronPerLayerCount = NeuronPerLayer;
-		Manager.Instance.TrackNumber = TrackNumber;
-		Manager.Instance.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
-		Manager.Instance.Navigator = Navigator;
-		Manager.Instance.DemoMode = DemoMode;
+		Master.Instance.Manager.CarCount = NumberOfCars;
+		Master.Instance.Manager.LayersCount = NumberOfLayers;
+		Master.Instance.Manager.NeuronPerLayerCount = NeuronPerLayer;
+		Master.Instance.Manager.TrackNumber = TrackNumber;
+		Master.Instance.Manager.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
+		Master.Instance.Manager.Navigator = Navigator;
+		Master.Instance.Manager.DemoMode = DemoMode;
 
 		// Az érték beállítása a dropdownból kinyert adat szerint
 		switch (MutationChanceE)
 		{
 			case 0:
-				Manager.Instance.MutationChance = 30;
+				Master.Instance.Manager.MutationChance = 30;
 				break;
 			case 1:
-				Manager.Instance.MutationChance = 40;
+				Master.Instance.Manager.MutationChance = 40;
 				break;
 			case 2:
-				Manager.Instance.MutationChance = 50;
+				Master.Instance.Manager.MutationChance = 50;
 				break;
 			case 3:
-				Manager.Instance.MutationChance = 60;
+				Master.Instance.Manager.MutationChance = 60;
 				break;
 			case 4:
-				Manager.Instance.MutationChance = 70;
+				Master.Instance.Manager.MutationChance = 70;
 				break;
 			default:
-				Manager.Instance.MutationChance = 50;
+				Master.Instance.Manager.MutationChance = 50;
 				break;
 		}
 
 		switch (MutationRateE)
 		{
 			case 0:
-				Manager.Instance.MutationRate = 2f;
+				Master.Instance.Manager.MutationRate = 2f;
 				break;
 			case 1:
-				Manager.Instance.MutationRate = 2.5f;
+				Master.Instance.Manager.MutationRate = 2.5f;
 				break;
 			case 2:
-				Manager.Instance.MutationRate = 3f;
+				Master.Instance.Manager.MutationRate = 3f;
 				break;
 			case 3:
-				Manager.Instance.MutationRate = 3.5f;
+				Master.Instance.Manager.MutationRate = 3.5f;
 				break;
 			case 4:
-				Manager.Instance.MutationRate = 4f;
+				Master.Instance.Manager.MutationRate = 4f;
 				break;
 			default:
-				Manager.Instance.MutationRate = 3f;
+				Master.Instance.Manager.MutationRate = 3f;
 				break;
 		}
 
-		Manager.Instance.GotOptionValues = true;
+		Master.Instance.Manager.GotOptionValues = true;
 
 		Debug.Log("Gave values to manager!");
 

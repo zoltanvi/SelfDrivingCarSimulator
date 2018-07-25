@@ -22,18 +22,18 @@ public class NeuralNetwork : MonoBehaviour
 
 	void Start()
 	{
-		bias = Manager.Instance.Bias;
+		bias = Master.Instance.Manager.Bias;
 		carID = this.gameObject.GetComponent<CarController>().ID;
-		hiddenLayerCount = Manager.Instance.LayersCount;
-		neuronCount = Manager.Instance.NeuronPerLayerCount;
+		hiddenLayerCount = Master.Instance.Manager.LayersCount;
+		neuronCount = Master.Instance.Manager.NeuronPerLayerCount;
 
-		if (Manager.Instance.Navigator)
+		if (Master.Instance.Manager.Navigator)
 		{
-			inputCount = Manager.Instance.CarSensorCount + 4;
+			inputCount = Master.Instance.Manager.CarSensorCount + 4;
 		}
 		else
 		{
-			inputCount = Manager.Instance.CarSensorCount + 1;
+			inputCount = Master.Instance.Manager.CarSensorCount + 1;
 		}
 
 
@@ -72,7 +72,7 @@ public class NeuralNetwork : MonoBehaviour
 			NeuronLayers[NeuronLayers.Length - 1] = new NeuronLayerTanh(2, neuronCount, bias);
 		}
 
-		if (Manager.Instance.wasItALoad)
+		if (Master.Instance.Manager.wasItALoad)
 		{
 			for (int i = 0; i < NeuronLayers.Length; i++)
 			{
@@ -80,7 +80,7 @@ public class NeuralNetwork : MonoBehaviour
 				{
 					for (int k = 0; k < NeuronLayers[i].NeuronWeights[j].Length; k++)
 					{
-						NeuronLayers[i].NeuronWeights[j][k] = Manager.Instance.Save.SavedCarNetworks[carID][i][j][k];
+						NeuronLayers[i].NeuronWeights[j][k] = Master.Instance.Manager.Save.SavedCarNetworks[carID][i][j][k];
 					}
 				}
 			}
@@ -93,7 +93,7 @@ public class NeuralNetwork : MonoBehaviour
 	{
 
 		// The inputs array contains the car's sensor datas and it's current speed.
-		carInputs = Manager.Instance.Cars[carID].Inputs;
+		carInputs = Master.Instance.Manager.Cars[carID].Inputs;
 
 		// If zero hidden layer -> there is only the output layer
 		if (hiddenLayerCount == 0)
