@@ -16,7 +16,13 @@ public class Master : MonoBehaviour
     public GameObject redCarPrefab;
     [Header("If you want to create a demo save file")]
     [Tooltip("If it is checked, the save file won't contains the statistics and the generation counter.")]
-    public bool CreateDemoSave;
+    public bool CreateDemoSave = false;
+
+    [Range(0f, 2f)]
+    public float popupFadeTime = 0.1f;
+
+    [Range(0f, 2f)]
+    public float popupDurationTime = 0.5f;
 
     [Header("Component references")]
     public GameObject UIStats;
@@ -27,6 +33,7 @@ public class Master : MonoBehaviour
     public GameObject minimapCamera;
     public CameraDrone cameraDrone;
     public GameObject Camera;
+    public GameObject popUp;
 
     [Header("Track prefabs")]
     public GameObject[] TrackPrefabs;

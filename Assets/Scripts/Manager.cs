@@ -18,6 +18,8 @@ public class Manager : MonoBehaviour
     [Header("Save object - this contains the saved data")]
     // Ebben az objektumban van tárolva az elmentett / betöltött adatok.
     public GameSave Save;
+
+
     #endregion
 
 
@@ -50,8 +52,8 @@ public class Manager : MonoBehaviour
     [HideInInspector] public double PlayerFitness { get; set; }
     [HideInInspector] public bool isPlayerAlive = false;
     [HideInInspector] public GameObject rayHolderRoot;
-	[HideInInspector] public GameObject carHolderRoot;
-	[HideInInspector] public GameObject playerCar;
+    [HideInInspector] public GameObject carHolderRoot;
+    [HideInInspector] public GameObject playerCar;
     #endregion
 
 
@@ -68,6 +70,10 @@ public class Manager : MonoBehaviour
     private Shader transparentShader;
     private Color visibleColor;
     private Color transparentColor;
+
+    private string[] cheatCode;
+    private int cheatIndex;
+
     #endregion
 
 
@@ -80,6 +86,8 @@ public class Manager : MonoBehaviour
         standardShader = Shader.Find("Standard");
         visibleColor = new Color(1, 1, 1, 1.0f);
         transparentColor = new Color(1, 1, 1, 0.0f);
+        cheatCode = new string[] { "n", "e", "r", "f" };
+        cheatIndex = 0;
 
 
     }
@@ -133,7 +141,7 @@ public class Manager : MonoBehaviour
     {
         carPool = new Queue<GameObject>();
         rayHolderRoot = new GameObject("RayHolderDeletable");
-		carHolderRoot = new GameObject("CarHolderDeletable");
+        carHolderRoot = new GameObject("CarHolderDeletable");
         for (int i = 0; i < CarCount; i++)
         {
             GameObject obj = Instantiate(Master.Instance.blueCarPrefab, transform.position, transform.rotation);
@@ -146,7 +154,7 @@ public class Manager : MonoBehaviour
             Cars[i].NeuralNetwork = obj.GetComponent<NeuralNetwork>();
             Cars[i].CarController.ID = i;
             Cars[i].Transform = obj.transform;
-			Cars[i].Transform.parent = carHolderRoot.transform;
+            Cars[i].Transform.parent = carHolderRoot.transform;
             Cars[i].Transform.name = "Car_" + i;
             Cars[i].IsAlive = true;
         }
@@ -319,8 +327,9 @@ public class Manager : MonoBehaviour
 
     }
 
-	public void StartGame(){
-		 // Ha demó módban van, akkor betölti a resource mappából a demó mentést
+    public void StartGame()
+    {
+        // Ha demó módban van, akkor betölti a resource mappából a demó mentést
         if (DemoMode)
         {
             TextAsset asset = Resources.Load("demoSave") as TextAsset;
@@ -341,7 +350,7 @@ public class Manager : MonoBehaviour
 
         InitGame();
         PlayGame();
-	}
+    }
 
     public void InitGame()
     {
@@ -434,8 +443,8 @@ public class Manager : MonoBehaviour
 
         CurrentTrack = Instantiate(Master.Instance.TrackPrefabs[TrackNumber], transform.position, transform.rotation);
         CurrentWaypoint = Instantiate(Master.Instance.WayPointPrefabs[TrackNumber], transform.position, transform.rotation);
-		CurrentTrack.transform.name = "TrackDeletable";
-		CurrentWaypoint.transform.name = "WaypointDeletable";
+        CurrentTrack.transform.name = "TrackDeletable";
+        CurrentWaypoint.transform.name = "WaypointDeletable";
         DontDestroyOnLoad(CurrentTrack);
         DontDestroyOnLoad(CurrentWaypoint);
         CurrentTrack.SetActive(true);
@@ -766,6 +775,30 @@ public class Manager : MonoBehaviour
                     Master.Instance.inGameMenu.SetActive(true);
                 }
             }
+        }
+
+        if (Input.anyKeyDown)
+        {
+            if (!inGame)
+            {
+                if (Input.GetKeyDown(cheatCode[cheatIndex]))
+                {
+                    cheatIndex++;
+                }
+                else
+                {
+                    cheatIndex = 0;
+                }
+            }
+        }
+
+        if (cheatIndex == cheatCode.Length)
+        {
+            cheatIndex = 0;
+            Master.Instance.CreateDemoSave = !Master.Instance.CreateDemoSave;
+            Instantiate(Master.Instance.popUp);
+
+            print("Cheat unlocked!");
         }
 
     }
