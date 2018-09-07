@@ -777,6 +777,18 @@ public class Manager : MonoBehaviour
             }
         }
 
+        // Ha a J billentyűt lenyomták
+        if(Input.GetButtonDown("JoinDisconnect"))
+        {
+            // Ha jelenleg nem irányítja az autót a játékos 
+            if(!ManualControl){
+                JoinGame();
+            } else {
+                DisconnectGame();
+            }
+        }
+
+
         if (Input.anyKeyDown)
         {
             if (!inGame)
