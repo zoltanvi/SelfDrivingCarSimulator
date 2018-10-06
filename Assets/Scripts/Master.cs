@@ -9,7 +9,8 @@ public class Master : MonoBehaviour
     public static Master Instance = null;
     [HideInInspector] public GameObject ManagerGO;
     [HideInInspector] public Manager Manager;
-
+    public Globalizator globalizator;
+    public MenuController menuController;
 
     [Header("Car prefabs")]
     public GameObject blueCarPrefab;
@@ -89,7 +90,8 @@ public class Master : MonoBehaviour
         Manager.SaveGame();
     }
 
-    public void LoadGame(){
+    public void LoadGame()
+    {
         Manager.LoadGame();
     }
 
@@ -134,7 +136,7 @@ public class Master : MonoBehaviour
     {
         Camera.transform.position = new Vector3(0.62f, 305.83f, -7.55f);
         Camera.transform.rotation = new Quaternion();
-		Camera.GetComponent<PostProcessingBehaviour>().enabled = false;
+        Camera.GetComponent<PostProcessingBehaviour>().enabled = false;
 
         cameraDrone.enabled = false;
         Destroy(GameObject.Find("GeneticAlgorithmDeletable"));
@@ -146,13 +148,25 @@ public class Master : MonoBehaviour
         Destroy(ManagerGO);
         inGameMenu.SetActive(false);
         UIStats.SetActive(false);
-		mainMenuCanvas.SetActive(true);
+        mainMenuCanvas.SetActive(true);
 
         ManagerGO = new GameObject("ManagerObject");
         Manager = ManagerGO.AddComponent<Manager>();
         DontDestroyOnLoad(ManagerGO);
+    }
 
-
+    public void SetLanguage(int lang)
+    {
+        if (lang == 1)
+        {
+            globalizator.SetLanguage(GameLanguage.ENGLISH);
+        }
+        else
+        {
+            globalizator.SetLanguage(GameLanguage.HUNGARIAN);
+        }
+        
+        menuController.ChangedLanguage();
     }
 
 }

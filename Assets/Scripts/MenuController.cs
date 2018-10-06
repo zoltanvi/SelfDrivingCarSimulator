@@ -30,6 +30,7 @@ public class MenuController : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI tooltipTitle;
 	[SerializeField] private TextMeshProUGUI tooltipText;
 
+	TextResources textResources;
 
 	private Color white = new Color(1.0f, 1.0f, 1.0f);
 	private Color gray = new Color(0.254717f, 0.254717f, 0.254717f);
@@ -45,9 +46,7 @@ public class MenuController : MonoBehaviour
 	public bool Navigator { get; set; }
 	public bool DemoMode { get; set; }
 
-	private List<string> selections = new List<string>() {
-		"Tournament method", "Top 50%", "Tournament and 20% random each round"
-	};
+	private List<string> selections = new List<string>();
 
 	private List<string> mutationChances = new List<string>() {
 		"30%", "40%", "50%", "60%", "70%"
@@ -61,6 +60,12 @@ public class MenuController : MonoBehaviour
 	// Use this for initialization
 	void Start()
 	{
+		textResources = new TextResources();
+		selections.Add(textResources.GetString("options_selection_tournament"));
+		selections.Add(textResources.GetString("options_selection_top50"));
+		selections.Add(textResources.GetString("options_selection_20random"));
+
+
 		PopulateDropdowns();
 
 		// Default értékek, ha nem megy bele a felhasználó a beállításokba
@@ -227,54 +232,43 @@ public class MenuController : MonoBehaviour
 		{
 			// Number of cars
 			case 0:
-				tooltipTitle.text = "Number of cars";
-				tooltipText.text = "The size of the population.";
+				tooltipTitle.text = textResources.GetString("tooltip_num_of_cars");
+				tooltipText.text = textResources.GetString("tooltip_num_of_cars_desc");
 				break;
 			// Selection method
 			case 1:
-				tooltipTitle.text = "Selection method";
-				tooltipText.text = "Selection is the stage of a genetic algorithm " +
-					"in which individual genomes are chosen from a population for " +
-					"later breeding (using the crossover operator).";
+				tooltipTitle.text = textResources.GetString("tooltip_selection_method");
+				tooltipText.text = textResources.GetString("tooltip_selection_method_desc");
 				break;
 			// Mutation possibility
 			case 2:
-				tooltipTitle.text = "Mutation possibility";
-				tooltipText.text = "The chance that the mutation will occur during recombination.";
+				tooltipTitle.text = textResources.GetString("tooltip_mutation_possibility");
+				tooltipText.text = textResources.GetString("tooltip_mutation_possibility_desc");
 				break;
 			// Mutation rate
 			case 3:
-				tooltipTitle.text = "Mutation rate";
-				tooltipText.text = "The rate of the mutation that will occur during recombination.";
+				tooltipTitle.text = textResources.GetString("tooltip_mutation_rate");
+				tooltipText.text = textResources.GetString("tooltip_mutation_rate_desc");
 				break;
 			// Number of layers
 			case 4:
-				tooltipTitle.text = "Number of layers";
-				tooltipText.text = "It specifies how many neuron layers will be in a single neural network. " +
-					"\n\nA car's brain is it's neural network. " +
-					"These cars' neural networks are built up by neural layers " +
-					"which are built up by neurons.";
+				tooltipTitle.text = textResources.GetString("tooltip_num_of_layers");
+				tooltipText.text = textResources.GetString("tooltip_num_of_layers_desc");
 				break;
 			// Neuron per layer
 			case 5:
-				tooltipTitle.text = "Neuron per layer";
-				tooltipText.text = "It specifies how many neurons will be in a single neuron layer. " + 
-					"A car's brain is it's neural network. " +
-					"These cars' neural networks are built up by neural layers " +
-					"which are built up by neurons.";
+				tooltipTitle.text = textResources.GetString("tooltip_neuron_per_layer");
+				tooltipText.text = textResources.GetString("tooltip_neuron_per_layer_desc");
 				break;
 			// Navigator
 			case 6:
-				tooltipTitle.text = "Navigator";
-				tooltipText.text = "A map have checkpoints between it's walls, roughly in the middle. " +
-					"If you connect the next two points, they form lines. The lines form angles." +
-					"If the navigator option is checked, the cars will get the next 3 angle as its input.";
+				tooltipTitle.text = textResources.GetString("tooltip_navigator");
+				tooltipText.text = textResources.GetString("tooltip_navigator_desc");
 				break;
+			// Demo mode
 			case 7:
-				tooltipTitle.text = "Demo mode";
-				tooltipText.text = "-- If this is checked, it overwrites all of your settings! --\n" +
-					"Neural networks start with values from a state reached in a previous run.\n" +
-					"(For faster demonstration)";
+				tooltipTitle.text = textResources.GetString("tooltip_demo_mode");
+				tooltipText.text = textResources.GetString("tooltip_demo_mode_desc");
 				break;
 			default:
 				tooltipTitle.text = "";
@@ -283,6 +277,15 @@ public class MenuController : MonoBehaviour
 		}
 	}
 
+	public void ChangedLanguage(){
+		selections.Clear();
+		selectionDropdown.ClearOptions();
 
+		selections.Add(textResources.GetString("options_selection_tournament"));
+		selections.Add(textResources.GetString("options_selection_top50"));
+		selections.Add(textResources.GetString("options_selection_20random"));
+
+		selectionDropdown.AddOptions(selections);
+	}
 
 }

@@ -530,7 +530,7 @@ public class Manager : MonoBehaviour
     {
         string extensions = "SAVE";
         DateTime dateTime = DateTime.Now;
-        string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
+        string timeStamp = dateTime.ToString("yyyyMMdd-HHmmss");
         string path = FileBrowser.SaveFile("Select the save location", "", "CGSave_" + timeStamp, extensions);
         Debug.Log("Save file: " + path);
 
@@ -579,7 +579,7 @@ public class Manager : MonoBehaviour
     {
         string extensions = "txt";
         DateTime dateTime = DateTime.Now;
-        string timeStamp = dateTime.ToString("yyyy-MM-dd__HH-mm-ss");
+        string timeStamp = dateTime.ToString("yyyyMMdd-HHmmss");
         string path = FileBrowser.SaveFile("Select the save location", "", "CGStats_" + timeStamp, extensions);
         Debug.Log("Save file: " + path);
 
@@ -677,14 +677,11 @@ public class Manager : MonoBehaviour
     /// <param name="isAlive">Az autó életben van-e</param>
     public void FreezeCar(Rigidbody carRigidbody, int carID, bool isAlive)
     {
-        if (isAlive)
+        if (isAlive && carID != -1)
         {
             carRigidbody.isKinematic = true;
-
-            if (carID != -1)
-            {
-                AliveCount--;
-                #region Súlyok és fitness értékek fájlba írása
+            AliveCount--;
+            #region Súlyok és fitness értékek fájlba írása
                 //if (LogNetworkData)
                 //{
                 //	NeuralNetwork tmp2 = Cars[carID].Transform.gameObject.GetComponent<NeuralNetwork>();
@@ -713,12 +710,6 @@ public class Manager : MonoBehaviour
 
                 //}
                 #endregion
-            }
-            else
-            {
-                isPlayerAlive = false;
-            }
-
         }
     }
 

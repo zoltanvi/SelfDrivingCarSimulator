@@ -58,7 +58,7 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	{
 
 		// Ha minden autó megfagyott, jöhet az új generáció
-		if (Master.Instance.Manager.AliveCount <= 0 && Master.Instance.Manager.isPlayerAlive == false)
+		if (Master.Instance.Manager.AliveCount <= 0)
 		{
 			// Elmenti az összes autó neurális hálóját
 			SaveNeuralNetworks();
