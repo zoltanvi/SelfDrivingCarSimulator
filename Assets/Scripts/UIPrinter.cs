@@ -58,7 +58,7 @@ public class UIPrinter : MonoBehaviour
 			{
 				numLines = Master.Instance.Manager.CarSensorCount + 1;
 			}
-			panelHeight = (15 * numLines) + 5;
+			panelHeight = (17 * numLines) + 5;
 		}
 
 		consolePanel.GetComponent<RectTransform>().sizeDelta = new Vector2(100, panelHeight);

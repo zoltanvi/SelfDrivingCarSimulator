@@ -61,11 +61,12 @@ public class Globalizator : MonoBehaviour
     public TextMeshProUGUI median;
     #endregion
 
-    TextResources tR;
+    TextResources textResources;
 
     void Start()
     {
-        tR = new TextResources();
+        textResources = new TextResources();
+        
     }
 
 
@@ -74,56 +75,56 @@ public class Globalizator : MonoBehaviour
         TextResources.Language = language;
 
         #region menu
-        start.text = tR.GetString("menu_start");
-        options.text = tR.GetString("menu_options");
-        load.text = tR.GetString("menu_load");
-        exit.text = tR.GetString("menu_exit");
-        version.text = tR.GetString("menu_dev") + "\n" + tR.GetString("menu_version");
+        start.text = textResources.GetValue("menu_start");
+        options.text = textResources.GetValue("menu_options");
+        load.text = textResources.GetValue("menu_load");
+        exit.text = textResources.GetValue("menu_exit");
+        version.text = textResources.GetValue("menu_dev") + "\n" + textResources.GetValue("menu_version");
         #endregion
 
         #region options
-        numOfCars.text = tR.GetString("options_num_of_cars");
-        selectionMethod.text = tR.GetString("options_selection_method");
-        mutation.text = tR.GetString("options_mutation");
-        possibility.text = tR.GetString("options_possibility");
-        rate.text = tR.GetString("options_rate");
-        numOfLayers.text = tR.GetString("options_num_of_layers");
-        neuronPerLayer.text = tR.GetString("options_neuron_per_layer");
-        navigator.text = tR.GetString("options_navigator");
-        demoMode.text = tR.GetString("options_demo_mode");
-        optionsBack.text = tR.GetString("menu_back");
+        numOfCars.text = textResources.GetValue("options_num_of_cars");
+        selectionMethod.text = textResources.GetValue("options_selection_method");
+        mutation.text = textResources.GetValue("options_mutation");
+        possibility.text = textResources.GetValue("options_possibility");
+        rate.text = textResources.GetValue("options_rate");
+        numOfLayers.text = textResources.GetValue("options_num_of_layers");
+        neuronPerLayer.text = textResources.GetValue("options_neuron_per_layer");
+        navigator.text = textResources.GetValue("options_navigator");
+        demoMode.text = textResources.GetValue("options_demo_mode");
+        optionsBack.text = textResources.GetValue("menu_back");
 
-        map.text = tR.GetString("options_map");
+        map.text = textResources.GetValue("options_map");
         #endregion
 
         #region load
-        selectMap.text = tR.GetString("load_select_map");
-        loadLoad.text = tR.GetString("menu_load");
-        loadBack.text = tR.GetString("menu_back");
+        selectMap.text = textResources.GetValue("load_select_map");
+        loadLoad.text = textResources.GetValue("menu_load");
+        loadBack.text = textResources.GetValue("menu_back");
         #endregion
 
         #region ingame menu
-        join.text = tR.GetString("ingame_join");
-        disconnect.text = tR.GetString("ingame_disconnect");
-        save.text = tR.GetString("ingame_save_game");
-        saveStats.text = tR.GetString("ingame_save_stats");
-        normalSpeed.text = tR.GetString("ingame_normal_speed");
-        fastForward2.text = tR.GetString("ingame_ff_2");
-        fastForward5.text = tR.GetString("ingame_ff_5");
-        exitToMenu.text = tR.GetString("ingame_exit");
+        join.text = textResources.GetValue("ingame_join");
+        disconnect.text = textResources.GetValue("ingame_disconnect");
+        save.text = textResources.GetValue("ingame_save_game");
+        saveStats.text = textResources.GetValue("ingame_save_stats");
+        normalSpeed.text = textResources.GetValue("ingame_normal_speed");
+        fastForward2.text = textResources.GetValue("ingame_ff_2");
+        fastForward5.text = textResources.GetValue("ingame_ff_5");
+        exitToMenu.text = textResources.GetValue("ingame_exit");
         #endregion
 
         #region hud
-        remainingTime.text = tR.GetString("hud_remaining_time");
-        freezeTime.text = tR.GetString("hud_freeze_time");
-        generation.text = tR.GetString("hud_generation");
-        population.text = tR.GetString("hud_population");
-        playingCars.text = tR.GetString("hud_playing_cars");
-        mutationRate.text = tR.GetString("hud_mutation_rate");
-        creature.text = tR.GetString("hud_creature");
-        fitness.text = tR.GetString("hud_fitness");
-        max.text = tR.GetString("hud_max");
-        median.text = tR.GetString("hud_median");
+        remainingTime.text = textResources.GetValue("hud_remaining_time");
+        freezeTime.text = textResources.GetValue("hud_freeze_time");
+        generation.text = textResources.GetValue("hud_generation");
+        population.text = textResources.GetValue("hud_population");
+        playingCars.text = textResources.GetValue("hud_playing_cars");
+        mutationRate.text = textResources.GetValue("hud_mutation_rate");
+        creature.text = textResources.GetValue("hud_creature");
+        fitness.text = textResources.GetValue("hud_fitness");
+        max.text = textResources.GetValue("hud_max");
+        median.text = textResources.GetValue("hud_median");
         #endregion
 
 

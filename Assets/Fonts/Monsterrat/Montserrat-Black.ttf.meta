@@ -1,7 +1,5 @@
 fileFormatVersion: 2
-guid: 355a0e8c2ce5368448d6ca4f1251774a
-timeCreated: 1518964272
-licenseType: Free
+guid: 4a057c6f417d1824486532cdd4f4099b
 TrueTypeFontImporter:
   externalObjects: {}
   serializedVersion: 4
@@ -10,16 +8,15 @@ TrueTypeFontImporter:
   characterSpacing: 0
   characterPadding: 1
   includeFontData: 1
-  fontName: Roboto
+  fontName: Montserrat
   fontNames:
-  - Roboto
-  fallbackFontReferences:
-  - {fileID: 12800000, guid: 1a79dd6bf10775441965c83d321f29d4, type: 3}
-  - {fileID: 12800000, guid: 20277beb8eccb864f897c63d0a19d168, type: 3}
+  - Montserrat
+  fallbackFontReferences: []
   customCharacters: 
   fontRenderingMode: 0
   ascentCalculationMode: 1
   useLegacyBoundsCalculation: 0
+  shouldRoundAdvanceValue: 1
   userData: 
   assetBundleName: 
   assetBundleVariant: 

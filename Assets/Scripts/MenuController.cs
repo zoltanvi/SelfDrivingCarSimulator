@@ -61,9 +61,9 @@ public class MenuController : MonoBehaviour
 	void Start()
 	{
 		textResources = new TextResources();
-		selections.Add(textResources.GetString("options_selection_tournament"));
-		selections.Add(textResources.GetString("options_selection_top50"));
-		selections.Add(textResources.GetString("options_selection_20random"));
+		selections.Add(textResources.GetValue("options_selection_tournament"));
+		selections.Add(textResources.GetValue("options_selection_top50"));
+		selections.Add(textResources.GetValue("options_selection_20random"));
 
 
 		PopulateDropdowns();
@@ -232,43 +232,43 @@ public class MenuController : MonoBehaviour
 		{
 			// Number of cars
 			case 0:
-				tooltipTitle.text = textResources.GetString("tooltip_num_of_cars");
-				tooltipText.text = textResources.GetString("tooltip_num_of_cars_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_num_of_cars");
+				tooltipText.text = textResources.GetValue("tooltip_num_of_cars_desc");
 				break;
 			// Selection method
 			case 1:
-				tooltipTitle.text = textResources.GetString("tooltip_selection_method");
-				tooltipText.text = textResources.GetString("tooltip_selection_method_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_selection_method");
+				tooltipText.text = textResources.GetValue("tooltip_selection_method_desc");
 				break;
 			// Mutation possibility
 			case 2:
-				tooltipTitle.text = textResources.GetString("tooltip_mutation_possibility");
-				tooltipText.text = textResources.GetString("tooltip_mutation_possibility_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_mutation_possibility");
+				tooltipText.text = textResources.GetValue("tooltip_mutation_possibility_desc");
 				break;
 			// Mutation rate
 			case 3:
-				tooltipTitle.text = textResources.GetString("tooltip_mutation_rate");
-				tooltipText.text = textResources.GetString("tooltip_mutation_rate_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_mutation_rate");
+				tooltipText.text = textResources.GetValue("tooltip_mutation_rate_desc");
 				break;
 			// Number of layers
 			case 4:
-				tooltipTitle.text = textResources.GetString("tooltip_num_of_layers");
-				tooltipText.text = textResources.GetString("tooltip_num_of_layers_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_num_of_layers");
+				tooltipText.text = textResources.GetValue("tooltip_num_of_layers_desc");
 				break;
 			// Neuron per layer
 			case 5:
-				tooltipTitle.text = textResources.GetString("tooltip_neuron_per_layer");
-				tooltipText.text = textResources.GetString("tooltip_neuron_per_layer_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_neuron_per_layer");
+				tooltipText.text = textResources.GetValue("tooltip_neuron_per_layer_desc");
 				break;
 			// Navigator
 			case 6:
-				tooltipTitle.text = textResources.GetString("tooltip_navigator");
-				tooltipText.text = textResources.GetString("tooltip_navigator_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_navigator");
+				tooltipText.text = textResources.GetValue("tooltip_navigator_desc");
 				break;
 			// Demo mode
 			case 7:
-				tooltipTitle.text = textResources.GetString("tooltip_demo_mode");
-				tooltipText.text = textResources.GetString("tooltip_demo_mode_desc");
+				tooltipTitle.text = textResources.GetValue("tooltip_demo_mode");
+				tooltipText.text = textResources.GetValue("tooltip_demo_mode_desc");
 				break;
 			default:
 				tooltipTitle.text = "";
@@ -281,9 +281,9 @@ public class MenuController : MonoBehaviour
 		selections.Clear();
 		selectionDropdown.ClearOptions();
 
-		selections.Add(textResources.GetString("options_selection_tournament"));
-		selections.Add(textResources.GetString("options_selection_top50"));
-		selections.Add(textResources.GetString("options_selection_20random"));
+		selections.Add(textResources.GetValue("options_selection_tournament"));
+		selections.Add(textResources.GetValue("options_selection_top50"));
+		selections.Add(textResources.GetValue("options_selection_20random"));
 
 		selectionDropdown.AddOptions(selections);
 	}
