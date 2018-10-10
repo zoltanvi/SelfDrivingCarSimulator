@@ -66,6 +66,7 @@ public class Globalizator : MonoBehaviour
     void Start()
     {
         textResources = new TextResources();
+        SetLanguage(GameLanguage.ENGLISH);
         
     }
 
