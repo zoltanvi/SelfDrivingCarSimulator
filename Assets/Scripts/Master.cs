@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.PostProcessing;
+using System;
 public class Master : MonoBehaviour
 {
 
@@ -69,7 +70,6 @@ public class Master : MonoBehaviour
         UIStats.SetActive(false);
         inGameMenu.SetActive(false);
 
-
     }
 
 
@@ -121,8 +121,8 @@ public class Master : MonoBehaviour
 
     public void ExitGame()
     {
-        Debug.Log("Kilépés...");
 #if UNITY_EDITOR
+        Debug.Log("Kilépés...");
         UnityEditor.EditorApplication.isPlaying = false;
 #else
          Application.Quit();
@@ -144,6 +144,7 @@ public class Master : MonoBehaviour
         Destroy(GameObject.Find("WaypointDeletable"));
         Destroy(GameObject.Find("RayHolderDeletable"));
         Destroy(GameObject.Find("CarHolderDeletable"));
+        Manager.myUIPrinter.GenerationCount = 0;
         Destroy(Manager.playerCar);
         Destroy(ManagerGO);
         inGameMenu.SetActive(false);
@@ -153,6 +154,7 @@ public class Master : MonoBehaviour
         ManagerGO = new GameObject("ManagerObject");
         Manager = ManagerGO.AddComponent<Manager>();
         DontDestroyOnLoad(ManagerGO);
+        menuController.SetSeedText(RandomHelper.Seed.ToString());
     }
 
     public void SetLanguage(int lang)
@@ -165,7 +167,7 @@ public class Master : MonoBehaviour
         {
             globalizator.SetLanguage(GameLanguage.HUNGARIAN);
         }
-        
+
         menuController.ChangedLanguage();
     }
 

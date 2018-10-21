@@ -13,7 +13,7 @@ public class AudioManager : MonoBehaviour
 
 	/// <summary>
 	/// Példányosít egyet önmagából (Singleton)
-	/// </summary>
+	/// </summary>[]
 	void Awake()
 	{
 		if (Instance == null)

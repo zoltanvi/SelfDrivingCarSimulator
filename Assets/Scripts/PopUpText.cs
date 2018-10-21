@@ -26,9 +26,12 @@ public class PopUpText : MonoBehaviour
 
         panelImage = panel.GetComponent<Image>();
         cheatText = text.GetComponent<TextMeshProUGUI>();
-        if(Master.Instance.CreateDemoSave){
+        if (Master.Instance.CreateDemoSave)
+        {
             cheatText.text = "Demo save mode enabled!";
-        } else {
+        }
+        else
+        {
             cheatText.text = "Demo save mode disabled!";
         }
 
@@ -67,7 +70,7 @@ public class PopUpText : MonoBehaviour
         }
         else if (lifeTime > (fadeDuration * 2) + duration)
         {
-			alpha = 0f;
+            alpha = 0f;
             // final cleanup
             tmpTextColor.a = 0f;
             tmpPanelColor.a = 0f;

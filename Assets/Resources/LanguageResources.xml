@@ -8,7 +8,7 @@
 		<string name="menu_exit">EXIT</string>
 		<string name="menu_back">BACK</string>
 		<string name="menu_dev">Developer: Zoltán Vicze</string>
-		<string name="menu_version">version 4.1</string>
+		<string name="menu_version">version 4.3</string>
 	
 		<!-- OPTIONS -->
 		<string name="options_num_of_cars">NUMBER OF CARS</string>
@@ -79,6 +79,13 @@ Neural networks start with values from a state reached in a previous run.
 		<string name="ingame_normal_speed">NORMAL SPEED</string>
 		<string name="ingame_exit">EXIT TO MAIN MENU</string>
 
+		<!-- FILE BROWSER -->
+		<string name="filebrowser_select_to_load">Select a saved game to load</string>
+		<string name="filebrowser_select_save_location">Select the save location</string>
+
+		<!-- OTHER -->
+		<string name="creature_ID_player">PLAYER</string>
+
 	</English>
 	
 	<Hungarian>
@@ -89,7 +96,7 @@ Neural networks start with values from a state reached in a previous run.
 		<string name="menu_exit">KILÉPÉS</string>
 		<string name="menu_back">VISSZA</string>
 		<string name="menu_dev">Fejlesztő: Vicze Zoltán</string>
-		<string name="menu_version">verzió 4.1</string>
+		<string name="menu_version">verzió 4.3</string>
 	
 		<!-- OPTIONS -->
 		<string name="options_num_of_cars">AUTÓK SZÁMA</string>
@@ -159,6 +166,13 @@ Az autók neurális hálózatai egy demó módra szánt mentést kapnak, nem vé
 		<string name="ingame_ff_5">IDŐGYORSÍTÁS (5X)</string>
 		<string name="ingame_normal_speed">NORMÁL SEBESSÉG</string>
 		<string name="ingame_exit">FŐMENÜ</string>
+
+		<!-- FILE BROWSER -->
+		<string name="filebrowser_select_to_load">Válassz egy mentést a betöltéshez</string>
+		<string name="filebrowser_select_save_location">Válaszd ki a mentés helyét</string>
+
+		<!-- OTHER -->
+		<string name="creature_ID_player">JÁTÉKOS</string>
 
 	</Hungarian>
 </Languages>

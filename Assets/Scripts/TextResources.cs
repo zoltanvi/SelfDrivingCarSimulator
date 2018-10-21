@@ -3,7 +3,7 @@ using System.Xml;
 using System.IO;
 using UnityEngine;
 
-public class TextResources
+public static class TextResources
 {
 
     private static GameLanguage m_language = GameLanguage.ENGLISH;
@@ -22,7 +22,7 @@ public class TextResources
         }
     }
 
-    private string GetXmlLangName(GameLanguage lang)
+    private static string GetXmlLangName(GameLanguage lang)
     {
         string value = "";
         switch (lang)
@@ -42,7 +42,7 @@ public class TextResources
     }
 
 
-    public string GetValue(string key)
+    public static string GetValue(string key)
     {
         string value = "";
         XmlDocument xmlDocument = new XmlDocument();
@@ -59,7 +59,9 @@ public class TextResources
         }
         catch (Exception e)
         {
+#if UNITY_EDITOR
             Debug.Log(e);
+#endif
             throw;
         }
 

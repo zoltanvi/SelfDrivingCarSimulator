@@ -1,28 +1,32 @@
 ﻿using System.Collections.Generic;
 
 [System.Serializable]
-public class GameSave{
+public class GameSave
+{
 
-	#region Manager értékei
-	public int SelectionMethod;
-	public int MutationChance;
-	public float MutationRate;
-	public int CarCount;
-	public int LayersCount;
-	public int NeuronPerLayerCount;
-	public bool Navigator;
-	public int TrackNumber;
-	#endregion
+    #region Manager értékei
+    public int SelectionMethod;
+    public int MutationChance;
+    public float MutationRate;
+    public int CarCount;
+    public int LayersCount;
+    public int NeuronPerLayerCount;
+    public bool Navigator;
+    public int TrackNumber;
+    #endregion
 
-	#region GeneticAlgorithm értékei
-	// Az összes autó neurális hálójának értékeit tárolja
-	public double[][][][] SavedCarNetworks;
-	public int GenerationCount;
-	#endregion
+    #region GeneticAlgorithm értékei
+    // Az összes autó neurális hálójának értékeit tárolja
+    // public double[][][][] SavedCarNetworks;
+    public float[][][][] SavedCarNetworks;
+    public int GenerationCount;
+    #endregion
 
-	#region Statisztikai adatok
-	public List<double> maxFitness;
-	public List<double> medianFitness;
-	#endregion
+    #region Statisztikai adatok
+    // public List<double> maxFitness;
+    // public List<double> medianFitness;
+    public List<float> maxFitness;
+    public List<float> medianFitness;
+    #endregion
 
 }

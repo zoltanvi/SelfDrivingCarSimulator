@@ -6,10 +6,32 @@ using System.Runtime.Serialization.Formatters.Binary;
 using Crosstales.FB;
 using System;
 using System.Globalization;
+using System.Text;
 using UnityEngine.PostProcessing;
 
 public class Manager : MonoBehaviour
 {
+
+    public struct Car
+    {
+        public int ID;
+        // public double Fitness;
+        // public double[] Inputs;
+        public float Fitness;
+        public float[] Inputs;
+        public GameObject GameObject;
+        public Transform Transform;
+        public CarController CarController;
+        public NeuralNetwork NeuralNetwork;
+        // public double PrevFitness;
+        public float PrevFitness;
+        public string InputText;
+        public bool IsAlive;
+    }
+
+
+
+
     #region VISIBLE IN INSPECTOR
     [Header("Car settings")]
     [Range(1, 30)] public int CarSensorCount = 5;
@@ -18,10 +40,7 @@ public class Manager : MonoBehaviour
     [Header("Save object - this contains the saved data")]
     // Ebben az objektumban van tárolva az elmentett / betöltött adatok.
     public GameSave Save;
-
-
     #endregion
-
 
 
     #region PUBLIC BUT NOT VISIBLE IN INSPECTOR
@@ -33,7 +52,8 @@ public class Manager : MonoBehaviour
     public int LayersCount { get; set; }
     public int NeuronPerLayerCount { get; set; }
     public int TrackNumber { get; set; }
-    public double Bias { get; set; }
+    // public double Bias { get; set; }
+    public float Bias { get; set; }
     public bool Navigator { get; set; }
     public bool DemoMode { get; set; }
     [HideInInspector] public bool GotOptionValues = false;
@@ -41,15 +61,18 @@ public class Manager : MonoBehaviour
     [HideInInspector] public bool ManualControl = false;
     [HideInInspector] public bool wasItALoad = false;
     [HideInInspector] public UIPrinter myUIPrinter;
-    [HideInInspector] public List<double> maxFitness = new List<double>();
-    [HideInInspector] public List<double> medianFitness = new List<double>();
+    // [HideInInspector] public List<double> maxFitness = new List<double>();
+    // [HideInInspector] public List<double> medianFitness = new List<double>();
+    [HideInInspector] public List<float> maxFitness = new List<float>();
+    [HideInInspector] public List<float> medianFitness = new List<float>();
     [HideInInspector] public int AliveCount { get; set; }
     [HideInInspector] public int bestCarID = 0;
     [HideInInspector] public float freezeTimeLeft = freezeTimeOut;
     [HideInInspector] public float globalTimeLeft = globalTimeOut;
     [HideInInspector] public GameObject CurrentTrack;
     [HideInInspector] public GameObject CurrentWaypoint;
-    [HideInInspector] public double PlayerFitness { get; set; }
+    // [HideInInspector] public double PlayerFitness { get; set; }
+    [HideInInspector] public float PlayerFitness { get; set; }
     [HideInInspector] public bool isPlayerAlive = false;
     [HideInInspector] public GameObject rayHolderRoot;
     [HideInInspector] public GameObject carHolderRoot;
@@ -73,12 +96,15 @@ public class Manager : MonoBehaviour
 
     private string[] cheatCode;
     private int cheatIndex;
-
     #endregion
 
 
     void Start()
     {
+        RandomHelper.Seed = Guid.NewGuid().GetHashCode();
+        Master.Instance.menuController.SetSeedText(RandomHelper.Seed.ToString());
+        Debug.Log("Seed beállítva!");
+
         myUIPrinter = Master.Instance.UIStats.GetComponent<UIPrinter>();
 
         Save = new GameSave();
@@ -88,8 +114,6 @@ public class Manager : MonoBehaviour
         transparentColor = new Color(1, 1, 1, 0.0f);
         cheatCode = new string[] { "n", "e", "r", "f" };
         cheatIndex = 0;
-
-
     }
 
     void Update()
@@ -112,7 +136,7 @@ public class Manager : MonoBehaviour
             {
                 Master.Instance.cameraDrone.CameraTarget = playerCar.transform;
                 myUIPrinter.FitnessValue = PlayerFitness;
-                myUIPrinter.ConsoleMessage = "";
+                myUIPrinter.ConsoleMessage = string.Empty;
             }
             else
             {
@@ -120,11 +144,13 @@ public class Manager : MonoBehaviour
                 myUIPrinter.FitnessValue = Cars[bestCarID].Fitness;
                 Master.Instance.cameraDrone.CameraTarget = Cars[bestCarID].Transform;
 
-                myUIPrinter.ConsoleMessage = "";
-                for (int i = 0; i < Cars[bestCarID].Inputs.Length; i++)
+                StringBuilder sb = new StringBuilder();
+                int carInputsLength = Cars[bestCarID].Inputs.Length;
+                for (int i = 0; i < carInputsLength; i++)
                 {
-                    myUIPrinter.ConsoleMessage += string.Format("> {0:0.000}\n", Cars[bestCarID].Inputs[i]);
+                    sb.Append(string.Format("> {0:0.000}\n", Cars[bestCarID].Inputs[i]));
                 }
+                myUIPrinter.ConsoleMessage = sb.ToString();
             }
 
         }
@@ -354,7 +380,7 @@ public class Manager : MonoBehaviour
 
     public void InitGame()
     {
-        Bias = 1.0;
+        Bias = 1.0f;
         InitTrack();
         InitCars();
         InitGenetic();
@@ -453,7 +479,7 @@ public class Manager : MonoBehaviour
 
     void InitCars()
     {
-        // Inputs tömb mérete nagyobb, ha az autó inputként megkapja a sarkokat is!!
+        // Inputs tömb mérete nagyobb, ha az autó inputként megkapja a következő 3 szöget is!!
         int inputCount;
 
         if (Navigator)
@@ -472,7 +498,8 @@ public class Manager : MonoBehaviour
             {
                 ID = i,
                 Fitness = 0,
-                Inputs = new double[inputCount],
+                // Inputs = new double[inputCount],
+                Inputs = new float[inputCount],
                 PrevFitness = 0
             };
         }
@@ -481,9 +508,10 @@ public class Manager : MonoBehaviour
     public void LoadGame()
     {
         string extensions = "SAVE";
-        string path = FileBrowser.OpenSingleFile("Select a saved game to load", "", extensions);
+        string path = FileBrowser.OpenSingleFile(TextResources.GetValue("filebrowser_select_to_load"), string.Empty, extensions);
+#if UNITY_EDITOR
         Debug.Log("Selected file: " + path);
-
+#endif
         if (Path.GetExtension(path).Equals(".SAVE"))
         {
             if (File.Exists(path))
@@ -492,8 +520,17 @@ public class Manager : MonoBehaviour
 
                 using (file = File.Open(path, FileMode.Open))
                 {
-                    BinaryFormatter bf = new BinaryFormatter();
-                    Save = (GameSave)bf.Deserialize(file);
+
+                    try
+                    {
+                        BinaryFormatter bf = new BinaryFormatter();
+                        Save = (GameSave)bf.Deserialize(file); 
+                    }
+                    catch (System.Exception)
+                    {
+                        Debug.LogError("Your save file is not compatible with this version of the program.");
+                        Master.Instance.ExitGame();
+                    }
                 }
 
                 SelectionMethod = Save.SelectionMethod;
@@ -503,7 +540,6 @@ public class Manager : MonoBehaviour
                 LayersCount = Save.LayersCount;
                 NeuronPerLayerCount = Save.NeuronPerLayerCount;
                 Navigator = Save.Navigator;
-                //TrackNumber = Save.TrackNumber;
                 medianFitness = Save.medianFitness;
                 maxFitness = Save.maxFitness;
 
@@ -515,6 +551,7 @@ public class Manager : MonoBehaviour
                 Master.Instance.bgLights.SetActive(false);
             }
         }
+#if UNITY_EDITOR
         else if (path.Length == 0)
         {
             Debug.Log("No file selected.");
@@ -523,7 +560,7 @@ public class Manager : MonoBehaviour
         {
             Debug.LogError("You tried to open a wrong file!");
         }
-
+#endif
     }
 
     public void SaveGame()
@@ -531,9 +568,10 @@ public class Manager : MonoBehaviour
         string extensions = "SAVE";
         DateTime dateTime = DateTime.Now;
         string timeStamp = dateTime.ToString("yyyyMMdd-HHmmss");
-        string path = FileBrowser.SaveFile("Select the save location", "", "CGSave_" + timeStamp, extensions);
+        string path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGSave_" + timeStamp, extensions);
+#if UNITY_EDITOR
         Debug.Log("Save file: " + path);
-
+#endif
         if (path.Length != 0)
         {
             // Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
@@ -552,8 +590,10 @@ public class Manager : MonoBehaviour
             if (Master.Instance.CreateDemoSave)
             {
                 Save.GenerationCount = 0;
-                Save.maxFitness = new List<double>();
-                Save.medianFitness = new List<double>();
+                // Save.maxFitness = new List<double>();
+                // Save.medianFitness = new List<double>();
+                Save.maxFitness = new List<float>();
+                Save.medianFitness = new List<float>();
             }
             else
             {
@@ -580,37 +620,39 @@ public class Manager : MonoBehaviour
         string extensions = "txt";
         DateTime dateTime = DateTime.Now;
         string timeStamp = dateTime.ToString("yyyyMMdd-HHmmss");
-        string path = FileBrowser.SaveFile("Select the save location", "", "CGStats_" + timeStamp, extensions);
+        string path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGStats_" + timeStamp, extensions);
+#if UNITY_EDITOR
         Debug.Log("Save file: " + path);
-
+#endif
+        StringBuilder sb = new StringBuilder();
         if (path.Length != 0)
         {
-            string tmp =
-                "GENERATION\t" + myUIPrinter.generationText.text + "\n" +
-                "MAP\t" + TrackNumber + "\n" +
-                "NUMBER OF CARS\t" + CarCount + "\n" +
-                "SELECTION METHOD\t" + SelectionMethod + "\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random)\n" +
-                "MUTATION POSSIBILITY\t" + MutationChance + "%\n" +
-                "MUTATION RATE\t" + MutationRate + "%\n" +
-                "NUMBER OF LAYERS\t" + LayersCount + "\n" +
-                "NEURON PER LAYER\t" + NeuronPerLayerCount + "\n" +
-                "NAVIGATOR\t" + Navigator + "\n";
+            sb.Append("GENERATION\t" + myUIPrinter.generationText.text + "\n");
+            sb.Append("MAP\t" + TrackNumber + "\n");
+            sb.Append("NUMBER OF CARS\t" + CarCount + "\n");
+            sb.Append("SELECTION METHOD\t" + SelectionMethod + "\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random)\n");
+            sb.Append("MUTATION POSSIBILITY\t" + MutationChance + "%\n");
+            sb.Append("MUTATION RATE\t" + MutationRate + "%\n");
+            sb.Append("NUMBER OF LAYERS\t" + LayersCount + "\n");
+            sb.Append("NEURON PER LAYER\t" + NeuronPerLayerCount + "\n");
+            sb.Append("NAVIGATOR\t" + Navigator + "\n");
+            sb.Append("\n== MAX FITNESS ==\n");
 
-            tmp += "\n== MAX FITNESS ==\n";
-            foreach (double item in maxFitness)
+            foreach (var item in maxFitness)
             {
-                tmp += item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n";
+                sb.Append(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n");
             }
 
-            tmp += "\n== MEDIAN FITNESS ==\n";
-            foreach (double item in medianFitness)
+            sb.Append("\n== MEDIAN FITNESS ==\n");
+
+            foreach (var item in medianFitness)
             {
-                tmp += item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n";
+                sb.Append(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n");
             }
 
             using (StreamWriter file = new StreamWriter(path, true))
             {
-                file.Write(tmp);
+                file.Write(sb.ToString());
             }
 
         }
@@ -681,35 +723,6 @@ public class Manager : MonoBehaviour
         {
             carRigidbody.isKinematic = true;
             AliveCount--;
-            #region Súlyok és fitness értékek fájlba írása
-                //if (LogNetworkData)
-                //{
-                //	NeuralNetwork tmp2 = Cars[carID].Transform.gameObject.GetComponent<NeuralNetwork>();
-
-
-                //	string carNNWeights = carID + ". car:\n";
-                //	for (int i = 0; i < tmp2.NeuronLayers.Length; i++)
-                //	{
-                //		carNNWeights += (i + 1) + ". layer: \n";
-                //		for (int k = 0; k < tmp2.NeuronLayers[i].NeuronWeights.Length; k++)
-                //		{
-                //			for (int j = 0; j < tmp2.NeuronLayers[i].NeuronWeights[0].Length; j++)
-                //			{
-                //				string tmp = string.Format("{0,10}", tmp2.NeuronLayers[i].NeuronWeights[k][j]);
-                //				carNNWeights += tmp + "\t";
-                //			}
-                //			carNNWeights += "\n";
-                //		}
-                //		carNNWeights += "\n";
-                //	}
-
-
-                //	GameLogger.WriteData(carNNWeights);
-                //	string dataText = "Maximum fitness: " + Cars[carID].Fitness + "\n\n";
-                //	GameLogger.WriteData(dataText);
-
-                //}
-                #endregion
         }
     }
 
@@ -731,7 +744,8 @@ public class Manager : MonoBehaviour
     private int GetBestID()
     {
         int bestID = 0;
-        double maxFitness = double.MinValue;
+        // double maxFitness = double.MinValue;
+        float maxFitness = float.MinValue;
 
         for (int i = 0; i < CarCount; i++)
         {
@@ -769,12 +783,15 @@ public class Manager : MonoBehaviour
         }
 
         // Ha a J billentyűt lenyomták
-        if(Input.GetButtonDown("JoinDisconnect"))
+        if (Input.GetButtonDown("JoinDisconnect"))
         {
             // Ha jelenleg nem irányítja az autót a játékos 
-            if(!ManualControl){
+            if (!ManualControl)
+            {
                 JoinGame();
-            } else {
+            }
+            else
+            {
                 DisconnectGame();
             }
         }
