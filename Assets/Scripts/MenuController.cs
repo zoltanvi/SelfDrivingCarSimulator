@@ -286,6 +286,10 @@ public class MenuController : MonoBehaviour
 				tooltipTitle.text = TextResources.GetValue("tooltip_demo_mode");
 				tooltipText.text = TextResources.GetValue("tooltip_demo_mode_desc");
 				break;
+			case 8:
+				tooltipTitle.text = TextResources.GetValue("tooltip_seed");
+				tooltipText.text = TextResources.GetValue("tooltip_seed_desc");
+				break;
 			default:
 				tooltipTitle.text = "";
 				tooltipText.text = "";

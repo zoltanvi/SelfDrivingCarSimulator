@@ -34,6 +34,7 @@
 		<string name="tooltip_neuron_per_layer">Neuron per layer</string>
 		<string name="tooltip_navigator">Navigator</string>
 		<string name="tooltip_demo_mode">Demo mode</string>
+		<string name="tooltip_seed">Seed</string>
 		
 		<string name="tooltip_num_of_cars_desc">The size of the population.</string>
 		<string name="tooltip_selection_method_desc">Selection is the stage of a genetic algorithm in which individual genomes are chosen from a population for later breeding (using the crossover operator).</string>
@@ -51,6 +52,9 @@ These cars' neural networks are built up by neural layers which are built up by 
 		<string name="tooltip_demo_mode_desc">-- If this is checked, it overwrites all of your settings! --
 Neural networks start with values from a state reached in a previous run.
 (For faster demonstration)</string>
+		<string name="tooltip_seed_desc">Many things in the genetic algorithm are randomly determined, like the mutation (whether it happens or not).
+The random chances comes from random numbers, which are calculated from an initial seed. You can set your desired whole number as a seed, or just random a new one.
+The same seed causes the same run if the two games' options match.</string>
 		
 		<!-- LOAD MENU -->
 		<string name="load_select_map">SELECT MAP</string>
@@ -122,6 +126,7 @@ Neural networks start with values from a state reached in a previous run.
 		<string name="tooltip_neuron_per_layer">Neuron rétegenként</string>
 		<string name="tooltip_navigator">Navigátor</string>
 		<string name="tooltip_demo_mode">Demó mód</string>
+		<string name="tooltip_seed">Seed</string>
 		
 		<string name="tooltip_num_of_cars_desc">A populáció mérete.</string>
 		<string name="tooltip_selection_method_desc">A szelekció a genetikus algoritmus egyik fázisa, amelyben egyének kerülnek kiválasztásra későbbi szaporítás céljából (a rekombinációs fázisban).</string>
@@ -139,6 +144,9 @@ Ezek a neurális hálózatok neuronrétegekböl állnak, amelyek pedig neuronokb
 		<string name="tooltip_demo_mode_desc">-- Ha ez az opció be van jelölve, minden más beállítást felülír! --
 Az autók neurális hálózatai egy demó módra szánt mentést kapnak, nem véletlenszerűen fognak inicializálódni.
 (A gyorsabb demonstráció érdekében)</string>
+		<string name="tooltip_seed_desc">A genetikus algoritmusban sok dolog véletlenszerűen következik be, mint pl a mutáció.
+A véletlenszerű dolgokat generált véletlen számokkal kapjuk, ami egy kezdeti ún. seed-ből számolható ki. Seed-ként megadható egy egész szám, vagy generálható új seed a random gombra kattintva.
+Azonos beállítások mellett két futás eredménye megegyezik, ha a seed mindkét futás során azonos.</string>
 		
 		<!-- LOAD MENU -->
 		<string name="load_select_map">PÁLYA KIVÁLASZTÁSA</string>
