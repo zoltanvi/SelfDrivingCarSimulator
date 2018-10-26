@@ -1,5 +1,5 @@
-﻿using UnityEngine.Audio;
-using UnityEngine;
+﻿using UnityEngine;
+
 
 public class AudioManager : MonoBehaviour
 {
@@ -14,7 +14,7 @@ public class AudioManager : MonoBehaviour
 	/// <summary>
 	/// Példányosít egyet önmagából (Singleton)
 	/// </summary>[]
-	void Awake()
+	private void Awake()
 	{
 		if (Instance == null)
 		{
@@ -28,7 +28,7 @@ public class AudioManager : MonoBehaviour
 		DontDestroyOnLoad(gameObject);
 	}
 
-	void Start()
+	private void Start()
 	{
 		AudioSource.playOnAwake = false;
 	}
@@ -43,3 +43,4 @@ public class AudioManager : MonoBehaviour
 		AudioSource.PlayOneShot(ClickClip);
 	}
 }
+

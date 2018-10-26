@@ -11,19 +11,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71c1514a6bd24e1e882cebbe1904ce04, type: 3}
   m_Name: Montserrat-Black
   m_EditorClassIdentifier: 
-  hashCode: 0
+  hashCode: 2097737137
   material: {fileID: 21342105389117652}
-  materialHashCode: 0
+  materialHashCode: 855630106
   fontAssetType: 1
   m_fontInfo:
     Name: Montserrat
     PointSize: 73
-    Scale: 0
+    Scale: 1
     CharacterCount: 219
     LineHeight: 89
     Baseline: 0
     Ascender: 70.6875
-    CapHeight: 0
+    CapHeight: 51.125
     Descender: -18.375
     CenterLine: 0
     SuperscriptOffset: 70.6875
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 3.65
     strikethrough: 19.022728
     strikethroughThickness: 3.65
-    TabWidth: 0
+    TabWidth: 218.75
     Padding: 10
     AtlasWidth: 1024
     AtlasHeight: 1024
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 11
     y: 1034
-    width: 0
-    height: 0
+    width: 21.875
+    height: 89.0625
     xOffset: 0
-    yOffset: 0
+    yOffset: 70.6875
     xAdvance: 21.875
     scale: 1
   - id: 33
@@ -2137,9 +2137,9 @@ Material:
     - _OutlineWidth: 0
     - _PerspectiveFilter: 0.875
     - _Reflectivity: 10
-    - _ScaleRatioA: 1
-    - _ScaleRatioB: 1
-    - _ScaleRatioC: 1
+    - _ScaleRatioA: 0.90909094
+    - _ScaleRatioB: 0.7386364
+    - _ScaleRatioC: 0.7386364
     - _ScaleX: 1
     - _ScaleY: 1
     - _ShaderFlags: 0

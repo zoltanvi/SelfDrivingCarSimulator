@@ -1,33 +1,35 @@
 ﻿using System.IO;
+
+
 public class GameLogger
 {
+	private const string Path = "Assets/Resources/SavedNetworks.txt";
+	private const string PathAvgFitness = "Assets/Resources/AverageFitness.txt";
+	private const string PathMedianFitness = "Assets/Resources/MedianFitness.txt";
 
-    static string path = "Assets/Resources/SavedNetworks.txt";
-    static string pathAvgFitness = "Assets/Resources/AverageFitness.txt";
-    static string pathMedianFitness = "Assets/Resources/MedianFitness.txt";
+	public static void WriteData(string str)
+	{
+		using (StreamWriter file = new StreamWriter(Path, true))
+		{
+			file.WriteLine(str);
+		}
+	}
 
-    public static void WriteData(string str)
-    {
-        using (StreamWriter file = new StreamWriter(path, true))
-        {
-            file.WriteLine(str);
-        }
-    }
+	public static void WriteAvgFitnessData(string str)
+	{
+		using (StreamWriter file = new StreamWriter(PathAvgFitness, true))
+		{
+			file.WriteLine(str);
+		}
+	}
 
-    public static void WriteAvgFitnessData(string str)
-    {
-        using (StreamWriter file = new StreamWriter(pathAvgFitness, true))
-        {
-            file.WriteLine(str);
-        }
-    }
-
-    public static void WriteMedianFitnessData(string str)
-    {
-        using (StreamWriter file = new StreamWriter(pathMedianFitness, true))
-        {
-            file.WriteLine(str);
-        }
-    }
+	public static void WriteMedianFitnessData(string str)
+	{
+		using (StreamWriter file = new StreamWriter(PathMedianFitness, true))
+		{
+			file.WriteLine(str);
+		}
+	}
 
 }
+

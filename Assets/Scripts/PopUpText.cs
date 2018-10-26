@@ -1,90 +1,91 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
-using TMPro;
+using System.Collections;
+
 
 public class PopUpText : MonoBehaviour
 {
-    private float fadeDuration = 0.3f;
-    private float duration = 1f;
-    private float lifeTime = 0f;
     private float alpha;
 
-    private GameObject panel;
-    private GameObject text;
+    [SerializeField] private GameObject popUpCanvas;
+    [SerializeField] private GameObject popUpPanel;
+    [SerializeField] private GameObject popUpText;
 
     private Image panelImage;
     private TextMeshProUGUI cheatText;
 
     private Color tmpTextColor;
     private Color tmpPanelColor;
-    void Start()
-    {
-        panel = GameObject.Find("CheatPanel");
-        text = GameObject.Find("CheatText");
 
-        panelImage = panel.GetComponent<Image>();
-        cheatText = text.GetComponent<TextMeshProUGUI>();
-        if (Master.Instance.CreateDemoSave)
-        {
-            cheatText.text = "Demo save mode enabled!";
-        }
-        else
-        {
-            cheatText.text = "Demo save mode disabled!";
-        }
+    private void Awake()
+    {
+
+        // cheatCanvas = GameObject.Find("PopUpCanvas");
+        // panel = GameObject.Find("PopUpPanel");
+        // text = GameObject.Find("PopUpText");
+
+
+        panelImage = popUpPanel.GetComponent<Image>();
+        cheatText = popUpText.GetComponent<TextMeshProUGUI>();
 
         alpha = 0;
-        fadeDuration = Master.Instance.popupFadeTime;
-        duration = Master.Instance.popupDurationTime;
         tmpTextColor = new Color();
         tmpPanelColor = new Color();
         tmpTextColor = cheatText.color;
         tmpPanelColor = panelImage.color;
+		SetColors();
     }
 
+	public void ShowPopUp(string message)
+	{
+        StopAllCoroutines();
+        popUpCanvas.SetActive(true);
+        alpha = 0;
+        SetColors();
 
-    void Update()
+        float boxWidth = (message.Length <= 30f) ? (message.Length * 25f) : ((message.Length * 20f) + 30f);
+
+		popUpPanel.GetComponent<RectTransform>()
+		.sizeDelta = new Vector2(boxWidth, 115f);
+		cheatText.text = message;
+        StartCoroutine(FadeIn());		
+	}
+
+    private IEnumerator FadeIn()
     {
-        // Fade in
-        if (lifeTime <= fadeDuration)
+        while (alpha < 1)
         {
-
-            if (alpha < 1)
-            {
-                alpha += Time.deltaTime / fadeDuration;
-            }
-
-            // Fade out
+            alpha += 0.05f;
+            SetColors();
+            yield return new WaitForSeconds(0.05f);
         }
-        else if (lifeTime > fadeDuration + duration && lifeTime <= (fadeDuration * 2) + duration)
+        StartCoroutine(FadeOut());
+    }
+
+    private IEnumerator FadeOut()
+    {
+        yield return new WaitForSeconds(1f);
+
+        while (alpha > 0)
         {
-
-            if (alpha > 0)
-            {
-                alpha -= Time.deltaTime / fadeDuration;
-            }
-
-            // Destroys itself 
-        }
-        else if (lifeTime > (fadeDuration * 2) + duration)
-        {
-            alpha = 0f;
-            // final cleanup
-            tmpTextColor.a = 0f;
-            tmpPanelColor.a = 0f;
-            cheatText.color = tmpTextColor;
-            panelImage.color = tmpPanelColor;
-
-            Destroy(gameObject);
+            alpha -= 0.05f;
+            SetColors();
+            yield return new WaitForSeconds(0.05f);
         }
 
+        // final cleanup
+        alpha = 0f;
+        SetColors();
+        popUpCanvas.SetActive(false);
+    }
+
+    private void SetColors()
+    {
         tmpTextColor.a = alpha;
         tmpPanelColor.a = alpha;
         cheatText.color = tmpTextColor;
         panelImage.color = tmpPanelColor;
-        lifeTime += Time.deltaTime;
-
     }
 }
+
