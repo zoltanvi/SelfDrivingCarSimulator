@@ -18,12 +18,12 @@ MonoBehaviour:
   m_fontInfo:
     Name: Montserrat
     PointSize: 72
-    Scale: 0
+    Scale: 1
     CharacterCount: 219
     LineHeight: 87.75
     Baseline: 0
     Ascender: 69.75
-    CapHeight: 0
+    CapHeight: 50.4375
     Descender: -18.125
     CenterLine: 0
     SuperscriptOffset: 69.75
@@ -33,7 +33,7 @@ MonoBehaviour:
     UnderlineThickness: 3.6000001
     strikethrough: 18.772728
     strikethroughThickness: 3.6000001
-    TabWidth: 0
+    TabWidth: 216.25
     Padding: 10
     AtlasWidth: 1024
     AtlasHeight: 1024
@@ -42,10 +42,10 @@ MonoBehaviour:
   - id: 32
     x: 11
     y: 1034
-    width: 0
-    height: 0
+    width: 21.625
+    height: 87.875
     xOffset: 0
-    yOffset: 0
+    yOffset: 69.75
     xAdvance: 21.625
     scale: 1
   - id: 33
@@ -2124,7 +2124,7 @@ Material:
     - _FaceUVSpeedX: 0
     - _FaceUVSpeedY: 0
     - _GlowInner: 0.05
-    - _GlowOffset: 0
+    - _GlowOffset: -1
     - _GlowOuter: 0.05
     - _GlowPower: 0.75
     - _GradientScale: 11
@@ -2163,9 +2163,9 @@ Material:
     - _ClipRect: {r: -32767, g: -32767, b: 32767, a: 32767}
     - _EnvMatrixRotation: {r: 0, g: 0, b: 0, a: 0}
     - _FaceColor: {r: 1, g: 1, b: 1, a: 1}
-    - _GlowColor: {r: 0, g: 1, b: 0, a: 0.5}
+    - _GlowColor: {r: 0.09919691, g: 1, b: 0, a: 0.5}
     - _MaskCoord: {r: 0, g: 0, b: 32767, a: 32767}
-    - _OutlineColor: {r: 0, g: 0, b: 0, a: 1}
+    - _OutlineColor: {r: 1, g: 1, b: 1, a: 1}
     - _ReflectFaceColor: {r: 0, g: 0, b: 0, a: 1}
     - _ReflectOutlineColor: {r: 0, g: 0, b: 0, a: 1}
     - _SpecularColor: {r: 1, g: 1, b: 1, a: 1}

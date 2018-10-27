@@ -354,8 +354,8 @@ public class Manager : MonoBehaviour
 			TextAsset asset = Resources.Load("demoSave") as TextAsset;
 			if (asset == null)
 			{
-				ShowPopUp("Demo save file is missing!");
-				throw new NullReferenceException("Demo save file is missing!");
+				ShowPopUp(TextResources.GetValue("popup_demo_save_missing"));
+				throw new NullReferenceException(TextResources.GetValue("popup_demo_save_missing"));
 			}
 
 			MemoryStream stream = new MemoryStream(asset.bytes);
@@ -508,20 +508,20 @@ public class Manager : MonoBehaviour
 	{
 		const string extensions = "SAVE";
 		string path = FileBrowser.OpenSingleFile(TextResources.GetValue("filebrowser_select_to_load"), string.Empty, extensions);
-		Debug.Log("Selected file: " + path);
-		ShowPopUp("Selected file: " + path);
+		Debug.Log(TextResources.GetValue("popup_selected_file") + path);
+		ShowPopUp(TextResources.GetValue("popup_selected_file") + path);
 
 		if (string.IsNullOrEmpty(path))
 		{
-			Debug.LogError("No file selected!");
-			ShowPopUp("No file selected!");
+			Debug.LogError(TextResources.GetValue("popup_no_file_selected"));
+			ShowPopUp(TextResources.GetValue("popup_no_file_selected"));
 			return;
 		}
 
 		if (!File.Exists(path) || !Path.GetExtension(path).Equals(".SAVE"))
 		{
-			Debug.LogError("You tried to open a wrong file!");
-			ShowPopUp("You tried to open a wrong file!");
+			ShowPopUp(TextResources.GetValue("popup_wrong_file"));
+			Debug.LogError(TextResources.GetValue("popup_wrong_file"));
 			return;
 		}
 
@@ -536,10 +536,9 @@ public class Manager : MonoBehaviour
 			}
 			catch (Exception)
 			{
-				ShowPopUp("Your save file is not compatible with this version of the program.");
-				Debug.LogError("Your save file is not compatible with this version of the program.");
+				ShowPopUp(TextResources.GetValue("popup_not_compatible_save"));
+				Debug.LogError(TextResources.GetValue("popup_not_compatible_save"));
 				return;
-				//master.ExitGame();
 			}
 		}
 
@@ -570,14 +569,14 @@ public class Manager : MonoBehaviour
 
         if (path.Length == 0)
         {
-            ShowPopUp("No file selected!");
-            Debug.Log("No file selected!");
+            ShowPopUp(TextResources.GetValue("popup_no_folder_selected"));
+            Debug.Log(TextResources.GetValue("popup_no_folder_selected"));
             return;
         }
         else
         {
-            ShowPopUp("Save file: " + path);
-            Debug.Log("Save file: " + path);
+            ShowPopUp(TextResources.GetValue("popup_save_file") + path);
+            Debug.Log(TextResources.GetValue("popup_save_file") + path);
         }
 
         // Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
@@ -626,12 +625,12 @@ public class Manager : MonoBehaviour
 
 		if (path.Length == 0) 
 		{
-			ShowPopUp("No file selected!");
-			Debug.Log("No file selected!");
+			ShowPopUp(TextResources.GetValue("popup_no_file_selected"));
+			Debug.Log(TextResources.GetValue("popup_no_file_selected"));
 			return;
 		} else {
-			ShowPopUp("Save file: " + path);
-			Debug.Log("Save file: " + path);
+			ShowPopUp(TextResources.GetValue("popup_save_file") + path);
+			Debug.Log(TextResources.GetValue("popup_save_file") + path);
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -813,7 +812,7 @@ public class Manager : MonoBehaviour
 
 		cheatIndex = 0;
 		master.CreateDemoSave = !master.CreateDemoSave;
-		popUpText = master.CreateDemoSave ? "Demo save mode enabled!" : "Demo save mode disabled!";
+		popUpText = master.CreateDemoSave ? TextResources.GetValue("popup_demo_enabled") : TextResources.GetValue("popup_demo_disabled");
 		ShowPopUp(popUpText);
 
 		Debug.Log(popUpText);

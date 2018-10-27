@@ -87,6 +87,17 @@ The same seed causes the same run if the two games' options match.</string>
 		<string name="filebrowser_select_to_load">Select a saved game to load</string>
 		<string name="filebrowser_select_save_location">Select the save location</string>
 
+		<!-- POPUP -->
+		<string name ="popup_demo_enabled">Demo save mode enabled!</string>
+		<string name ="popup_demo_disabled">Demo save mode disabled!</string>
+		<string name ="popup_save_file">Save file: </string>
+		<string name ="popup_no_file_selected">No file selected!</string>
+		<string name ="popup_not_compatible_save">Your save file is corrupted or not compatible with this version of the program.</string>
+		<string name ="popup_wrong_file">You tried to open a wrong file!</string>
+		<string name ="popup_selected_file">Selected file: </string>
+		<string name ="popup_no_folder_selected">No folder selected!</string>
+		<string name ="popup_demo_save_missing">Demo save file is missing!</string>
+
 		<!-- OTHER -->
 		<string name="creature_ID_player">PLAYER</string>
 
@@ -179,6 +190,18 @@ Azonos beállítások mellett két futás eredménye megegyezik, ha a seed mindk
 		<string name="filebrowser_select_to_load">Válassz egy mentést a betöltéshez</string>
 		<string name="filebrowser_select_save_location">Válaszd ki a mentés helyét</string>
 
+		<!-- POPUP -->
+		<string name ="popup_demo_enabled">Demó mentési mód feloldva!</string>
+		<string name ="popup_demo_disabled">Demó mentési mód letiltva!</string>
+		<string name ="popup_save_file">Mentett fájl: </string>
+		<string name ="popup_no_file_selected">Nincs fájl kiválasztva!</string>
+		<string name ="popup_not_compatible_save">A mentési fájl sérült, vagy nem kompatibilis a program jelenlegi verziójával!</string>
+		<string name ="popup_wrong_file">Rossz fájlt próbáltál megnyitni!</string>
+		<string name ="popup_selected_file">Kiválasztott fájl: </string>
+		<string name ="popup_no_folder_selected">Nincs mappa kiválasztva!</string>
+		<string name ="popup_demo_save_missing">A demó mentés hiányzik!</string>
+
+		
 		<!-- OTHER -->
 		<string name="creature_ID_player">JÁTÉKOS</string>
 
