@@ -24,7 +24,7 @@ public class Master : MonoBehaviour
 	public GameObject mainMenuCanvas;
 	public GameObject bgLights;
 	public GameObject minimapCamera;
-	public CameraDrone cameraDrone;
+	public CameraController cameraController;
 	public GameObject Camera;
 	public PopUpText popUp;
 
@@ -127,7 +127,7 @@ public class Master : MonoBehaviour
 		Camera.transform.rotation = new Quaternion();
 		Camera.GetComponent<PostProcessingBehaviour>().enabled = false;
 
-		cameraDrone.enabled = false;
+		cameraController.enabled = false;
 		Destroy(GameObject.Find("GeneticAlgorithmDeletable"));
 		Destroy(GameObject.Find("TrackDeletable"));
 		Destroy(GameObject.Find("WaypointDeletable"));

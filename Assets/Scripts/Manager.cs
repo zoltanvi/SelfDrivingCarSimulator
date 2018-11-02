@@ -129,7 +129,7 @@ public class Manager : MonoBehaviour
 		// Különben a legjobb élő autót
 		if (ManualControl && IsPlayerAlive)
 		{
-			master.cameraDrone.CameraTarget = PlayerCar.transform;
+			master.cameraController.CameraTarget = PlayerCar.transform;
 			MyUIPrinter.FitnessValue = PlayerFitness;
 			MyUIPrinter.ConsoleMessage = string.Empty;
 		}
@@ -137,7 +137,7 @@ public class Manager : MonoBehaviour
 		{
 			BestCarId = GetBestId();
 			MyUIPrinter.FitnessValue = Cars[BestCarId].Fitness;
-			master.cameraDrone.CameraTarget = Cars[BestCarId].Transform;
+			master.cameraController.CameraTarget = Cars[BestCarId].Transform;
 
 			StringBuilder sb = new StringBuilder();
 			int carInputsLength = Cars[BestCarId].Inputs.Length;
@@ -387,7 +387,7 @@ public class Manager : MonoBehaviour
 
 
 		AliveCount = CarCount;
-		master.cameraDrone.enabled = false;
+		master.cameraController.enabled = false;
 		master.Camera.GetComponent<PostProcessingBehaviour>().enabled = true;
 
 	}
@@ -401,8 +401,8 @@ public class Manager : MonoBehaviour
 
 		master.UIStats.SetActive(true);
 
-		master.cameraDrone.CameraTarget = Cars[0].Transform;
-		master.cameraDrone.enabled = true;
+		master.cameraController.CameraTarget = Cars[0].Transform;
+		master.cameraController.enabled = true;
 		// Első spawnolás megtörtént
 		firstStart = false;
 		InGame = true;

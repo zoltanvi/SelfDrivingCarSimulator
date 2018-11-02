@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using System.Text;
 
 public class GeneticAlgorithmTopHalf : GeneticAlgorithm
 {
@@ -34,12 +35,12 @@ public class GeneticAlgorithmTopHalf : GeneticAlgorithm
 		}
 
 #if UNITY_EDITOR
-		string tmp = "";
+		StringBuilder sb = new StringBuilder();
 		for (int i = 0; i < carPairs.Length; i++)
 		{
-			tmp += carPairs[i][0] + " :: " + carPairs[i][1] + "\n";
+			sb.Append(string.Format("{0} :: {1} \n", carPairs[i][0], carPairs[i][1]));
 		}
-		Debug.Log(tmp);
+		Debug.Log(sb.ToString());
 #endif
 	}
 }

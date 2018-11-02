@@ -21,7 +21,6 @@ public class WallSensor : MonoBehaviour
 	private int Id { get; set; }
 
 	// Az erzekelok altal mert tavolsagokat es a fitnesst  tartalmazza
-	// private double[] carNeuronInputs;
 	private float[] carNeuronInputs;
 
 	// A raycastHit-ben vannak az erzekelok adatai tarolva.

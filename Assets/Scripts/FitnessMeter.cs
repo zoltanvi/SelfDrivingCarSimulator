@@ -3,22 +3,25 @@
 
 public class FitnessMeter : MonoBehaviour
 {
-
 	[SerializeField] private GameObject waypointsRoot;
-	[SerializeField] private Transform carCenterPoint;
+	[SerializeField] private Transform carPoint;
 
 	[HideInInspector] public Transform[] waypoints;
+	// prevPoint: a visszafele irányba lévő ELŐZŐ pont
+	// currentPoint: ehhez a referencia ponthoz képest számoljuk a távolságot
+	// nextPoint: az előre irányba lévő KÖVETKEZŐ pont
 	[HideInInspector] public Transform prevPoint, currentPoint, nextPoint;
+
 	public int NextPointIndex = 1;
 
 	// AbsoluteFitness: a palyahoz viszonyitott fitness.
 	[HideInInspector] public float AbsoluteFitness = 0;
 
-	// RelativeFitness: a currentPointhoz viszonyitott tavolsag.
+	// RelativeFitness: a currentPoint-hoz viszonyitott tavolsag.
 	private float relativeFitness = 0;
 	// SavedFitness: a mar elhagyott waypointok tavolsaganak osszege.
 	private float savedFitness = 0;
-	// Az auto sorszama - tobb autot managel a CarGameController osztaly
+
 	private int carID;
 	private bool controlledByPlayer = false;
 
@@ -67,9 +70,9 @@ public class FitnessMeter : MonoBehaviour
 
 	private void CheckNegativeFitness()
 	{
-		float prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
-		float nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
-		float centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
+		float prevCarDistance = Vector3.Distance(prevPoint.position, carPoint.position);
+		float nextCarDistance = Vector3.Distance(carPoint.position, nextPoint.position);
+		float centerCarDistance = Vector3.Distance(currentPoint.position, carPoint.position);
 
 		relativeFitness = centerCarDistance;
 		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
@@ -79,7 +82,7 @@ public class FitnessMeter : MonoBehaviour
 	}
 
 	// Eggyel elore lepteti a kornyezo pontok indexet.
-	private void FollowingPoints()
+	private void StepForwardPoints()
 	{
 		// Ha az index tulfutna a waypointok szaman, akkor az elejetol kezdi (kor a palya).
 		NextPointIndex = (NextPointIndex + 1) > waypoints.Length - 1 ? 0 : (NextPointIndex + 1);
@@ -92,7 +95,7 @@ public class FitnessMeter : MonoBehaviour
 	}
 
 	// Eggyel vissza lepteti a kornyezo pontok indexet.
-	void PreviousPoints()
+	void StepBackwardPoints()
 	{
 		// Ha az index tul alacsony lenne, akkor a vegerol kezdi (kor a palya).
 		int prevIndex = (NextPointIndex - 3) < 0 ? (((NextPointIndex - 3) + waypoints.Length) % waypoints.Length) : (NextPointIndex - 3);
@@ -113,11 +116,18 @@ public class FitnessMeter : MonoBehaviour
 	// Kiszamolja az auto fitness-et.
 	private void CalculateFitness()
 	{
-		float centerCarDistance = Vector3.Distance(currentPoint.position, carCenterPoint.position);
+		// A referencia pont és az autó közötti távolság
+		float centerCarDistance = Vector3.Distance(currentPoint.position, carPoint.position);
+		// Az előző pont és az autó közötti távolság 
+		float prevCarDistance = Vector3.Distance(prevPoint.position, carPoint.position);
+		// A következő pont és az autó közötti távolság
+		float nextCarDistance = Vector3.Distance(carPoint.position, nextPoint.position);
+
+		// Az előző és a referencia pont közötti távolság
 		float prevCenterDistance = Vector3.Distance(prevPoint.position, currentPoint.position);
+		// A következő és a referencia pont közötti távolság
 		float centerNextDistance = Vector3.Distance(currentPoint.position, nextPoint.position);
-		float prevCarDistance = Vector3.Distance(prevPoint.position, carCenterPoint.position);
-		float nextCarDistance = Vector3.Distance(carCenterPoint.position, nextPoint.position);
+
 		relativeFitness = centerCarDistance;
 
 		// Ha a prevPointhoz van kozelebb az auto, akkor visszafele halad.
@@ -126,22 +136,24 @@ public class FitnessMeter : MonoBehaviour
 			relativeFitness *= -1;
 		}
 
+		// HA ÁTMENT A NEXTPOINT-ON
 		// Ha a currentPoint es a nextPoint tavolsa kisebb, mint a
 		// currentPoint es a carCenterPoint tavolsaga,
 		// es a nextPointhoz van kozelebb az auto, akkor az atment a nextPointon.
 		if (centerCarDistance > centerNextDistance && nextCarDistance < prevCarDistance)
 		{
 			savedFitness += centerNextDistance;
-			FollowingPoints();
+			StepForwardPoints();
 		}
 
+		// HA VISSZAFELE ÁTMENT A PREVPOINT-ON
 		// Ha a currentPoint es a prevPoint tavolsa kisebb, mint a
 		// currentPoint es a carCenterPoint tavolsaga,
 		// es a prevPointhoz van kozelebb az auto, akkor az atment a prevPointon.
 		if (centerCarDistance > prevCenterDistance && prevCarDistance < nextCarDistance)
 		{
 			savedFitness -= prevCenterDistance;
-			PreviousPoints();
+			StepBackwardPoints();
 		}
 
 		// Az autonak a palyahoz viszonyitott elorehaladasa.

@@ -1002,7 +1002,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   waypointsRoot: {fileID: 1736990184806124, guid: 6f41cef01981f8549a2a33bfcec89a3e,
     type: 2}
-  carCenterPoint: {fileID: 4097969882064458}
+  carPoint: {fileID: 4097969882064458}
   waypoints: []
   prevPoint: {fileID: 0}
   currentPoint: {fileID: 0}
