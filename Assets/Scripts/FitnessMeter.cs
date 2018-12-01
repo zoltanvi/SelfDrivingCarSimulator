@@ -128,7 +128,25 @@ public class FitnessMeter : MonoBehaviour
 		// A következő és a referencia pont közötti távolság
 		float centerNextDistance = Vector3.Distance(currentPoint.position, nextPoint.position);
 
+		if (controlledByPlayer)
+		{
+			Debug.DrawLine(currentPoint.position + Vector3.up, carPoint.position + Vector3.up, Color.green); // centerCar
+			Debug.DrawLine(nextPoint.position + Vector3.up, carPoint.position + Vector3.up, Color.yellow);   // nextCar
+			Debug.DrawLine(currentPoint.position + Vector3.up, nextPoint.position + Vector3.up, Color.white);// centerNext
+
+
+			//Debug.DrawLine(prevPoint.position + Vector3.up, carPoint.position + Vector3.up, Color.magenta);  // prevCar
+			//Debug.DrawLine(currentPoint.position + Vector3.up, prevPoint.position + Vector3.up, Color.magenta);  
+
+
+
+		}
+
+
 		relativeFitness = centerCarDistance;
+
+		//relativeFitness = prevCenterDistance + centerNextDistance / (prevCarDistance + nextCarDistance);
+		//relativeFitness *= prevCarDistance;
 
 		// Ha a prevPointhoz van kozelebb az auto, akkor visszafele halad.
 		if (prevCarDistance < nextCarDistance && relativeFitness > 0)
@@ -146,6 +164,14 @@ public class FitnessMeter : MonoBehaviour
 			StepForwardPoints();
 		}
 
+		//if(centerCarDistance > nextCarDistance && nextCarDistance < prevCarDistance)
+		//{
+		//	savedFitness += centerNextDistance;
+		//	StepForwardPoints();
+		//}
+
+
+
 		// HA VISSZAFELE ÁTMENT A PREVPOINT-ON
 		// Ha a currentPoint es a prevPoint tavolsa kisebb, mint a
 		// currentPoint es a carCenterPoint tavolsaga,
@@ -156,8 +182,14 @@ public class FitnessMeter : MonoBehaviour
 			StepBackwardPoints();
 		}
 
+		//if (centerCarDistance > prevCarDistance && prevCarDistance < nextCarDistance)
+		//{
+		//	savedFitness -= prevCenterDistance;
+		//	StepBackwardPoints();
+		//}
+
 		// Az autonak a palyahoz viszonyitott elorehaladasa.
-		AbsoluteFitness = savedFitness + relativeFitness;
+			AbsoluteFitness = savedFitness + relativeFitness;
 
 		// Az auto fitness erteket atadja a CarGameManager-nek
 		if (!controlledByPlayer)

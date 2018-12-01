@@ -22,7 +22,8 @@
 		<string name="options_demo_mode">DEMO MODE</string>
 		<string name="options_selection_top50">Top 50%</string>
 		<string name="options_selection_tournament">Tournament method</string>
-		<string name="options_selection_20random">Tournament and 20% random each round</string>
+    <string name="options_selection_20random">Tournament and 20% random each round</string>
+    <string name="options_selection_wheel">Roulette wheel</string>
 		<string name="options_map">MAP</string>
 		
 		<!-- TOOLTIP -->
@@ -126,7 +127,8 @@ The same seed causes the same run if the two games' options match.</string>
 		<string name="options_selection_top50">Top 50%</string>
 		<string name="options_selection_tournament">Tournament mód</string>
 		<string name="options_selection_20random">Tournament és 20% random minden körben</string>
-		<string name="options_map">PÁLYA</string>
+    <string name="options_selection_wheel">Rulett kerék</string>
+    <string name="options_map">PÁLYA</string>
 		
 		<!-- TOOLTIP -->
 		<string name="tooltip_num_of_cars">Autók száma</string>

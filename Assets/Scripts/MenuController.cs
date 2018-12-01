@@ -65,6 +65,7 @@ public class MenuController : MonoBehaviour
 		selections.Add(TextResources.GetValue("options_selection_tournament"));
 		selections.Add(TextResources.GetValue("options_selection_top50"));
 		selections.Add(TextResources.GetValue("options_selection_20random"));
+		selections.Add(TextResources.GetValue("options_selection_wheel"));
 
 
 		PopulateDropdowns();
@@ -305,6 +306,8 @@ public class MenuController : MonoBehaviour
 		selections.Add(TextResources.GetValue("options_selection_tournament"));
 		selections.Add(TextResources.GetValue("options_selection_top50"));
 		selections.Add(TextResources.GetValue("options_selection_20random"));
+		selections.Add(TextResources.GetValue("options_selection_wheel"));
+
 
 		selectionDropdown.AddOptions(selections);
 	}

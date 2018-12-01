@@ -194,7 +194,6 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 
 	/// <summary>
 	/// Csökkenő sorrendbe rendezi az autók fitness értékeit.
-	/// Beszúró rendezést használ.
 	/// </summary>
 	protected void SortCarsByFitness()
 	{

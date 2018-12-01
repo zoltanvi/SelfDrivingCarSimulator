@@ -436,6 +436,11 @@ public class Manager : MonoBehaviour
 				GAGameObject.AddComponent<GeneticAlgorithmWorstRandom>();
 				GA = GAGameObject.GetComponent<GeneticAlgorithmWorstRandom>();
 				break;
+			// Roulette wheel selection
+			case 3:
+				GAGameObject.AddComponent<GeneticAlgorithmRouletteWheel>();
+				GA = GAGameObject.GetComponent<GeneticAlgorithmRouletteWheel>();
+				break;
 			// Tournament selection
 			default:
 				GAGameObject.AddComponent<GeneticAlgorithmTournament>();
@@ -707,6 +712,7 @@ public class Manager : MonoBehaviour
 				{
 					Cars[i].CarController.Freeze();
 					Cars[i].PrevFitness = 0;
+					AliveCount--;
 				}
 			}
 
