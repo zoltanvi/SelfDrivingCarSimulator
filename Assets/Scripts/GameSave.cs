@@ -25,7 +25,10 @@ public class GameSave
 	#region Statisztikai adatok
 	public List<float> MaxFitness;
 	public List<float> MedianFitness;
-	#endregion
+    #endregion
 
+    #region Egyéb adatok
+    public int Seed;
+    #endregion
 }
 

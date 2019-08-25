@@ -25,10 +25,10 @@ public class NeuralNetwork : MonoBehaviour
 	{
 		bias = Master.Instance.Manager.Bias;
 		carID = this.gameObject.GetComponent<CarController>().Id;
-		hiddenLayerCount = Master.Instance.Manager.LayersCount;
-		neuronCount = Master.Instance.Manager.NeuronPerLayerCount;
+		hiddenLayerCount = Master.Instance.Manager.Configuration.LayersCount;
+		neuronCount = Master.Instance.Manager.Configuration.NeuronPerLayerCount;
 
-		if (Master.Instance.Manager.Navigator)
+		if (Master.Instance.Manager.Configuration.Navigator)
 		{
 			inputCount = Master.Instance.Manager.CarSensorCount + 4;
 		}

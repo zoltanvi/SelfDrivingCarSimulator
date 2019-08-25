@@ -38,16 +38,47 @@ public class Manager : MonoBehaviour
 
 	#region PUBLIC BUT NOT VISIBLE IN INSPECTOR
 	public Car[] Cars;
-	public int CarCount { get; set; }
-	public int SelectionMethod { get; set; }
-	public int MutationChance { get; set; }
-	public float MutationRate { get; set; }
-	public int LayersCount { get; set; }
-	public int NeuronPerLayerCount { get; set; }
-	public int TrackNumber { get; set; }
-	public float Bias { get; set; }
-	public bool Navigator { get; set; }
+    public int CurrentConfigId { get; private set; }
+    public List<Configuration> Configurations = new List<Configuration> { new Configuration()};
+    public Configuration Configuration
+    {
+        get
+        {
+            if (CurrentConfigId >= Configurations.Count)
+            {
+                throw new IndexOutOfRangeException("The current config ID was higher than expected!");
+            }
+
+            if(Configurations[CurrentConfigId] == null)
+            {
+                Configurations[CurrentConfigId] = new Configuration();
+            }
+
+            return Configurations[CurrentConfigId];
+        }
+        set
+        {
+            if (CurrentConfigId >= Configurations.Count)
+            {
+                throw new IndexOutOfRangeException("The current config ID was higher than expected!");
+            }
+
+            Configurations[CurrentConfigId] = value;
+        }
+    }
+
+    //public int CarCount { get; set; }
+    //public int SelectionMethod { get; set; }
+    //public int MutationChance { get; set; }
+    //public float MutationRate { get; set; }
+    //public int LayersCount { get; set; }
+    //public int NeuronPerLayerCount { get; set; }
+    //public int TrackNumber { get; set; }
+    public float Bias { get; set; }
+	//public bool Navigator { get; set; }
 	public bool DemoMode { get; set; }
+    //public bool StopConditionActive { get; set; }
+    //public int StopGenerationNumber { get; set; }
 	[HideInInspector] public bool GotOptionValues;
 	[HideInInspector] public bool InGame;
 	[HideInInspector] public bool ManualControl;
@@ -66,10 +97,10 @@ public class Manager : MonoBehaviour
 	[HideInInspector] public GameObject RayHolderRoot;
 	[HideInInspector] public GameObject CarHolderRoot;
 	[HideInInspector] public GameObject PlayerCar;
-	#endregion
+    #endregion
 
 
-	#region PRIVATE
+    #region PRIVATE
 	private GameObject GAGameObject;
 	private GeneticAlgorithm GA;
 	private Queue<GameObject> carPool;
@@ -161,7 +192,7 @@ public class Manager : MonoBehaviour
 		carPool = new Queue<GameObject>();
 		RayHolderRoot = new GameObject("RayHolderDeletable");
 		CarHolderRoot = new GameObject("CarHolderDeletable");
-		for (int i = 0; i < CarCount; i++)
+		for (int i = 0; i < Configuration.CarCount; i++)
 		{
 			GameObject obj = Instantiate(master.BlueCarPrefab, transform.position, transform.rotation);
 
@@ -202,7 +233,7 @@ public class Manager : MonoBehaviour
 	private void SpawnCars()
 	{
 		// Az autók spawnolása
-		for (int i = 0; i < CarCount; i++)
+		for (int i = 0; i < Configuration.CarCount; i++)
 		{
 			SpawnFromPool(transform.position, transform.rotation);
 		}
@@ -298,7 +329,7 @@ public class Manager : MonoBehaviour
 
 		if (!ManualControl)
 		{
-			for (int i = 0; i < CarCount; i++)
+			for (int i = 0; i < Configuration.CarCount; i++)
 			{
 				rend = Cars[i].Transform.GetComponentsInChildren<Renderer>();
 
@@ -322,7 +353,7 @@ public class Manager : MonoBehaviour
 		else
 		{
 
-			for (int i = 0; i < CarCount; i++)
+			for (int i = 0; i < Configuration.CarCount; i++)
 			{
 				rend = Cars[i].Transform.GetComponentsInChildren<Renderer>();
 
@@ -363,14 +394,15 @@ public class Manager : MonoBehaviour
 			Save = (GameSave)bf.Deserialize(stream);
 
 
-			SelectionMethod = Save.SelectionMethod;
-			MutationChance = Save.MutationChance;
-			MutationRate = Save.MutationRate;
-			CarCount = Save.CarCount;
-			LayersCount = Save.LayersCount;
-			NeuronPerLayerCount = Save.NeuronPerLayerCount;
-			Navigator = Save.Navigator;
-			TrackNumber = Save.TrackNumber;
+            Configuration.SelectionMethod = Save.SelectionMethod;
+            Configuration.MutationChance = Save.MutationChance;
+            Configuration.MutationRate = Save.MutationRate;
+            Configuration.CarCount = Save.CarCount;
+            Configuration.LayersCount = Save.LayersCount;
+            Configuration.NeuronPerLayerCount = Save.NeuronPerLayerCount;
+            Configuration.Navigator = Save.Navigator;
+            Configuration.TrackNumber = Save.TrackNumber;
+            RandomHelper.Seed = Save.Seed;
 			WasItALoad = true;
 		}
 
@@ -386,7 +418,7 @@ public class Manager : MonoBehaviour
 		InitGenetic();
 
 
-		AliveCount = CarCount;
+		AliveCount = Configuration.CarCount;
 		master.cameraController.enabled = false;
 		master.Camera.GetComponent<PostProcessingBehaviour>().enabled = true;
 
@@ -419,7 +451,7 @@ public class Manager : MonoBehaviour
 		GAGameObject = new GameObject();
 		GAGameObject.transform.name = "GeneticAlgorithmDeletable";
 
-		switch (SelectionMethod)
+		switch (Configuration.SelectionMethod)
 		{
 			// Tournament selection
 			case 0:
@@ -452,7 +484,7 @@ public class Manager : MonoBehaviour
 
 	private void InitTrack()
 	{
-		switch (TrackNumber)
+		switch (Configuration.TrackNumber)
 		{
 			case 0:
 				master.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
@@ -472,8 +504,8 @@ public class Manager : MonoBehaviour
 		}
 
 
-		CurrentTrack = Instantiate(master.TrackPrefabs[TrackNumber], transform.position, transform.rotation);
-		CurrentWayPoint = Instantiate(master.WayPointPrefabs[TrackNumber], transform.position, transform.rotation);
+		CurrentTrack = Instantiate(master.TrackPrefabs[Configuration.TrackNumber], transform.position, transform.rotation);
+		CurrentWayPoint = Instantiate(master.WayPointPrefabs[Configuration.TrackNumber], transform.position, transform.rotation);
 		CurrentTrack.transform.name = "TrackDeletable";
 		CurrentWayPoint.transform.name = "WaypointDeletable";
 		DontDestroyOnLoad(CurrentTrack);
@@ -487,7 +519,7 @@ public class Manager : MonoBehaviour
 		// Inputs tömb mérete nagyobb, ha az autó inputként megkapja a következő 3 szöget is!!
 		int inputCount;
 
-		if (Navigator)
+		if (Configuration.Navigator)
 		{
 			inputCount = CarSensorCount + 4;
 		}
@@ -496,8 +528,8 @@ public class Manager : MonoBehaviour
 			inputCount = CarSensorCount + 1;
 		}
 
-		Cars = new Car[CarCount];
-		for (int i = 0; i < CarCount; i++)
+		Cars = new Car[Configuration.CarCount];
+		for (int i = 0; i < Configuration.CarCount; i++)
 		{
 			Cars[i] = new Car
 			{
@@ -547,17 +579,18 @@ public class Manager : MonoBehaviour
 			}
 		}
 
-		SelectionMethod = Save.SelectionMethod;
-		MutationChance = Save.MutationChance;
-		MutationRate = Save.MutationRate;
-		CarCount = Save.CarCount;
-		LayersCount = Save.LayersCount;
-		NeuronPerLayerCount = Save.NeuronPerLayerCount;
-		Navigator = Save.Navigator;
+        Configuration.SelectionMethod = Save.SelectionMethod;
+        Configuration.MutationChance = Save.MutationChance;
+        Configuration.MutationRate = Save.MutationRate;
+        Configuration.CarCount = Save.CarCount;
+        Configuration.LayersCount = Save.LayersCount;
+        Configuration.NeuronPerLayerCount = Save.NeuronPerLayerCount;
+        Configuration.Navigator = Save.Navigator;
 		MedianFitness = Save.MedianFitness;
 		MaxFitness = Save.MaxFitness;
-
-		GotOptionValues = true;
+        RandomHelper.Seed = Save.Seed;
+        
+        GotOptionValues = true;
 		WasItALoad = true;
 
 		master.StartNewGame();
@@ -587,15 +620,16 @@ public class Manager : MonoBehaviour
         // Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
         GA.SaveNeuralNetworks();
 
-        Save.SelectionMethod = SelectionMethod;
-        Save.MutationChance = MutationChance;
-        Save.MutationRate = MutationRate;
-        Save.CarCount = CarCount;
-        Save.LayersCount = LayersCount;
-        Save.NeuronPerLayerCount = NeuronPerLayerCount;
-        Save.Navigator = Navigator;
-        Save.TrackNumber = TrackNumber;
+        Save.SelectionMethod = Configuration.SelectionMethod;
+        Save.MutationChance = Configuration.MutationChance;
+        Save.MutationRate = Configuration.MutationRate;
+        Save.CarCount = Configuration.CarCount;
+        Save.LayersCount = Configuration.LayersCount;
+        Save.NeuronPerLayerCount = Configuration.NeuronPerLayerCount;
+        Save.Navigator = Configuration.Navigator;
+        Save.TrackNumber = Configuration.TrackNumber;
         Save.SavedCarNetworks = GA.SavedCarNetworks;
+        Save.Seed = RandomHelper.Seed;
 
         if (master.CreateDemoSave)
         {
@@ -640,27 +674,27 @@ public class Manager : MonoBehaviour
 
 		StringBuilder sb = new StringBuilder();
 
-		sb.Append("GENERATION\t" + MyUIPrinter.GenerationText.text + "\n");
-		sb.Append("MAP\t" + TrackNumber + "\n");
-		sb.Append("NUMBER OF CARS\t" + CarCount + "\n");
-		sb.Append("SELECTION METHOD\t" + SelectionMethod + "\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random)\n");
-		sb.Append("MUTATION POSSIBILITY\t" + MutationChance + "%\n");
-		sb.Append("MUTATION RATE\t" + MutationRate + "%\n");
-		sb.Append("NUMBER OF LAYERS\t" + LayersCount + "\n");
-		sb.Append("NEURON PER LAYER\t" + NeuronPerLayerCount + "\n");
-		sb.Append("NAVIGATOR\t" + Navigator + "\n");
-		sb.Append("\n== MAX FITNESS ==\n");
+        sb.Append("GENERATION\t").Append(MyUIPrinter.GenerationText.text).AppendLine();
+        sb.Append("MAP\t").Append(Configuration.TrackNumber).AppendLine();
+        sb.Append("NUMBER OF CARS\t").Append(Configuration.CarCount).AppendLine();
+        sb.Append("SELECTION METHOD\t").Append(Configuration.SelectionMethod).Append("\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random)\n");
+        sb.Append("MUTATION POSSIBILITY\t").Append(Configuration.MutationChance).Append("%\n");
+        sb.Append("MUTATION RATE\t").Append(Configuration.MutationRate).Append("%\n");
+        sb.Append("NUMBER OF LAYERS\t").Append(Configuration.LayersCount).AppendLine();
+        sb.Append("NEURON PER LAYER\t").Append(Configuration.NeuronPerLayerCount).AppendLine();
+        sb.Append("NAVIGATOR\t").Append(Configuration.Navigator).AppendLine();
+        sb.Append("\n== MAX FITNESS ==\n");
 
 		foreach (var item in MaxFitness)
 		{
-			sb.Append(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n");
+			sb.AppendLine(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")));
 		}
 
 		sb.Append("\n== MEDIAN FITNESS ==\n");
 
 		foreach (var item in MedianFitness)
 		{
-			sb.Append(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")) + "\n");
+			sb.AppendLine(item.ToString("F12", CultureInfo.CreateSpecificCulture("hu-HU")));
 		}
 
 		using (StreamWriter file = new StreamWriter(path, true))
@@ -682,7 +716,7 @@ public class Manager : MonoBehaviour
 		if (GlobalTimeLeft <= 0)
 		{
 			// Lefagyasztja az összes autót
-			for (int i = 0; i < CarCount; i++)
+			for (int i = 0; i < Configuration.CarCount; i++)
 			{
 				Cars[i].CarController.Freeze();
 				Cars[i].PrevFitness = 0;
@@ -700,7 +734,7 @@ public class Manager : MonoBehaviour
 		if (FreezeTimeLeft <= 0)
 		{
 
-			for (int i = 0; i < CarCount; i++)
+			for (int i = 0; i < Configuration.CarCount; i++)
 			{
 				// Ha nem nőtt 10 másodperc alatt az autó fitness értéke
 				// legalább 10-zel, akkor lefagyasztja az autót
@@ -736,12 +770,20 @@ public class Manager : MonoBehaviour
 		AliveCount--;
 	}
 
+    public void OnSimulationFinished()
+    {
+        SaveGame();
+        SaveStats();
+        master.BackToMenu();
+    }
+
+
 	/// <summary>
 	/// Visszaállítja az időket + mennyi autó van életben
 	/// </summary>
 	public void SetBackTimes()
 	{
-		AliveCount = CarCount;
+		AliveCount = Configuration.CarCount;
 		FreezeTimeLeft = freezeTimeOut;
 		GlobalTimeLeft = globalTimeOut;
 	}
@@ -756,7 +798,7 @@ public class Manager : MonoBehaviour
 		int bestId = 0;
 		float maxFitness = float.MinValue;
 
-		for (int i = 0; i < CarCount; i++)
+		for (int i = 0; i < Configuration.CarCount; i++)
 		{
 			if (Cars[i].IsAlive)
 			{

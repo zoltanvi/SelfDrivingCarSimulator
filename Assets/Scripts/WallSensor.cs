@@ -53,7 +53,7 @@ public class WallSensor : MonoBehaviour
 			controlledByPlayer = true;
 		}
 
-		if (Master.Instance.Manager.Navigator)
+		if (Master.Instance.Manager.Configuration.Navigator)
 		{
 			// Inicializalja a neuralis halo inputjait
 			// carNeuronInputs = new double[rayCount + 4];
@@ -114,7 +114,7 @@ public class WallSensor : MonoBehaviour
 			Master.Instance.Manager.Cars[Id].Inputs = carNeuronInputs;
 		}
 
-		if (Master.Instance.Manager.Navigator)
+		if (Master.Instance.Manager.Configuration.Navigator)
 		{
 			SetAnglesInput();
 		}

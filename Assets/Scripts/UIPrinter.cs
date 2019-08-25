@@ -70,8 +70,8 @@ public class UIPrinter : MonoBehaviour
 
 		maxText.text = string.Format("{0:0.00}", (maxF.Count - 1 >= 0) ? maxF[maxF.Count - 1] : 0);
 		medianText.text = string.Format("{0:0.00}", (medF.Count - 1 >= 0) ? medF[medF.Count - 1] : 0);
-		mutationRateText.text = string.Format("{0}%", Master.Instance.Manager.MutationRate);
-		populationText.text = string.Format("{0:0}", Master.Instance.Manager.CarCount);
+		mutationRateText.text = string.Format("{0}%", Master.Instance.Manager.Configuration.MutationRate);
+		populationText.text = string.Format("{0:0}", Master.Instance.Manager.Configuration.CarCount);
 		aliveCountText.text = Master.Instance.Manager.AliveCount.ToString();
 
 		float prevMax = (maxF.Count - 2 >= 0) ? maxF[maxF.Count - 2] : 0;
@@ -115,7 +115,7 @@ public class UIPrinter : MonoBehaviour
 		}
 		else
 		{
-			if (Master.Instance.Manager.Navigator)
+			if (Master.Instance.Manager.Configuration.Navigator)
 			{
 				numLines = Master.Instance.Manager.CarSensorCount + 4;
 			}

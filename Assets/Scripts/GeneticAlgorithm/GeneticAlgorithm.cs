@@ -47,9 +47,9 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 	private void Awake()
 	{
 		manager = Master.Instance.Manager;
-		PopulationSize = manager.CarCount;
-		MutationChance = manager.MutationChance; // 30-70 int %
-		MutationRate = manager.MutationRate;   // 2-4 float %
+		PopulationSize = manager.Configuration.CarCount;
+		MutationChance = manager.Configuration.MutationChance; // 30-70 int %
+		MutationRate = manager.Configuration.MutationRate;   // 2-4 float %
 
 	}
 
@@ -103,6 +103,11 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		// Respawnolja az új egyedeket
 		RespawnCars();
 
+        // Ha leállási feltétel meg volt adva és teljesült, leáll a szimuláció
+        if (manager.Configuration.StopConditionActive && manager.Configuration.StopGenerationNumber <= GenerationCount)
+        {
+            manager.OnSimulationFinished();
+        }
 	}
 
 	protected void RespawnCars()

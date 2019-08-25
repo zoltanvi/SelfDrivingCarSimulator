@@ -32,9 +32,13 @@ public class MenuController : MonoBehaviour
 	[SerializeField] private TextMeshProUGUI tooltipTitle;
 	[SerializeField] private TextMeshProUGUI tooltipText;
 
-	[SerializeField] private TMP_InputField seedInputField;
+    [SerializeField] private TMP_InputField seedInputField;
 
-	private readonly Color white = new Color(1.0f, 1.0f, 1.0f);
+    [SerializeField] private Toggle stopConditionActive;
+    [SerializeField] private TMP_InputField stopGenerationInputField;
+
+
+    private readonly Color white = new Color(1.0f, 1.0f, 1.0f);
 	private readonly Color gray = new Color(0.254717f, 0.254717f, 0.254717f);
 
 
@@ -47,8 +51,11 @@ public class MenuController : MonoBehaviour
 	public int TrackNumber { get; set; }
 	public bool Navigator { get; set; }
 	public bool DemoMode { get; set; }
+	public bool StopConditionActive { get; set; }
+    private int m_StopGenNum = 50;
+    public int StopGenerationNumber { get { return m_StopGenNum; } set { m_StopGenNum = value; } }
 
-	private List<string> selections = new List<string>();
+    private List<string> selections = new List<string>();
 
 	private List<string> mutationChances = new List<string>() {
 			"30%", "40%", "50%", "60%", "70%"
@@ -86,7 +93,8 @@ public class MenuController : MonoBehaviour
 		mutationChanceDropdown.value = MutationChanceE;
 		mutationRateDropdown.value = MutationRateE;
 		navigator.isOn = Navigator;
-
+        stopConditionActive.isOn = StopConditionActive;
+        stopGenerationInputField.text = StopGenerationNumber.ToString();
 	}
 
 	private void PopulateDropdowns()
@@ -164,7 +172,7 @@ public class MenuController : MonoBehaviour
 
 	public void SetLoadTrackNumber()
 	{
-		Master.Instance.Manager.TrackNumber = TrackNumber;
+		Master.Instance.Manager.Configuration.TrackNumber = TrackNumber;
 	}
 
 	public void SetOptionValues()
@@ -181,58 +189,71 @@ public class MenuController : MonoBehaviour
 			seedInputField.text = RandomHelper.Seed.ToString();
 		}
 
+        // Ha rossz inputot kap leállási feltételnek, akkor nincs leállási feltétel
+        Master.Instance.Manager.Configuration.StopConditionActive = stopConditionActive;
+        int stopGenNum = 0;
+        int.TryParse(stopGenerationInputField.text, out stopGenNum);
+
+        if(stopGenNum == 0)
+        {
+            Master.Instance.Manager.Configuration.StopConditionActive = false;
+        }
+        else
+        {
+            Master.Instance.Manager.Configuration.StopGenerationNumber = stopGenNum;
+        }
 
 
-		Master.Instance.Manager.CarCount = NumberOfCars;
-		Master.Instance.Manager.LayersCount = NumberOfLayers;
-		Master.Instance.Manager.NeuronPerLayerCount = NeuronPerLayer;
-		Master.Instance.Manager.TrackNumber = TrackNumber;
-		Master.Instance.Manager.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
-		Master.Instance.Manager.Navigator = Navigator;
+        Master.Instance.Manager.Configuration.CarCount = NumberOfCars;
+		Master.Instance.Manager.Configuration.LayersCount = NumberOfLayers;
+		Master.Instance.Manager.Configuration.NeuronPerLayerCount = NeuronPerLayer;
+		Master.Instance.Manager.Configuration.TrackNumber = TrackNumber;
+		Master.Instance.Manager.Configuration.SelectionMethod = SelectionMethodE; // Ez a managerben van lekezelve
+		Master.Instance.Manager.Configuration.Navigator = Navigator;
 		Master.Instance.Manager.DemoMode = DemoMode;
 
 		// Az érték beállítása a dropdownból kinyert adat szerint
 		switch (MutationChanceE)
 		{
 			case 0:
-				Master.Instance.Manager.MutationChance = 30;
+				Master.Instance.Manager.Configuration.MutationChance = 30;
 				break;
 			case 1:
-				Master.Instance.Manager.MutationChance = 40;
+				Master.Instance.Manager.Configuration.MutationChance = 40;
 				break;
 			case 2:
-				Master.Instance.Manager.MutationChance = 50;
+				Master.Instance.Manager.Configuration.MutationChance = 50;
 				break;
 			case 3:
-				Master.Instance.Manager.MutationChance = 60;
+				Master.Instance.Manager.Configuration.MutationChance = 60;
 				break;
 			case 4:
-				Master.Instance.Manager.MutationChance = 70;
+				Master.Instance.Manager.Configuration.MutationChance = 70;
 				break;
 			default:
-				Master.Instance.Manager.MutationChance = 50;
+				Master.Instance.Manager.Configuration.MutationChance = 50;
 				break;
 		}
 
 		switch (MutationRateE)
 		{
 			case 0:
-				Master.Instance.Manager.MutationRate = 2f;
+				Master.Instance.Manager.Configuration.MutationRate = 2f;
 				break;
 			case 1:
-				Master.Instance.Manager.MutationRate = 2.5f;
+				Master.Instance.Manager.Configuration.MutationRate = 2.5f;
 				break;
 			case 2:
-				Master.Instance.Manager.MutationRate = 3f;
+				Master.Instance.Manager.Configuration.MutationRate = 3f;
 				break;
 			case 3:
-				Master.Instance.Manager.MutationRate = 3.5f;
+				Master.Instance.Manager.Configuration.MutationRate = 3.5f;
 				break;
 			case 4:
-				Master.Instance.Manager.MutationRate = 4f;
+				Master.Instance.Manager.Configuration.MutationRate = 4f;
 				break;
 			default:
-				Master.Instance.Manager.MutationRate = 3f;
+				Master.Instance.Manager.Configuration.MutationRate = 3f;
 				break;
 		}
 
@@ -287,11 +308,18 @@ public class MenuController : MonoBehaviour
 				tooltipTitle.text = TextResources.GetValue("tooltip_demo_mode");
 				tooltipText.text = TextResources.GetValue("tooltip_demo_mode_desc");
 				break;
+            // Seed
 			case 8:
 				tooltipTitle.text = TextResources.GetValue("tooltip_seed");
 				tooltipText.text = TextResources.GetValue("tooltip_seed_desc");
 				break;
-			default:
+            // Stop condition
+            case 9:
+                tooltipTitle.text = TextResources.GetValue("tooltip_stop_condition");
+                tooltipText.text = TextResources.GetValue("tooltip_stop_condition_desc");
+                break;
+
+            default:
 				tooltipTitle.text = "";
 				tooltipText.text = "";
 				break;

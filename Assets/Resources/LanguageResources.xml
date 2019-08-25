@@ -8,7 +8,7 @@
 		<string name="menu_exit">EXIT</string>
 		<string name="menu_back">BACK</string>
 		<string name="menu_dev">Developer: Zoltán Vicze</string>
-		<string name="menu_version">version 4.5</string>
+		<string name="menu_version">version 4.6</string>
 	
 		<!-- OPTIONS -->
 		<string name="options_num_of_cars">NUMBER OF CARS</string>
@@ -36,6 +36,7 @@
 		<string name="tooltip_navigator">Navigator</string>
 		<string name="tooltip_demo_mode">Demo mode</string>
 		<string name="tooltip_seed">Seed</string>
+    <string name="tooltip_stop_condition">Stop at generation X</string>
 		
 		<string name="tooltip_num_of_cars_desc">The size of the population.</string>
 		<string name="tooltip_selection_method_desc">Selection is the stage of a genetic algorithm in which individual genomes are chosen from a population for later breeding (using the crossover operator).</string>
@@ -56,8 +57,12 @@ Neural networks start with values from a state reached in a previous run.
 		<string name="tooltip_seed_desc">Many things in the genetic algorithm are randomly determined, like the mutation (whether it happens or not).
 The random chances comes from random numbers, which are calculated from an initial seed. You can set your desired whole number as a seed, or just random a new one.
 The same seed causes the same run if the two games' options match.</string>
-		
-		<!-- LOAD MENU -->
+    <string name="tooltip_stop_condition_desc">You can set the stop condition for the simulation. 
+In this case the condition is the number of simulated generations.
+Before the simulation stops, we save the simulation and the statistics about it.
+Lastly the program will bring back you to the main menu.</string>
+
+    <!-- LOAD MENU -->
 		<string name="load_select_map">SELECT MAP</string>
 		<string name="load_select_game">Select a saved game to load</string>
 
@@ -72,7 +77,6 @@ The same seed causes the same run if the two games' options match.</string>
 		<string name="hud_fitness">Fitness</string>
 		<string name="hud_max">Max</string>
 		<string name="hud_median">Median</string>
-
 
 		<!-- INGAME MENU -->
 		<string name="ingame_join">JOIN GAME</string>
@@ -140,6 +144,7 @@ The same seed causes the same run if the two games' options match.</string>
 		<string name="tooltip_navigator">Navigátor</string>
 		<string name="tooltip_demo_mode">Demó mód</string>
 		<string name="tooltip_seed">Seed</string>
+    <string name="tooltip_stop_condition">Stop generáció X-nél</string>
 		
 		<string name="tooltip_num_of_cars_desc">A populáció mérete.</string>
 		<string name="tooltip_selection_method_desc">A szelekció a genetikus algoritmus egyik fázisa, amelyben egyének kerülnek kiválasztásra későbbi szaporítás céljából (a rekombinációs fázisban).</string>
@@ -160,7 +165,12 @@ Az autók neurális hálózatai egy demó módra szánt mentést kapnak, nem vé
 		<string name="tooltip_seed_desc">A genetikus algoritmusban sok dolog véletlenszerűen következik be, mint pl a mutáció.
 A véletlenszerű dolgokat generált véletlen számokkal kapjuk, ami egy kezdeti ún. seed-ből számolható ki. Seed-ként megadható egy egész szám, vagy generálható új seed a random gombra kattintva.
 Azonos beállítások mellett két futás eredménye megegyezik, ha a seed mindkét futás során azonos.</string>
-		
+    <string name="tooltip_stop_condition_desc">Beállíthatod a szimuláció leállási feltételét.
+Ebben az esetben a feltétel a szimulált generációk száma.
+Mielőtt a szimuláció leáll, elmentjük a szimulációt és a statisztikát róla.
+Végül a program visszavisz a főmenübe.</string>
+    
+    
 		<!-- LOAD MENU -->
 		<string name="load_select_map">PÁLYA KIVÁLASZTÁSA</string>
 		<string name="load_select_game">Válassz egy mentést</string>
