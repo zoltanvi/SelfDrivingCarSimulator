@@ -113,16 +113,16 @@ public class Globalizator : MonoBehaviour
 		#endregion
 
 		#region hud
-		remainingTime.text = TextResources.GetValue("hud_remaining_time");
-		freezeTime.text = TextResources.GetValue("hud_freeze_time");
-		generation.text = TextResources.GetValue("hud_generation");
-		population.text = TextResources.GetValue("hud_population");
-		playingCars.text = TextResources.GetValue("hud_playing_cars");
-		mutationRate.text = TextResources.GetValue("hud_mutation_rate");
-		creature.text = TextResources.GetValue("hud_creature");
-		fitness.text = TextResources.GetValue("hud_fitness");
-		max.text = TextResources.GetValue("hud_max");
-		median.text = TextResources.GetValue("hud_median");
+		//remainingTime.text = TextResources.GetValue("hud_remaining_time");
+		//freezeTime.text = TextResources.GetValue("hud_freeze_time");
+		//generation.text = TextResources.GetValue("hud_generation");
+		//population.text = TextResources.GetValue("hud_population");
+		//playingCars.text = TextResources.GetValue("hud_playing_cars");
+		//mutationRate.text = TextResources.GetValue("hud_mutation_rate");
+		//creature.text = TextResources.GetValue("hud_creature");
+		//fitness.text = TextResources.GetValue("hud_fitness");
+		//max.text = TextResources.GetValue("hud_max");
+		//median.text = TextResources.GetValue("hud_median");
 		#endregion
 
 

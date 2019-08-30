@@ -239,6 +239,21 @@ public class MenuController2 : MonoBehaviour
         }
     }
 
+    public void ToggleStopConditionActive()
+    {
+        master.EditConfiguration.StopConditionActive = stopConditionToggle.isOn;
+    }
+
+    public void ToggleNavigatorModeActive()
+    {
+        master.EditConfiguration.Navigator = navigatorToggle.isOn;
+    }
+
+    public void ToggleDemoModeActive()
+    {
+        master.EditConfiguration.DemoMode = demoModeToggle.isOn;
+    }
+
     public void NewSeedInputText()
     {
         seedInputField.text = RandomHelper.Seed.ToString();

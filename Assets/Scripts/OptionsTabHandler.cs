@@ -65,6 +65,7 @@ public class OptionsTabHandler : MonoBehaviour
                 }
 
                 Master.Instance.PopulateConfigsUntil(value);
+                ActiveTabIndex = value - 1;
                 Master.Instance.RemoveConfigs(value);
             }
         }

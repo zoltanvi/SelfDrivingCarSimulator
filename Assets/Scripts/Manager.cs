@@ -143,7 +143,7 @@ public class Manager : MonoBehaviour
 			int carInputsLength = Cars[BestCarId].Inputs.Length;
 			for (int i = 0; i < carInputsLength; i++)
 			{
-				sb.Append(string.Format("> {0:0.000}\n", Cars[BestCarId].Inputs[i]));
+				sb.Append(string.Format("S{0}: {1:0.000}\n", i+1, Cars[BestCarId].Inputs[i]));
 			}
 			MyUIPrinter.ConsoleMessage = sb.ToString();
 		}
@@ -661,7 +661,7 @@ public class Manager : MonoBehaviour
 
 		StringBuilder sb = new StringBuilder();
 
-        sb.Append("GENERATION\t").Append(MyUIPrinter.GenerationText.text).AppendLine();
+        sb.Append("GENERATION\t").Append(MyUIPrinter.GenerationNumber.text).AppendLine();
         sb.Append("MAP\t").Append(Configuration.TrackNumber).AppendLine();
         sb.Append("NUMBER OF CARS\t").Append(Configuration.CarCount).AppendLine();
         sb.Append("SELECTION METHOD\t").Append(Configuration.SelectionMethod).Append("\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random)\n");
