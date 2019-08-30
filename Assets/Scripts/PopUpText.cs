@@ -44,10 +44,11 @@ public class PopUpText : MonoBehaviour
         alpha = 0;
         SetColors();
 
-        float boxWidth = (message.Length <= 30f) ? (message.Length * 25f) : ((message.Length * 20f) + 30f);
+        //float boxWidth = (message.Length <= 30f) ? (message.Length * 25f) : ((message.Length * 20f) + 30f);
+        //float boxWidth = Screen.width - 100;
 
-		popUpPanel.GetComponent<RectTransform>()
-		.sizeDelta = new Vector2(boxWidth, 115f);
+		//popUpPanel.GetComponent<RectTransform>()
+		//.sizeDelta = new Vector2(boxWidth, 60f);
 		cheatText.text = message;
         StartCoroutine(FadeIn());		
 	}

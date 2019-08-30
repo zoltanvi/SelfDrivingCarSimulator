@@ -1,7 +1,5 @@
 fileFormatVersion: 2
 guid: c1ad32d2bf0c86348bd954022ad2ee2c
-timeCreated: 1524665814
-licenseType: Free
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
@@ -17,7 +15,7 @@ MonoImporter:
   - CurrentTrack: {instanceID: 0}
   - CurrentWaypoint: {instanceID: 0}
   - cameraDrone: {instanceID: 0}
-  executionOrder: 0
+  executionOrder: -20
   icon: {instanceID: 0}
   userData: 
   assetBundleName: 

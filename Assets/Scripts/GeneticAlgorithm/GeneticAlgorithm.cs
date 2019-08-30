@@ -104,9 +104,9 @@ public abstract class GeneticAlgorithm : MonoBehaviour
 		RespawnCars();
 
         // Ha leállási feltétel meg volt adva és teljesült, leáll a szimuláció
-        if (manager.Configuration.StopConditionActive && manager.Configuration.StopGenerationNumber <= GenerationCount)
+        if (manager.Configuration.StopConditionActive && manager.Configuration.StopGenerationNumber < GenerationCount)
         {
-            manager.OnSimulationFinished();
+            Master.Instance.OnSimulationFinished();
         }
 	}
 

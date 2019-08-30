@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using System;
+using System.Collections.Generic;
+using UnityEngine;
 using UnityEngine.PostProcessing;
 
 
@@ -9,7 +11,7 @@ public class Master : MonoBehaviour
 	[HideInInspector] public GameObject ManagerGO;
 	[HideInInspector] public Manager Manager;
 	public Globalizator Globalizator;
-	public MenuController MenuController;
+	public MenuController2 MenuController;
 
 	[Header("Car prefabs")]
 	public GameObject BlueCarPrefab;
@@ -32,7 +34,69 @@ public class Master : MonoBehaviour
 	public GameObject[] TrackPrefabs;
 	public GameObject[] WayPointPrefabs;
 
-	private void Awake()
+
+    public int CurrentConfigId { get; set; }
+    public int CurrentEditConfigId { get; set; }
+    public List<Configuration> Configurations;
+    public int SimulationCount { get; set; }
+
+    public string DefaultSaveLocation = string.Empty;
+
+    public const int MAX_CONFIGURATIONS = 15;
+
+    public Configuration EditConfiguration
+    {
+        get
+        {
+            if(CurrentEditConfigId > Configurations.Count - 1)
+            {
+                Debug.Log($"Configurations count was: {Configurations.Count}");
+                int needToCreate = CurrentEditConfigId - Configurations.Count + 1;
+
+                for (int i = 0; i < needToCreate; i++)
+                {
+                    Configurations.Add(new Configuration());
+                }
+                Debug.Log($"Configurations count now is: {Configurations.Count}");
+            }
+
+            if (Configurations[CurrentEditConfigId] == null)
+            {
+                Configurations[CurrentEditConfigId] = new Configuration();
+            }
+
+            return Configurations[CurrentEditConfigId];
+        }
+    }
+
+    public Configuration CurrentConfiguration
+    {
+        get
+        {
+            if (CurrentConfigId >= Configurations.Count)
+            {
+                throw new IndexOutOfRangeException("The current config ID was higher than expected!");
+            }
+
+            if (Configurations[CurrentConfigId] == null)
+            {
+                Configurations[CurrentConfigId] = new Configuration();
+            }
+
+            return Configurations[CurrentConfigId];
+        }
+        set
+        {
+            if (CurrentConfigId >= Configurations.Count)
+            {
+                throw new IndexOutOfRangeException("The current config ID was higher than expected!");
+            }
+
+            Configurations[CurrentConfigId] = value;
+        }
+    }
+
+    private void Awake()
 	{
 		if (Instance == null)
 		{
@@ -44,9 +108,51 @@ public class Master : MonoBehaviour
 		}
 
 		DontDestroyOnLoad(gameObject);
-	}
+        Configurations = new List<Configuration> { new Configuration() };
+        RandomHelper.GenerateNewSeed();
+        Debug.Log("Seed beállítva!");
+    }
 
-	private void Start()
+    public void PopulateConfigsUntil(int lastIndex)
+    {
+        for (int i = 0; i < lastIndex; i++)
+        {
+            CurrentEditConfigId = i;
+            PopulateCurrentConfig();
+        }
+    }
+
+    public void RemoveConfigs(int startIndex)
+    {
+        for (int i = Configurations.Count - 1; i >= startIndex; i--)
+        {
+            Configurations.RemoveAt(i);
+        }
+    }
+
+    private void PopulateCurrentConfig()
+    {
+        Configuration config = EditConfiguration;
+
+        if (!config.IsPopulated)
+        {
+            // fill config with default data
+            config.IsPopulated = true;
+            config.CarCount = 20;
+            config.LayersCount = 3;
+            config.NeuronPerLayerCount = 6;
+            config.SelectionMethod = 1;         // Top 50%
+            config.MutationChance = 50;          // 50%
+            config.MutationRate = 3;            // 3%
+            config.DemoMode = false;
+            config.Navigator = false;
+            config.StopConditionActive = true;
+            config.StopGenerationNumber = 100;
+            config.TrackNumber = 0;
+        }
+    }
+
+    private void Start()
 	{
 		ManagerGO = new GameObject("ManagerObject");
 		Manager = ManagerGO.AddComponent<Manager>();
@@ -61,7 +167,11 @@ public class Master : MonoBehaviour
 		UIStats.SetActive(false);
 		inGameMenu.SetActive(false);
 
-	}
+
+        PopulateConfigsUntil(Configurations.Count);
+
+        CurrentEditConfigId = 0;
+    }
 
 
 	public void JoinGame()
@@ -93,13 +203,20 @@ public class Master : MonoBehaviour
 
 	public void StartNewGame()
 	{
+        InitManagerConfig();
 
-		Manager.StartGame();
+        inGameMenu.SetActive(false);
+        UIStats.SetActive(true);
+        mainMenuCanvas.SetActive(false);
+
+        Manager.StartGame();
 		Camera.transform.position = new Vector3(0.62f, 5.83f, -7.5f);
-
-
-
 	}
+
+    public void InitManagerConfig()
+    {
+        Manager.Configuration = CurrentConfiguration;
+    } 
 
 	/// <summary>
 	/// Beállítja a szimuláció sebességet
@@ -143,10 +260,28 @@ public class Master : MonoBehaviour
 		ManagerGO = new GameObject("ManagerObject");
 		Manager = ManagerGO.AddComponent<Manager>();
 		DontDestroyOnLoad(ManagerGO);
-		MenuController.SetSeedText(RandomHelper.Seed.ToString());
 	}
 
-	public void SetLanguage(int lang)
+    public void StartNextSimulation()
+    {
+        BackToMenu();
+
+        if (CurrentConfigId < Configurations.Count - 1)
+        {
+            CurrentConfigId++;
+            StartNewGame();
+        }
+    }
+
+    public void OnSimulationFinished()
+    {
+        Manager.SaveGame();
+        Manager.SaveStats();
+        StartNextSimulation();
+    }
+
+
+    public void SetLanguage(int lang)
 	{
 		Globalizator.SetLanguage(lang == 1 ? GameLanguage.English : GameLanguage.Hungarian);
 

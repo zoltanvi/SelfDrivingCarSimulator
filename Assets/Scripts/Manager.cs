@@ -33,39 +33,12 @@ public class Manager : MonoBehaviour
 	[Header("Save object - this contains the saved data")]
 	// Ebben az objektumban van tárolva az elmentett / betöltött adatok.
 	public GameSave Save;
-	#endregion
+    #endregion
 
+    public Configuration Configuration = new Configuration();
 
 	#region PUBLIC BUT NOT VISIBLE IN INSPECTOR
 	public Car[] Cars;
-    public int CurrentConfigId { get; private set; }
-    public List<Configuration> Configurations = new List<Configuration> { new Configuration()};
-    public Configuration Configuration
-    {
-        get
-        {
-            if (CurrentConfigId >= Configurations.Count)
-            {
-                throw new IndexOutOfRangeException("The current config ID was higher than expected!");
-            }
-
-            if(Configurations[CurrentConfigId] == null)
-            {
-                Configurations[CurrentConfigId] = new Configuration();
-            }
-
-            return Configurations[CurrentConfigId];
-        }
-        set
-        {
-            if (CurrentConfigId >= Configurations.Count)
-            {
-                throw new IndexOutOfRangeException("The current config ID was higher than expected!");
-            }
-
-            Configurations[CurrentConfigId] = value;
-        }
-    }
 
     //public int CarCount { get; set; }
     //public int SelectionMethod { get; set; }
@@ -116,22 +89,18 @@ public class Manager : MonoBehaviour
 	private string[] cheatCode;
 	private int cheatIndex;
 	private string popUpText;
-	private Master master;
-	#endregion
+    #endregion
 
-
-	private void Start()
+    private void Start()
 	{
-		master = Master.Instance;
-		if(RandomHelper.DefaultSeed == RandomHelper.Seed)
-		{
-			RandomHelper.GenerateNewSeed();
-		}
+		//if(RandomHelper.DefaultSeed == RandomHelper.Seed)
+		//{
+		//	RandomHelper.GenerateNewSeed();
+		//}
 
-		master.MenuController.SetSeedText(RandomHelper.Seed.ToString());
-		Debug.Log("Seed beállítva!");
+		//Master.Instance.MenuController.SetSeedText(RandomHelper.Seed.ToString());
 
-		MyUIPrinter = master.UIStats.GetComponent<UIPrinter>();
+		MyUIPrinter = Master.Instance.UIStats.GetComponent<UIPrinter>();
 
 		Save = new GameSave();
 		transparentShader = Shader.Find("Standard (Specular setup)");
@@ -160,7 +129,7 @@ public class Manager : MonoBehaviour
 		// Különben a legjobb élő autót
 		if (ManualControl && IsPlayerAlive)
 		{
-			master.cameraController.CameraTarget = PlayerCar.transform;
+			Master.Instance.cameraController.CameraTarget = PlayerCar.transform;
 			MyUIPrinter.FitnessValue = PlayerFitness;
 			MyUIPrinter.ConsoleMessage = string.Empty;
 		}
@@ -168,7 +137,7 @@ public class Manager : MonoBehaviour
 		{
 			BestCarId = GetBestId();
 			MyUIPrinter.FitnessValue = Cars[BestCarId].Fitness;
-			master.cameraController.CameraTarget = Cars[BestCarId].Transform;
+			Master.Instance.cameraController.CameraTarget = Cars[BestCarId].Transform;
 
 			StringBuilder sb = new StringBuilder();
 			int carInputsLength = Cars[BestCarId].Inputs.Length;
@@ -194,7 +163,7 @@ public class Manager : MonoBehaviour
 		CarHolderRoot = new GameObject("CarHolderDeletable");
 		for (int i = 0; i < Configuration.CarCount; i++)
 		{
-			GameObject obj = Instantiate(master.BlueCarPrefab, transform.position, transform.rotation);
+			GameObject obj = Instantiate(Master.Instance.BlueCarPrefab, transform.position, transform.rotation);
 
 			obj.SetActive(false);
 			carPool.Enqueue(obj);
@@ -218,7 +187,7 @@ public class Manager : MonoBehaviour
 	/// </summary>
 	private void InstantiatePlayerCar()
 	{
-		PlayerCar = Instantiate(master.RedCarPrefab, transform.position, transform.rotation);
+		PlayerCar = Instantiate(Master.Instance.RedCarPrefab, transform.position, transform.rotation);
 
 		playerCarController = PlayerCar.GetComponent<CarController>();
 		playerCarController.IsPlayerControlled = true;
@@ -380,7 +349,7 @@ public class Manager : MonoBehaviour
 	public void StartGame()
 	{
 		// Ha demó módban van, akkor betölti a resource mappából a demó mentést
-		if (DemoMode)
+		if (Configuration.DemoMode)
 		{
 			TextAsset asset = Resources.Load("demoSave") as TextAsset;
 			if (asset == null)
@@ -419,8 +388,8 @@ public class Manager : MonoBehaviour
 
 
 		AliveCount = Configuration.CarCount;
-		master.cameraController.enabled = false;
-		master.Camera.GetComponent<PostProcessingBehaviour>().enabled = true;
+		Master.Instance.cameraController.enabled = false;
+		Master.Instance.Camera.GetComponent<PostProcessingBehaviour>().enabled = true;
 
 	}
 
@@ -431,10 +400,10 @@ public class Manager : MonoBehaviour
 		InstantiatePlayerCar();
 		SpawnCars();
 
-		master.UIStats.SetActive(true);
+		Master.Instance.UIStats.SetActive(true);
 
-		master.cameraController.CameraTarget = Cars[0].Transform;
-		master.cameraController.enabled = true;
+		Master.Instance.cameraController.CameraTarget = Cars[0].Transform;
+		Master.Instance.cameraController.enabled = true;
 		// Első spawnolás megtörtént
 		firstStart = false;
 		InGame = true;
@@ -487,25 +456,25 @@ public class Manager : MonoBehaviour
 		switch (Configuration.TrackNumber)
 		{
 			case 0:
-				master.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
+				Master.Instance.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
 				break;
 
 			case 1:
-				master.minimapCamera.transform.position = new Vector3(-1.0f, 7.0f, -2.5f);
+				Master.Instance.minimapCamera.transform.position = new Vector3(-1.0f, 7.0f, -2.5f);
 				break;
 
 			case 2:
-				master.minimapCamera.transform.position = new Vector3(10.0f, 7.0f, 5.0f);
+				Master.Instance.minimapCamera.transform.position = new Vector3(10.0f, 7.0f, 5.0f);
 				break;
 
 			default:
-				master.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
+				Master.Instance.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
 				break;
 		}
 
 
-		CurrentTrack = Instantiate(master.TrackPrefabs[Configuration.TrackNumber], transform.position, transform.rotation);
-		CurrentWayPoint = Instantiate(master.WayPointPrefabs[Configuration.TrackNumber], transform.position, transform.rotation);
+		CurrentTrack = Instantiate(Master.Instance.TrackPrefabs[Configuration.TrackNumber], transform.position, transform.rotation);
+		CurrentWayPoint = Instantiate(Master.Instance.WayPointPrefabs[Configuration.TrackNumber], transform.position, transform.rotation);
 		CurrentTrack.transform.name = "TrackDeletable";
 		CurrentWayPoint.transform.name = "WaypointDeletable";
 		DontDestroyOnLoad(CurrentTrack);
@@ -593,9 +562,9 @@ public class Manager : MonoBehaviour
         GotOptionValues = true;
 		WasItALoad = true;
 
-		master.StartNewGame();
-		master.mainMenuCanvas.SetActive(false);
-		master.bgLights.SetActive(false);
+		Master.Instance.StartNewGame();
+		Master.Instance.mainMenuCanvas.SetActive(false);
+		Master.Instance.bgLights.SetActive(false);
 	}
 
     public void SaveGame()
@@ -603,7 +572,16 @@ public class Manager : MonoBehaviour
         const string extensions = "SAVE";
         DateTime dateTime = DateTime.Now;
         string timeStamp = dateTime.ToString("yyyyMMdd-HHmmss");
-        string path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGSave_" + timeStamp, extensions);
+        string path = string.Empty;
+
+        if (string.IsNullOrEmpty(Master.Instance.DefaultSaveLocation))
+        {
+            path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGSave_" + timeStamp, extensions);
+        }
+        else
+        {
+            path = $"{Master.Instance.DefaultSaveLocation}/CGSave_{timeStamp}.{extensions}";
+        }
 
         if (path.Length == 0)
         {
@@ -631,7 +609,7 @@ public class Manager : MonoBehaviour
         Save.SavedCarNetworks = GA.SavedCarNetworks;
         Save.Seed = RandomHelper.Seed;
 
-        if (master.CreateDemoSave)
+        if (Master.Instance.CreateDemoSave)
         {
             Save.GenerationCount = 0;
             Save.MaxFitness = new List<float>();
@@ -660,9 +638,18 @@ public class Manager : MonoBehaviour
 		const string extensions = "txt";
 		DateTime dateTime = DateTime.Now;
 		string timeStamp = dateTime.ToString("yyyyMMdd-HHmmss");
-		string path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGStats_" + timeStamp, extensions);
+        string path = string.Empty;
 
-		if (path.Length == 0) 
+        if (string.IsNullOrEmpty(Master.Instance.DefaultSaveLocation))
+        {
+		    path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGStats_" + timeStamp, extensions);
+        }
+        else
+        {
+            path = $"{Master.Instance.DefaultSaveLocation}/CGStats_{timeStamp}.{extensions}";
+        }
+
+        if (path.Length == 0) 
 		{
 			ShowPopUp(TextResources.GetValue("popup_no_file_selected"));
 			Debug.Log(TextResources.GetValue("popup_no_file_selected"));
@@ -774,7 +761,7 @@ public class Manager : MonoBehaviour
     {
         SaveGame();
         SaveStats();
-        master.BackToMenu();
+        Master.Instance.BackToMenu();
     }
 
 
@@ -822,7 +809,7 @@ public class Manager : MonoBehaviour
 			if (InGame)
 			{
 				// Ha aktív volt, eltünteti, ha nem volt aktív, előhozza
-				master.inGameMenu.SetActive(!master.inGameMenu.activeSelf);
+				Master.Instance.inGameMenu.SetActive(!Master.Instance.inGameMenu.activeSelf);
 			}
 		}
 
@@ -859,8 +846,8 @@ public class Manager : MonoBehaviour
 		if (cheatIndex != cheatCode.Length) return;
 
 		cheatIndex = 0;
-		master.CreateDemoSave = !master.CreateDemoSave;
-		popUpText = master.CreateDemoSave ? TextResources.GetValue("popup_demo_enabled") : TextResources.GetValue("popup_demo_disabled");
+		Master.Instance.CreateDemoSave = !Master.Instance.CreateDemoSave;
+		popUpText = Master.Instance.CreateDemoSave ? TextResources.GetValue("popup_demo_enabled") : TextResources.GetValue("popup_demo_disabled");
 		ShowPopUp(popUpText);
 
 		Debug.Log(popUpText);
@@ -868,7 +855,7 @@ public class Manager : MonoBehaviour
 
 	public void ShowPopUp(string message)
 	{
-		master.popUp.ShowPopUp(message);
+		Master.Instance.popUp.ShowPopUp(message);
 	}
 
 }

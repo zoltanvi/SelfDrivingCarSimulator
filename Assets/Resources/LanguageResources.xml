@@ -8,7 +8,7 @@
 		<string name="menu_exit">EXIT</string>
 		<string name="menu_back">BACK</string>
 		<string name="menu_dev">Developer: Zoltán Vicze</string>
-		<string name="menu_version">version 4.6</string>
+		<string name="menu_version">v.4.6</string>
 	
 		<!-- OPTIONS -->
 		<string name="options_num_of_cars">NUMBER OF CARS</string>
@@ -116,7 +116,7 @@ Lastly the program will bring back you to the main menu.</string>
 		<string name="menu_exit">KILÉPÉS</string>
 		<string name="menu_back">VISSZA</string>
 		<string name="menu_dev">Fejlesztő: Vicze Zoltán</string>
-		<string name="menu_version">verzió 4.5</string>
+		<string name="menu_version">v.4.6</string>
 	
 		<!-- OPTIONS -->
 		<string name="options_num_of_cars">AUTÓK SZÁMA</string>

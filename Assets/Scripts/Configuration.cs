@@ -13,6 +13,8 @@ public class Configuration {
     public bool Navigator { get; set; }
     public bool StopConditionActive { get; set; }
     public int StopGenerationNumber { get; set; }
-    public int Seed { get; set; }
+    public bool DemoMode { get; set; }
+
+    public bool IsPopulated { get; set; }
 
 }
