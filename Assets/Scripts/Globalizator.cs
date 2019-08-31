@@ -6,33 +6,29 @@ public class Globalizator : MonoBehaviour
 {
 
 	#region menu
-	public TextMeshProUGUI start;
-	public TextMeshProUGUI options;
-	public TextMeshProUGUI load;
-	public TextMeshProUGUI exit;
+	//public TextMeshProUGUI start;
+	//public TextMeshProUGUI options;
+	//public TextMeshProUGUI load;
+	//public TextMeshProUGUI exit;
 	public TextMeshProUGUI version;
 	#endregion
 
 	#region options
-	public TextMeshProUGUI numOfCars;
-	public TextMeshProUGUI selectionMethod;
-	public TextMeshProUGUI stopAtGeneration;
-	public TextMeshProUGUI mutationPossibility;
-	public TextMeshProUGUI mutationRateConfig;
-	public TextMeshProUGUI numOfLayers;
-	public TextMeshProUGUI neuronPerLayer;
-	public TextMeshProUGUI navigator;
-	public TextMeshProUGUI demoMode;
+	//public TextMeshProUGUI numOfCars;
+	//public TextMeshProUGUI selectionMethod;
+	//public TextMeshProUGUI mutation;
+	//public TextMeshProUGUI possibility;
+	//public TextMeshProUGUI rate;
+	//public TextMeshProUGUI numOfLayers;
+	//public TextMeshProUGUI neuronPerLayer;
+	//public TextMeshProUGUI navigator;
+	//public TextMeshProUGUI demoMode;
 	public TextMeshProUGUI optionsBack;
-	public TextMeshProUGUI map;
+	//public TextMeshProUGUI map;
+	#endregion
 
-    public TextMeshProUGUI numOfSimulations;
-    public TextMeshProUGUI savePath;
-
-    #endregion
-
-    #region load
-    public TextMeshProUGUI selectMap;
+	#region load
+	public TextMeshProUGUI selectMap;
 	public TextMeshProUGUI loadLoad;
 	public TextMeshProUGUI loadBack;
 	#endregion
@@ -49,16 +45,16 @@ public class Globalizator : MonoBehaviour
 	#endregion
 
 	#region hud
-	public TextMeshProUGUI remainingTime;
-	public TextMeshProUGUI freezeTime;
-	public TextMeshProUGUI generation;
-	public TextMeshProUGUI population;
-	public TextMeshProUGUI playingCars;
-	public TextMeshProUGUI mutationRate;
-	public TextMeshProUGUI creature;
-	public TextMeshProUGUI fitness;
-	public TextMeshProUGUI max;
-	public TextMeshProUGUI median;
+	//public TextMeshProUGUI remainingTime;
+	//public TextMeshProUGUI freezeTime;
+	//public TextMeshProUGUI generation;
+	//public TextMeshProUGUI population;
+	//public TextMeshProUGUI playingCars;
+	//public TextMeshProUGUI mutationRate;
+	//public TextMeshProUGUI creature;
+	//public TextMeshProUGUI fitness;
+	//public TextMeshProUGUI max;
+	//public TextMeshProUGUI median;
 	#endregion
 
 
@@ -73,26 +69,26 @@ public class Globalizator : MonoBehaviour
 		TextResources.Language = language;
 
 		#region menu
-		start.text = TextResources.GetValue("menu_start");
-		options.text = TextResources.GetValue("menu_options");
-		load.text = TextResources.GetValue("menu_load");
-		exit.text = TextResources.GetValue("menu_exit");
+		//start.text = TextResources.GetValue("menu_start");
+		//options.text = TextResources.GetValue("menu_options");
+		//load.text = TextResources.GetValue("menu_load");
+		//exit.text = TextResources.GetValue("menu_exit");
 		version.text = TextResources.GetValue("menu_dev") + "\n" + TextResources.GetValue("menu_version");
 		#endregion
 
 		#region options
-		numOfCars.text = TextResources.GetValue("options_num_of_cars");
-		selectionMethod.text = TextResources.GetValue("options_selection_method");
-		mutationPossibility.text = TextResources.GetValue("options_possibility");
-		mutationRateConfig.text = TextResources.GetValue("options_rate");
-		numOfLayers.text = TextResources.GetValue("options_num_of_layers");
-		neuronPerLayer.text = TextResources.GetValue("options_neuron_per_layer");
-		navigator.text = TextResources.GetValue("options_navigator");
-		demoMode.text = TextResources.GetValue("options_demo_mode");
-        //stopAtGeneration.text = TextResources.GetValue("options_stop_at_generation");
-        optionsBack.text = TextResources.GetValue("menu_back");
+		//numOfCars.text = TextResources.GetValue("options_num_of_cars");
+		//selectionMethod.text = TextResources.GetValue("options_selection_method");
+		//mutation.text = TextResources.GetValue("options_mutation");
+		//possibility.text = TextResources.GetValue("options_possibility");
+		//rate.text = TextResources.GetValue("options_rate");
+		//numOfLayers.text = TextResources.GetValue("options_num_of_layers");
+		//neuronPerLayer.text = TextResources.GetValue("options_neuron_per_layer");
+		//navigator.text = TextResources.GetValue("options_navigator");
+		//demoMode.text = TextResources.GetValue("options_demo_mode");
+		optionsBack.text = TextResources.GetValue("menu_back");
 
-		map.text = TextResources.GetValue("options_map");
+		//map.text = TextResources.GetValue("options_map");
 		#endregion
 
 		#region load

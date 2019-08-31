@@ -154,7 +154,7 @@ public class Master : MonoBehaviour
 
     private void Start()
 	{
-		ManagerGO = new GameObject("ManagerObject");
+		ManagerGO = new GameObject("MANAGER");
 		Manager = ManagerGO.AddComponent<Manager>();
 		DontDestroyOnLoad(ManagerGO);
 

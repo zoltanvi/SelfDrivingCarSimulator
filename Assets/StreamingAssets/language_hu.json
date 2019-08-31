@@ -1,0 +1,88 @@
+{
+    "items":[
+        {
+            "key":"menu_start",
+            "value":"START"
+        },
+        {
+            "key":"menu_options",
+            "value":"BEÁLLÍTÁSOK"
+        },
+        {
+            "key":"menu_load",
+            "value":"BETÖLTÉS"
+        },
+        {
+            "key":"menu_exit",
+            "value":"KILÉPÉS"
+        },
+        {
+            "key":"options_number_of_cars",
+            "value":"AUTÓK SZÁMA"
+        },
+        {
+            "key":"options_selection_method",
+            "value":"KIVÁLASZTÁSI MÓD"
+        },
+        {
+            "key":"options_mutation_possibility",
+            "value":"MUTÁCIÓ ESÉLYE"
+        },
+        {
+            "key":"options_mutation_rate",
+            "value":"MUTÁCIÓ MÉRTÉKE"
+        },
+        {
+            "key":"options_number_of_layers",
+            "value":"RÉTEGEK SZÁMA"
+        },
+        {
+            "key":"options_neuron_per_layer",
+            "value":"NEURON RÉTEGENKÉNT"
+        },
+        {
+            "key":"options_navigator",
+            "value":"NAVIGÁTOR"
+        },
+        {
+            "key":"options_demo_mode",
+            "value":"DEMÓ MÓD"
+        },
+        {
+            "key":"options_stop_at_generation",
+            "value":"STOP GENERÁCIÓNÁL"
+        },
+        {
+            "key":"options_map",
+            "value":"PÁLYA"
+        },
+        {
+            "key":"options_number_of_simulations",
+            "value":"SZIMULÁCIÓK SZÁMA"
+        },
+        {
+            "key":"options_seed",
+            "value":"SEED"
+        },
+        {
+            "key":"options_seed_new",
+            "value":"ÚJ"
+        },
+        {
+            "key":"options_save_path",
+            "value":"MENTÉSI ÚTVONAL"
+        },
+        {
+            "key":"options_save_path_browse",
+            "value":"KIVÁLASZT"
+        },
+        {
+            "key":"tooltip_number_of_layers",
+            "value":"Meghatározza, hogy hány neuronrétegből álljon a neurális hálózat. Egy autó agya az ő neurális hálózata. Ezek a neurális hálózatok neuronrétegekből állnak, amelyek pedig neuronokból állnak."
+        },
+        {
+            "key":"",
+            "value":""
+        }
+    ]
+}
