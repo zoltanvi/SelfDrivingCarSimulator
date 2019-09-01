@@ -40,18 +40,9 @@ public class Manager : MonoBehaviour
 	#region PUBLIC BUT NOT VISIBLE IN INSPECTOR
 	public Car[] Cars;
 
-    //public int CarCount { get; set; }
-    //public int SelectionMethod { get; set; }
-    //public int MutationChance { get; set; }
-    //public float MutationRate { get; set; }
-    //public int LayersCount { get; set; }
-    //public int NeuronPerLayerCount { get; set; }
-    //public int TrackNumber { get; set; }
+    public int LoadTrackNumber { get; set; }
     public float Bias { get; set; }
-	//public bool Navigator { get; set; }
 	public bool DemoMode { get; set; }
-    //public bool StopConditionActive { get; set; }
-    //public int StopGenerationNumber { get; set; }
 	[HideInInspector] public bool GotOptionValues;
 	[HideInInspector] public bool InGame;
 	[HideInInspector] public bool ManualControl;
@@ -354,8 +345,8 @@ public class Manager : MonoBehaviour
 			TextAsset asset = Resources.Load("demoSave") as TextAsset;
 			if (asset == null)
 			{
-				ShowPopUp(TextResources.GetValue("popup_demo_save_missing"));
-				throw new NullReferenceException(TextResources.GetValue("popup_demo_save_missing"));
+				ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_demo_save_missing"));
+				throw new NullReferenceException(LocalizationManager.Instance.GetLocalizedValue("popup_demo_save_missing"));
 			}
 
 			MemoryStream stream = new MemoryStream(asset.bytes);
@@ -370,7 +361,6 @@ public class Manager : MonoBehaviour
             Configuration.LayersCount = Save.LayersCount;
             Configuration.NeuronPerLayerCount = Save.NeuronPerLayerCount;
             Configuration.Navigator = Save.Navigator;
-            Configuration.TrackNumber = Save.TrackNumber;
             RandomHelper.Seed = Save.Seed;
 			WasItALoad = true;
 		}
@@ -513,27 +503,25 @@ public class Manager : MonoBehaviour
 	public void LoadGame()
 	{
 		const string extensions = "SAVE";
-		string path = FileBrowser.OpenSingleFile(TextResources.GetValue("filebrowser_select_to_load"), string.Empty, extensions);
-		Debug.Log(TextResources.GetValue("popup_selected_file") + path);
-		ShowPopUp(TextResources.GetValue("popup_selected_file") + path);
+		string path = FileBrowser.OpenSingleFile(LocalizationManager.Instance.GetLocalizedValue("filebrowser_select_to_load"), string.Empty, extensions);
+		Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_selected_file") + path);
+		ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_selected_file") + path);
 
 		if (string.IsNullOrEmpty(path))
 		{
-			Debug.LogError(TextResources.GetValue("popup_no_file_selected"));
-			ShowPopUp(TextResources.GetValue("popup_no_file_selected"));
+			Debug.LogError(LocalizationManager.Instance.GetLocalizedValue("popup_no_file_selected"));
+			ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_no_file_selected"));
 			return;
 		}
 
 		if (!File.Exists(path) || !Path.GetExtension(path).Equals(".SAVE"))
 		{
-			ShowPopUp(TextResources.GetValue("popup_wrong_file"));
-			Debug.LogError(TextResources.GetValue("popup_wrong_file"));
+			ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_wrong_file"));
+			Debug.LogError(LocalizationManager.Instance.GetLocalizedValue("popup_wrong_file"));
 			return;
 		}
 
-		FileStream file;
-
-		using (file = File.Open(path, FileMode.Open))
+		using (FileStream file = File.Open(path, FileMode.Open))
 		{
 			try
 			{
@@ -542,8 +530,8 @@ public class Manager : MonoBehaviour
 			}
 			catch (Exception)
 			{
-				ShowPopUp(TextResources.GetValue("popup_not_compatible_save"));
-				Debug.LogError(TextResources.GetValue("popup_not_compatible_save"));
+				ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_not_compatible_save"));
+				Debug.LogError(LocalizationManager.Instance.GetLocalizedValue("popup_not_compatible_save"));
 				return;
 			}
 		}
@@ -555,6 +543,8 @@ public class Manager : MonoBehaviour
         Configuration.LayersCount = Save.LayersCount;
         Configuration.NeuronPerLayerCount = Save.NeuronPerLayerCount;
         Configuration.Navigator = Save.Navigator;
+        Configuration.IsPopulated = true;
+        Configuration.TrackNumber = LoadTrackNumber;
 		MedianFitness = Save.MedianFitness;
 		MaxFitness = Save.MaxFitness;
         RandomHelper.Seed = Save.Seed;
@@ -562,7 +552,7 @@ public class Manager : MonoBehaviour
         GotOptionValues = true;
 		WasItALoad = true;
 
-		Master.Instance.StartNewGame();
+		Master.Instance.StartNewGame(true);
 		Master.Instance.mainMenuCanvas.SetActive(false);
 		Master.Instance.bgLights.SetActive(false);
 	}
@@ -576,7 +566,7 @@ public class Manager : MonoBehaviour
 
         if (string.IsNullOrEmpty(Master.Instance.DefaultSaveLocation))
         {
-            path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGSave_" + timeStamp, extensions);
+            path = FileBrowser.SaveFile(LocalizationManager.Instance.GetLocalizedValue("filebrowser_select_save_location"), string.Empty, "CGSave_" + timeStamp, extensions);
         }
         else
         {
@@ -585,14 +575,14 @@ public class Manager : MonoBehaviour
 
         if (path.Length == 0)
         {
-            ShowPopUp(TextResources.GetValue("popup_no_folder_selected"));
-            Debug.Log(TextResources.GetValue("popup_no_folder_selected"));
+            ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_no_folder_selected"));
+            Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_no_folder_selected"));
             return;
         }
         else
         {
-            ShowPopUp(TextResources.GetValue("popup_save_file") + path);
-            Debug.Log(TextResources.GetValue("popup_save_file") + path);
+            ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_save_file") + path);
+            Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_save_file") + path);
         }
 
         // Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
@@ -642,7 +632,7 @@ public class Manager : MonoBehaviour
 
         if (string.IsNullOrEmpty(Master.Instance.DefaultSaveLocation))
         {
-		    path = FileBrowser.SaveFile(TextResources.GetValue("filebrowser_select_save_location"), string.Empty, "CGStats_" + timeStamp, extensions);
+		    path = FileBrowser.SaveFile(LocalizationManager.Instance.GetLocalizedValue("filebrowser_select_save_location"), string.Empty, "CGStats_" + timeStamp, extensions);
         }
         else
         {
@@ -651,12 +641,12 @@ public class Manager : MonoBehaviour
 
         if (path.Length == 0) 
 		{
-			ShowPopUp(TextResources.GetValue("popup_no_file_selected"));
-			Debug.Log(TextResources.GetValue("popup_no_file_selected"));
+			ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_no_file_selected"));
+			Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_no_file_selected"));
 			return;
 		} else {
-			ShowPopUp(TextResources.GetValue("popup_save_file") + path);
-			Debug.Log(TextResources.GetValue("popup_save_file") + path);
+			ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_save_file") + path);
+			Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_save_file") + path);
 		}
 
 		StringBuilder sb = new StringBuilder();
@@ -847,7 +837,7 @@ public class Manager : MonoBehaviour
 
 		cheatIndex = 0;
 		Master.Instance.CreateDemoSave = !Master.Instance.CreateDemoSave;
-		popUpText = Master.Instance.CreateDemoSave ? TextResources.GetValue("popup_demo_enabled") : TextResources.GetValue("popup_demo_disabled");
+		popUpText = Master.Instance.CreateDemoSave ? LocalizationManager.Instance.GetLocalizedValue("popup_demo_activated") : LocalizationManager.Instance.GetLocalizedValue("popup_demo_deactivated");
 		ShowPopUp(popUpText);
 
 		Debug.Log(popUpText);

@@ -10,7 +10,6 @@ public class Master : MonoBehaviour
 	public static Master Instance = null;
 	[HideInInspector] public GameObject ManagerGO;
 	[HideInInspector] public Manager Manager;
-	public Globalizator Globalizator;
 	public MenuController2 MenuController;
 
 	[Header("Car prefabs")]
@@ -201,9 +200,12 @@ public class Master : MonoBehaviour
 		Manager.SaveStats();
 	}
 
-	public void StartNewGame()
+	public void StartNewGame(bool isLoad = false)
 	{
-        InitManagerConfig();
+        if (!isLoad)
+        {
+            InitManagerConfig();
+        }
 
         inGameMenu.SetActive(false);
         UIStats.SetActive(true);
@@ -279,14 +281,6 @@ public class Master : MonoBehaviour
         Manager.SaveStats();
         StartNextSimulation();
     }
-
-
-    public void SetLanguage(int lang)
-	{
-		Globalizator.SetLanguage(lang == 1 ? GameLanguage.English : GameLanguage.Hungarian);
-
-		MenuController.ChangedLanguage();
-	}
 
 	public void GenerateNewSeed()
 	{

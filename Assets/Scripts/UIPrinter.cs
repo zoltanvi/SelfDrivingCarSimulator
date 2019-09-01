@@ -85,7 +85,7 @@ public class UIPrinter : MonoBehaviour
 
 		if (Master.Instance.Manager.ManualControl)
 		{
-			m_CreatureId.text = TextResources.GetValue("creature_ID_player");
+			m_CreatureId.text = LocalizationManager.Instance.GetLocalizedValue("hud_creature_player");
 		}
 		else
 		{

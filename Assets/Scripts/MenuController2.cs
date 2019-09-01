@@ -1,6 +1,5 @@
-﻿using System;
+﻿using Crosstales.FB;
 using System.Collections.Generic;
-using Crosstales.FB;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -30,6 +29,10 @@ public class MenuController2 : MonoBehaviour
     [SerializeField] private Image track02Image;
     [SerializeField] private Image track03Image;
 
+    [SerializeField] private Image loadTrack01Image;
+    [SerializeField] private Image loadTrack02Image;
+    [SerializeField] private Image loadTrack03Image;
+
     [SerializeField] private TMP_InputField seedInputField;
     [SerializeField] private TMP_InputField stopGenerationInputField;
     [SerializeField] private TMP_InputField pathInputField;
@@ -48,10 +51,10 @@ public class MenuController2 : MonoBehaviour
     private void Start()
     {
         master = Master.Instance;
-        selections.Add(TextResources.GetValue("options_selection_tournament"));
-        selections.Add(TextResources.GetValue("options_selection_top50"));
-        selections.Add(TextResources.GetValue("options_selection_20random"));
-        selections.Add(TextResources.GetValue("options_selection_wheel"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_tournament"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_top50"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_20random"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_roulette"));
 
         PopulateDropdowns();
 
@@ -112,17 +115,17 @@ public class MenuController2 : MonoBehaviour
         switch (dropdownIndex)
         {
             case 0:
-                return 2f;
+            return 2f;
             case 1:
-                return 2.5f;
+            return 2.5f;
             case 2:
-                return 3f;
+            return 3f;
             case 3:
-                return 3.5f;
+            return 3.5f;
             case 4:
-                return 4f;
+            return 4f;
             default:
-                return 2f;
+            return 2f;
         }
     }
 
@@ -131,17 +134,17 @@ public class MenuController2 : MonoBehaviour
         switch (mutationChance)
         {
             case 30:
-                return 0;
+            return 0;
             case 40:
-                return 1;
+            return 1;
             case 50:
-                return 2;
+            return 2;
             case 60:
-                return 3;
+            return 3;
             case 70:
-                return 4;
+            return 4;
             default:
-                return 0;
+            return 0;
         }
     }
 
@@ -150,17 +153,17 @@ public class MenuController2 : MonoBehaviour
         switch (dropdownIndex)
         {
             case 0:
-                return 30;
+            return 30;
             case 1:
-                return 40;
+            return 40;
             case 2:
-                return 50;
+            return 50;
             case 3:
-                return 60;
+            return 60;
             case 4:
-                return 70;
+            return 70;
             default:
-                return 30;
+            return 30;
         }
     }
 
@@ -220,22 +223,48 @@ public class MenuController2 : MonoBehaviour
         switch (selection)
         {
             case 0:
-                track01Image.color = white;
-                track02Image.color = gray;
-                track03Image.color = gray;
-                break;
+            track01Image.color = white;
+            track02Image.color = gray;
+            track03Image.color = gray;
+            break;
 
             case 1:
-                track01Image.color = gray;
-                track02Image.color = white;
-                track03Image.color = gray;
-                break;
+            track01Image.color = gray;
+            track02Image.color = white;
+            track03Image.color = gray;
+            break;
 
             case 2:
-                track01Image.color = gray;
-                track02Image.color = gray;
-                track03Image.color = white;
-                break;
+            track01Image.color = gray;
+            track02Image.color = gray;
+            track03Image.color = white;
+            break;
+        }
+    }
+
+    public void UpdateLoadMapSelection(int selection)
+    {
+        master.Manager.LoadTrackNumber = selection;
+
+        switch (selection)
+        {
+            case 0:
+            loadTrack01Image.color = white;
+            loadTrack02Image.color = gray;
+            loadTrack03Image.color = gray;
+            break;
+
+            case 1:
+            loadTrack01Image.color = gray;
+            loadTrack02Image.color = white;
+            loadTrack03Image.color = gray;
+            break;
+
+            case 2:
+            loadTrack01Image.color = gray;
+            loadTrack02Image.color = gray;
+            loadTrack03Image.color = white;
+            break;
         }
     }
 
@@ -266,10 +295,11 @@ public class MenuController2 : MonoBehaviour
         selections.Clear();
         selectionMethodDropdown.ClearOptions();
 
-        selections.Add(TextResources.GetValue("options_selection_tournament"));
-        selections.Add(TextResources.GetValue("options_selection_top50"));
-        selections.Add(TextResources.GetValue("options_selection_20random"));
-        selections.Add(TextResources.GetValue("options_selection_wheel"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_tournament"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_top50"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_20random"));
+        selections.Add(LocalizationManager.Instance.GetLocalizedValue("options_selection_method_roulette"));
+
 
         selectionMethodDropdown.AddOptions(selections);
     }
@@ -287,83 +317,85 @@ public class MenuController2 : MonoBehaviour
         {
             // Number of cars
             case 0:
-                tooltipTitle.text = TextResources.GetValue("tooltip_num_of_cars");
-                tooltipText.text = TextResources.GetValue("tooltip_num_of_cars_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_number_of_cars");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_number_of_cars");
+            break;
             // Selection method
             case 1:
-                tooltipTitle.text = TextResources.GetValue("tooltip_selection_method");
-                tooltipText.text = TextResources.GetValue("tooltip_selection_method_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_selection_method");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_selection_method");
+            break;
             // Mutation possibility
             case 2:
-                tooltipTitle.text = TextResources.GetValue("tooltip_mutation_possibility");
-                tooltipText.text = TextResources.GetValue("tooltip_mutation_possibility_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_mutation_possibility");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_mutation_possibility");
+            break;
             // Mutation rate
             case 3:
-                tooltipTitle.text = TextResources.GetValue("tooltip_mutation_rate");
-                tooltipText.text = TextResources.GetValue("tooltip_mutation_rate_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_mutation_rate");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_mutation_rate");
+            break;
             // Number of layers
             case 4:
-                tooltipTitle.text = TextResources.GetValue("tooltip_num_of_layers");
-                tooltipText.text = TextResources.GetValue("tooltip_num_of_layers_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_number_of_layers");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_number_of_layers");
+            break;
             // Neuron per layer
             case 5:
-                tooltipTitle.text = TextResources.GetValue("tooltip_neuron_per_layer");
-                tooltipText.text = TextResources.GetValue("tooltip_neuron_per_layer_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_neuron_per_layer");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_neuron_per_layer");
+            break;
             // Navigator
             case 6:
-                tooltipTitle.text = TextResources.GetValue("tooltip_navigator");
-                tooltipText.text = TextResources.GetValue("tooltip_navigator_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_navigator");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_navigator");
+            break;
             // Demo mode
             case 7:
-                tooltipTitle.text = TextResources.GetValue("tooltip_demo_mode");
-                tooltipText.text = TextResources.GetValue("tooltip_demo_mode_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_demo_mode");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_demo_mode");
+            break;
             // Stop condition
             case 8:
-                tooltipTitle.text = TextResources.GetValue("tooltip_stop_condition");
-                tooltipText.text = TextResources.GetValue("tooltip_stop_condition_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_stop_at_generation");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_stop_at_generation");
+            break;
             // Map selection
             case 9:
-
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_map");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_map");
+            break;
             // Number of simulations
             case 10:
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_number_of_simulations");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_number_of_simulations");
 
-                break;
+            break;
             // Seed
             case 11:
-                tooltipTitle.text = TextResources.GetValue("tooltip_seed");
-                tooltipText.text = TextResources.GetValue("tooltip_seed_desc");
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_seed");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_seed");
+            break;
+            // Save path
             case 12:
-
-                break;
+            tooltipTitle.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_title_save_path");
+            tooltipText.text = LocalizationManager.Instance.GetLocalizedValue("tooltip_description_save_path");
+            break;
             default:
-                tooltipTitle.text = string.Empty;
-                tooltipText.text = string.Empty;
-                break;
+            tooltipTitle.text = string.Empty;
+            tooltipText.text = string.Empty;
+            break;
         }
     }
 
     public void BrowsePath()
     {
-        //string path = FileBrowser.OpenSingleFolder(TextResources.GetValue("filebrowser_select_default_save_location"));
-        string path = FileBrowser.OpenSingleFolder("Select default save location");
+        string path = FileBrowser.OpenSingleFolder(LocalizationManager.Instance.GetLocalizedValue("filebrowser_select_default_save_location"));
 
         if (path.Length == 0)
         {
-            //ShowPopUp(TextResources.GetValue("popup_wrong_path_selected"));
-            //Debug.Log(TextResources.GetValue("popup_wrong_path_selected"));
-            Debug.Log("Wrong path selected");
-
+            ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_no_folder_selected"));
+            Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_no_folder_selected"));
             return;
         }
         else

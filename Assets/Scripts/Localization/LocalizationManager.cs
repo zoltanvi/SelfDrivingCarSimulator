@@ -1,5 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using UnityEngine;
 using System.IO;
 using System;
@@ -28,7 +27,7 @@ public class LocalizationManager : MonoBehaviour {
     private void Start()
     {
         // Default language is english
-        LoadLocalizedText("language_en.json");
+        LoadLocalizedText("language_en");
     }
 
     public void LoadLocalizedText(string fileName)
@@ -38,12 +37,12 @@ public class LocalizationManager : MonoBehaviour {
 
         if (File.Exists(filePath))
         {
-            string jsonBlob = File.ReadAllText(filePath);
-            LocalizationData loadedData = JsonUtility.FromJson<LocalizationData>(jsonBlob);
+            List<LocalizationItem> itemList = ConfigReader.ReadLocalizationData(filePath);
 
-            for (int i = 0; i < loadedData.items.Length; i++)
+
+            for (int i = 0; i < itemList.Count; i++)
             {
-                m_LocalizedText.Add(loadedData.items[i].key, loadedData.items[i].value);
+                m_LocalizedText.Add(itemList[i].key, itemList[i].value);
             }
 
             LanguageChangeEvent?.Invoke(this, EventArgs.Empty);
