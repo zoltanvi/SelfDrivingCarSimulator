@@ -25,7 +25,7 @@ public class CameraController : MonoBehaviour
 		transform.position = smoothedPosition;
 
 		// Ha irányítjuk az egyik autót, akkor a kamera az autóra néz, nem fog annyira forogni
-		if (Master.Instance.Manager.ManualControl && Master.Instance.Manager.IsPlayerAlive)
+		if (Master.Instance.Manager.ManualControl)
 		{
 			Quaternion smoothedRotation = Quaternion.Slerp(transform.rotation, CameraTarget.rotation, Time.deltaTime * rotationSpeed);
 			transform.rotation = smoothedRotation;
