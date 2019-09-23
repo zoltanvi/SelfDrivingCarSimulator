@@ -752,7 +752,6 @@ public class Manager : MonoBehaviour
                 {
                     Cars[i].CarController.Freeze();
                     Cars[i].PrevFitness = 0;
-                    AliveCount--;
                 }
             }
 
