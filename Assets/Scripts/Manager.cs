@@ -343,25 +343,37 @@ public class Manager : MonoBehaviour
         // Ha demó módban van, akkor betölti a resource mappából a demó mentést
         if (Configuration.DemoMode)
         {
-            TextAsset asset = Resources.Load("demoSave") as TextAsset;
+            TextAsset asset = Resources.Load("DemoSave") as TextAsset;
             if (asset == null)
             {
                 ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_demo_save_missing"));
                 throw new NullReferenceException(LocalizationManager.Instance.GetLocalizedValue("popup_demo_save_missing"));
             }
 
-            MemoryStream stream = new MemoryStream(asset.bytes);
-            BinaryFormatter bf = new BinaryFormatter();
-            Save = (GameSave)bf.Deserialize(stream);
 
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(GameSave));
+                using (MemoryStream stream = new MemoryStream(asset.bytes))
+                {
+                    // Call the Deserialize method to restore the object's state.
+                    Save = (GameSave)serializer.Deserialize(stream);
+                }
+            }
+            catch (Exception)
+            {
+                ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_not_compatible_save"));
+                Debug.LogError(LocalizationManager.Instance.GetLocalizedValue("popup_not_compatible_save"));
+                return;
+            }
 
+            Configuration.CarCount = Save.CarCount;
             Configuration.SelectionMethod = Save.SelectionMethod;
             Configuration.MutationChance = Save.MutationChance;
             Configuration.MutationRate = Save.MutationRate;
-            Configuration.CarCount = Save.CarCount;
             Configuration.LayersCount = Save.LayersCount;
             Configuration.NeuronPerLayerCount = Save.NeuronPerLayerCount;
-            Configuration.Navigator = Save.Navigator;
+            
             RandomHelper.Seed = Save.Seed;
             WasItALoad = true;
         }
