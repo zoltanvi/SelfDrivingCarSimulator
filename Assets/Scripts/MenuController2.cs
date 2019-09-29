@@ -288,6 +288,15 @@ public class MenuController2 : MonoBehaviour
         seedInputField.text = RandomHelper.Seed.ToString();
     }
 
+    public void SetSeedFromText() 
+    {
+        int seedNum = 0;
+        int.TryParse(seedInputField.text, out seedNum);
+        RandomHelper.Seed = seedNum;
+
+        master.Manager.ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("options_seed_set") + RandomHelper.Seed);
+    }
+
     #endregion UPDATE METODUSOK VEGE ====================================================
 
     public void ChangedLanguage()

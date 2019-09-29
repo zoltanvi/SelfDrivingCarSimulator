@@ -337,6 +337,9 @@ public class Manager : MonoBehaviour
 
     public void StartGame()
     {
+        // This is necessary to reset the random object with the seed
+        RandomHelper.Seed = RandomHelper.Seed;
+
         // Ha demó módban van, akkor betölti a resource mappából a demó mentést
         if (Configuration.DemoMode)
         {
