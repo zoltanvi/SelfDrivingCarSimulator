@@ -19,7 +19,7 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 		// Az első szülő minden párnál full random
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			carPairs[i][0] = Random.Range(0, PopulationSize);
+			carPairs[i][0] = RandomHelper.NextInt(0, PopulationSize - 1);
 		}
 
 
@@ -43,7 +43,7 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 				// Amíg meg nincs mindegyik versenyző
 				while (picked.Count != selectionPressure)
 				{
-					int current = tournament[Random.Range(0, tournament.Count)];
+					int current = tournament[RandomHelper.NextInt(0, tournament.Count - 1)];
 					if (!picked.Contains(current))
 					{
 						picked.Add(current);
@@ -114,18 +114,18 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 						else if (i >= top80)
 						{
 							// Az autók 20%-a újra lesz randomolva minden körben.
-							CarNetworks[i].NeuronLayers[j].NeuronWeights[k][l] = Random.Range(-1f, 1f);
+							CarNetworks[i].NeuronLayers[j].NeuronWeights[k][l] = RandomHelper.NextFloat(-1f, 1f);
 						}
 						else
 						{
 
-							mutation = Random.Range(mutationRateMinimum, mutationRateMaximum);
+							mutation = RandomHelper.NextFloat(mutationRateMinimum, mutationRateMaximum);
 							// 50% eséllyel örököl az egyik szülőtől.
 							// carPairs[i] a két szülő indexét tartalmazza
-							index = carPairs[i][Random.Range(0, 2)];
+							index = carPairs[i][RandomHelper.NextInt(0, 1)];
 
 							// A MutationChance értékétől függően változik a mutáció valószínűsége
-							if (Random.Range(1, 100) <= MutationChance)
+							if (RandomHelper.NextInt(1, 100) <= MutationChance)
 							{
 								CarNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
 								SavedCarNetworks[index][j][k][l] * mutation;

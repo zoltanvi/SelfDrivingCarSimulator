@@ -18,7 +18,7 @@ public class GeneticAlgorithmTournament : GeneticAlgorithm
 		// Az első szülő minden párnál full random
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			carPairs[i][0] = Random.Range(0, PopulationSize);
+			carPairs[i][0] = RandomHelper.NextInt(0, PopulationSize - 1);
 		}
 
 
@@ -42,7 +42,7 @@ public class GeneticAlgorithmTournament : GeneticAlgorithm
 				// Amíg meg nincs mindegyik versenyző
 				while (picked.Count != selectionPressure)
 				{
-					int current = tournament[Random.Range(0, tournament.Count)];
+					int current = tournament[RandomHelper.NextInt(0, tournament.Count - 1)];
 					if (!picked.Contains(current))
 					{
 						picked.Add(current);
