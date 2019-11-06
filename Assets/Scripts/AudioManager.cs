@@ -1,6 +1,5 @@
 ﻿using UnityEngine;
 
-
 public class AudioManager : MonoBehaviour
 {
 
@@ -8,12 +7,10 @@ public class AudioManager : MonoBehaviour
 
 	public AudioClip HoverClip;
 	public AudioClip ClickClip;
+	public AudioClip ClickBackClip;
 
-	public AudioSource AudioSource;
+    public AudioSource AudioSource;
 
-	/// <summary>
-	/// Példányosít egyet önmagából (Singleton)
-	/// </summary>[]
 	private void Awake()
 	{
 		if (Instance == null)
@@ -42,5 +39,10 @@ public class AudioManager : MonoBehaviour
 	{
 		AudioSource.PlayOneShot(ClickClip);
 	}
+
+    public void ClickBackButton()
+    {
+        AudioSource.PlayOneShot(ClickBackClip);
+    }
 }
 

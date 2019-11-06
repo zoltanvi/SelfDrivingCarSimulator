@@ -676,6 +676,11 @@ Prefab:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[5].m_Arguments.m_ObjectArgumentAssemblyTypeName
       value: UnityEngine.Object, UnityEngine
       objectReference: {fileID: 0}
+    - target: {fileID: 114907529869438022, guid: 83baa36e4cee0ff4f9672187a94c352e,
+        type: 2}
+      propertyPath: m_Delegates.Array.data[1].callback.m_PersistentCalls.m_Calls.Array.data[0].m_MethodName
+      value: ClickBackButton
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83baa36e4cee0ff4f9672187a94c352e, type: 2}
   m_IsPrefabAsset: 0
@@ -1342,7 +1347,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1990745876}
-          m_MethodName: ClickButton
+          m_MethodName: ClickBackButton
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -2931,7 +2936,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1990745876}
-          m_MethodName: ClickButton
+          m_MethodName: ClickBackButton
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -6096,7 +6101,7 @@ MonoBehaviour:
       m_PersistentCalls:
         m_Calls:
         - m_Target: {fileID: 1990745876}
-          m_MethodName: ClickButton
+          m_MethodName: ClickBackButton
           m_Mode: 1
           m_Arguments:
             m_ObjectArgument: {fileID: 0}
@@ -22503,6 +22508,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   HoverClip: {fileID: 8300000, guid: 8e9d7f448f7035744abd876fd20863ca, type: 3}
   ClickClip: {fileID: 8300000, guid: 679ae4293f36a7440b9503a619bba246, type: 3}
+  ClickBackClip: {fileID: 8300000, guid: 2eeb2b6bdf81ec143baefab5a770f44b, type: 3}
   AudioSource: {fileID: 1990745875}
 --- !u!4 &1990745877
 Transform:
