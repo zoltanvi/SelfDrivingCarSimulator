@@ -97,16 +97,16 @@ public class WallSensor : MonoBehaviour
 			// a carNeuronInputs tombben, ellenben a vonal hosszat tarolja.
 			if (null != raycastHit[i].collider)
 			{
-				carNeuronInputs[i] = raycastHit[i].distance;
+				carNeuronInputs[i] = NormalizeSensorInput(raycastHit[i].distance);
 			}
 			else
 			{
-				carNeuronInputs[i] = lineLength;
+				carNeuronInputs[i] = NormalizeSensorInput(lineLength);
 			}
 
 		}
 		// A neuralis halo utolso inputja az auto sebessege
-		carNeuronInputs[rayCount] = carRigidbody.velocity.magnitude;
+		carNeuronInputs[rayCount] = NormalizeVelocity(carRigidbody.velocity.magnitude);
 
 		if (!controlledByPlayer)
 		{
@@ -221,12 +221,41 @@ public class WallSensor : MonoBehaviour
 		secondAngle = Vector3.Angle(second, third);
 		thirdAngle = Vector3.Angle(third, fourth);
 
-		// Beírja az input tömbbe a szögeket
-		Master.Instance.Manager.Cars[Id].Inputs[Master.Instance.Manager.CarSensorCount + 1] = firstAngle;
-		Master.Instance.Manager.Cars[Id].Inputs[Master.Instance.Manager.CarSensorCount + 2] = secondAngle;
-		Master.Instance.Manager.Cars[Id].Inputs[Master.Instance.Manager.CarSensorCount + 3] = thirdAngle;
 
+        float normalizedFirstAngle = NormalizeAngle(firstAngle);
+        float normalizedSecondAngle = NormalizeAngle(secondAngle);
+        float normalizedThirdAngle = NormalizeAngle(thirdAngle);
+
+        // Beírja az input tömbbe a szögeket
+        Master.Instance.Manager.Cars[Id].Inputs[Master.Instance.Manager.CarSensorCount + 1] = normalizedFirstAngle;
+		Master.Instance.Manager.Cars[Id].Inputs[Master.Instance.Manager.CarSensorCount + 2] = normalizedSecondAngle;
+		Master.Instance.Manager.Cars[Id].Inputs[Master.Instance.Manager.CarSensorCount + 3] = normalizedThirdAngle;
 	}
 
+    private float NormalizeAngle(float value)
+    {
+        float minimumAngle = -360;
+        float maximumAngle = 360;
+        return Normalize(value, minimumAngle, maximumAngle);
+    }
+
+    private float NormalizeSensorInput(float value)
+    {
+        float minimumInput = 0;
+        float maximumInput = Master.Instance.Manager.CarSensorLength;
+        return Normalize(value, minimumInput, maximumInput); 
+    }
+
+    private float NormalizeVelocity(float value)
+    {
+        float minimumVelocity = 0;
+        float maximumVelocity = 100;
+        return Normalize(value, minimumVelocity, maximumVelocity);
+    }
+
+    private float Normalize(float value, float minimum, float maximum)
+    {
+        return (value - minimum) / (maximum - minimum);
+    }
 }
 

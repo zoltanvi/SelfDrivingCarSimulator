@@ -160,6 +160,11 @@ public class CarController : MonoBehaviour
 	{
 		if (collision.collider.gameObject.layer != LayerMask.NameToLayer(WallLayerName) || Id == -1) return;
 
+        for (int i = 0; i < wheelColliders.Length; i++)
+        {
+            wheelColliders[i].brakeTorque = Mathf.Infinity;
+        }
+
 		Master.Instance.Manager.FreezeCar(carRigidbody, Id, IsAlive);
 		IsAlive = false;
 		Master.Instance.Manager.Cars[Id].IsAlive = false;

@@ -354,6 +354,210 @@ public class Manager : MonoBehaviour
 			Save = (GameSave)bf.Deserialize(stream);
 
 
+<<<<<<< Updated upstream
+=======
+    }
+
+    /// <summary>
+    /// Létrehozza a player autóját. Ez még nem aktív autó!
+    /// Aktiválni a player autóját a SpawnPlayerCar metódussal lehet.
+    /// </summary>
+    private void InstantiatePlayerCar()
+    {
+        PlayerCar = Instantiate(Master.Instance.RedCarPrefab, transform.position, transform.rotation);
+
+        playerCarController = PlayerCar.GetComponent<CarController>();
+        playerCarController.IsPlayerControlled = true;
+        playerCarController.Id = -1;
+        PlayerCar.transform.name = "PlayersCarDeletable";
+        PlayerCar.SetActive(false);
+    }
+
+    /// <summary>
+    /// Lespawnolja az összes autót a spawnpointra.
+    /// </summary>
+    private void SpawnCars()
+    {
+        // Az autók spawnolása
+        for (int i = 0; i < Configuration.CarCount; i++)
+        {
+            SpawnFromPool(transform.position, transform.rotation);
+        }
+    }
+
+    /// <summary>
+    /// Az inicializált autókból a sorra következőt lespawnolja a kezdőpozícióba.
+    /// Az autók pozíció adatait, stb. visszaállítja defaultra.
+    /// </summary>
+    /// <param name="position">A hely ahova spawnoljon</param>
+    /// <param name="rotation">A szög amelyre spawnoljon.</param>
+    /// <returns>Visszatér a spawnolt autó GameObjectjével.</returns>
+    public GameObject SpawnFromPool(Vector3 position, Quaternion rotation)
+    {
+        GameObject objectToSpawn = carPool.Dequeue();
+        CarController controller = objectToSpawn.GetComponent<CarController>();
+        controller.IsAlive = true;
+        controller.Accelerate = 0f;
+        controller.Steer = 0f;
+
+        Rigidbody objectRigidbody = objectToSpawn.GetComponent<Rigidbody>();
+        objectRigidbody.isKinematic = false;
+        objectRigidbody.velocity = new Vector3(0, 0, 0);
+        objectRigidbody.angularVelocity = new Vector3(0, 0, 0);
+        objectToSpawn.transform.position = position;
+        objectToSpawn.transform.rotation = rotation;
+        objectToSpawn.SetActive(true);
+
+        // Ha már volt első spawnolás, akkor az autó fitness értékeinek visszaállítása.
+        // (Errort dobna ha első spawnoláskor elérné ezt a kódot!)
+        if (!firstStart)
+        {
+            objectToSpawn.GetComponent<FitnessMeter>().Reset();
+        }
+
+        carPool.Enqueue(objectToSpawn);
+        return objectToSpawn;
+    }
+
+    /// <summary>
+    /// A player autóját lespawnolja a kezdőpozícióba. 
+    /// Az autó pozíció adatait stb. visszaállítja defaultra.
+    /// </summary>
+    /// <param name="position">A hely ahova spawnoljon.</param>
+    /// <param name="rotation">A szög amelyre spawnoljon.</param>
+    /// <returns>Visszatér a spawnolt autó GameObjectjével.</returns>
+    public GameObject SpawnPlayerCar(Vector3 position, Quaternion rotation)
+    {
+        playerCarController.IsAlive = true;
+        Rigidbody objectRigidbody = PlayerCar.GetComponent<Rigidbody>();
+        objectRigidbody.isKinematic = false;
+        objectRigidbody.velocity = new Vector3(0, 0, 0);
+        objectRigidbody.angularVelocity = new Vector3(0, 0, 0);
+        PlayerCar.transform.position = position;
+        PlayerCar.transform.rotation = rotation;
+        PlayerCar.SetActive(true);
+        // Ha már volt első spawnolás, akkor az autó fitness értékeinek visszaállítása.
+        // (Errort dobna ha első spawnoláskor elérné ezt a kódot!)
+        if (!playerFirstStart)
+        {
+            PlayerCar.GetComponent<FitnessMeter>().Reset();
+        }
+        return PlayerCar;
+    }
+
+
+    public void JoinGame()
+    {
+        ManualControl = true;
+        CheckCarMaterials();
+        SpawnPlayerCar(transform.position, transform.rotation);
+        playerFirstStart = false;
+    }
+
+    public void DisconnectGame()
+    {
+        ManualControl = false;
+        CheckCarMaterials();
+        PlayerCar.SetActive(false);
+        playerFirstStart = true;
+
+    }
+
+    /// <summary>
+    /// Ellenőrzi, hogy becsatlakozott-e a játékos, és aszerint váltja
+    /// az autók materialját átlátszóra.
+    /// </summary>
+    private void CheckCarMaterials()
+    {
+        // Átlátszóra állítja az autókat, ha a játékos becsatlakozott, 
+        // visszaállítja, ha már nem játszik.
+
+        Renderer[] rend;
+
+        if (!ManualControl)
+        {
+            for (int i = 0; i < Configuration.CarCount; i++)
+            {
+                rend = Cars[i].Transform.GetComponentsInChildren<Renderer>();
+
+                foreach (Renderer carRenderer in rend)
+                {
+                    carRenderer.material.shader = standardShader;
+                    carRenderer.material.SetColor("_Color", visibleColor);
+                    carRenderer.material.SetFloat("_Mode", 0);
+
+                    carRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    carRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.Zero);
+                    carRenderer.material.SetInt("_ZWrite", 1);
+                    carRenderer.material.DisableKeyword("_ALPHATEST_ON");
+                    carRenderer.material.DisableKeyword("_ALPHABLEND_ON");
+                    carRenderer.material.DisableKeyword("_ALPHAPREMULTIPLY_ON");
+                    carRenderer.material.renderQueue = -1;
+                }
+
+            }
+        }
+        else
+        {
+
+            for (int i = 0; i < Configuration.CarCount; i++)
+            {
+                rend = Cars[i].Transform.GetComponentsInChildren<Renderer>();
+
+                foreach (Renderer carRenderer in rend)
+                {
+                    carRenderer.material.shader = transparentShader;
+                    carRenderer.material.SetColor("_Color", transparentColor);
+                    carRenderer.material.SetFloat("_Mode", 3);
+
+                    carRenderer.material.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
+                    carRenderer.material.SetInt("_DstBlend", (int)UnityEngine.Rendering.BlendMode.OneMinusSrcAlpha);
+                    carRenderer.material.SetInt("_ZWrite", 0);
+                    carRenderer.material.DisableKeyword("_ALPHATEST_ON");
+                    carRenderer.material.DisableKeyword("_ALPHABLEND_ON");
+                    carRenderer.material.EnableKeyword("_ALPHAPREMULTIPLY_ON");
+                    carRenderer.material.renderQueue = 3000;
+                }
+
+            }
+        }
+
+    }
+
+    public void StartGame()
+    {
+        // This is necessary to reset the random object with the seed
+        RandomHelper.Seed = RandomHelper.Seed;
+
+        // Ha demó módban van, akkor betölti a resource mappából a demó mentést
+        if (Configuration.DemoMode)
+        {
+            TextAsset asset = Resources.Load("DemoSave") as TextAsset;
+            if (asset == null)
+            {
+                ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_demo_save_missing"));
+                throw new NullReferenceException(LocalizationManager.Instance.GetLocalizedValue("popup_demo_save_missing"));
+            }
+
+
+            try
+            {
+                XmlSerializer serializer = new XmlSerializer(typeof(GameSave));
+                using (MemoryStream stream = new MemoryStream(asset.bytes))
+                {
+                    // Call the Deserialize method to restore the object's state.
+                    Save = (GameSave)serializer.Deserialize(stream);
+                }
+            }
+            catch (Exception)
+            {
+                ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_not_compatible_save"));
+                Debug.LogError(LocalizationManager.Instance.GetLocalizedValue("popup_not_compatible_save"));
+                return;
+            }
+
+            Configuration.CarCount = Save.CarCount;
+>>>>>>> Stashed changes
             Configuration.SelectionMethod = Save.SelectionMethod;
             Configuration.MutationChance = Save.MutationChance;
             Configuration.MutationRate = Save.MutationRate;
