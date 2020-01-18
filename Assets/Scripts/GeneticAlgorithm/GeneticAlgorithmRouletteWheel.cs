@@ -1,100 +1,96 @@
-﻿
-
-public class GeneticAlgorithmRouletteWheel : GeneticAlgorithm
+﻿public class GeneticAlgorithmRouletteWheel : GeneticAlgorithm
 {
-	private struct WheelItem
-	{
-		public int Id;
-		public float NormalizedFitness;
-		public float LowerBound;
-		public float UpperBound;
-	}
+    private struct WheelItem
+    {
+        public int Id;
+        public float NormalizedFitness;
+        public float LowerBound;
+        public float UpperBound;
+    }
 
-	WheelItem[] wheelItems;
+    private WheelItem[] m_WheelItems;
 
-	private void Start()
-	{
-		CarNetworks = new NeuralNetwork[PopulationSize];
+    private void Start()
+    {
+        CarNetworks = new NeuralNetwork[PopulationSize];
 
-		carPairs = new int[PopulationSize][];
-		int carPairsLength = carPairs.Length;
-		for (int i = 0; i < carPairsLength; i++)
-		{
-			carPairs[i] = new int[2];
-		}
+        CarPairs = new int[PopulationSize][];
+        for (int i = 0; i < CarPairs.Length; i++)
+        {
+            CarPairs[i] = new int[2];
+        }
 
-		Stats = new Stat[PopulationSize];
-		int statsLength = Stats.Length;
-		for (int i = 0; i < statsLength; i++)
-		{
-			Stats[i] = new Stat();
-		}
-		
-		wheelItems = new WheelItem[PopulationSize];
-	}
+        FitnessRecords = new FitnessRecord[PopulationSize];
+        for (int i = 0; i < FitnessRecords.Length; i++)
+        {
+            FitnessRecords[i] = new FitnessRecord();
+        }
 
-	protected override void Selection()
-	{
-		float minFitness = float.MaxValue;
-		float maxFitness = float.MinValue;
+        m_WheelItems = new WheelItem[PopulationSize];
+    }
 
-		// Searches for the minimum and maximum fitnesses
-		foreach (var stat in Stats)
-		{
-			if (stat.Fitness < minFitness)
-				minFitness = stat.Fitness;
-			if (stat.Fitness > maxFitness)
-				maxFitness = stat.Fitness;
-		}
+    protected override void Selection()
+    {
+        float minFitness = float.MaxValue;
+        float maxFitness = float.MinValue;
 
-		float sum = 0;
+        // Searches for the minimum and maximum fitnesses
+        foreach (var stat in FitnessRecords)
+        {
+            if (stat.Fitness < minFitness)
+                minFitness = stat.Fitness;
+            if (stat.Fitness > maxFitness)
+                maxFitness = stat.Fitness;
+        }
 
-		// Normalizes the fitness values
-		for (int i = Stats.Length - 1; i >= 0; i--)
-		{
-			wheelItems[i].Id = Stats[i].Id;
-			wheelItems[i].NormalizedFitness = Stats[i].Fitness - minFitness;
-			sum += wheelItems[i].NormalizedFitness;
-		}
+        float sum = 0;
 
-		float wheelUnit = 1.0f / sum;
-		float current = 0;
+        // Normalizes the fitness values
+        for (int i = FitnessRecords.Length - 1; i >= 0; i--)
+        {
+            m_WheelItems[i].Id = FitnessRecords[i].Id;
+            m_WheelItems[i].NormalizedFitness = FitnessRecords[i].Fitness - minFitness;
+            sum += m_WheelItems[i].NormalizedFitness;
+        }
 
-		// Calculates the lower and upper bounds
-		for (int i = 0; i < wheelItems.Length; i++)
-		{
-			wheelItems[i].LowerBound = current;
-			wheelItems[i].NormalizedFitness = wheelItems[i].NormalizedFitness * wheelUnit;
-			current += wheelItems[i].NormalizedFitness;
-			wheelItems[i].UpperBound = current;
-		}
+        float wheelUnit = 1.0f / sum;
+        float current = 0;
 
-		// Selects the parents from the "wheel"
-		for (int i = 0; i < carPairs.Length; i++)
-		{
-			float leftParent = RandomHelper.NextFloat(0, 1);
-			float rightParent = RandomHelper.NextFloat(0, 1);
+        // Calculates the lower and upper bounds
+        for (int i = 0; i < m_WheelItems.Length; i++)
+        {
+            m_WheelItems[i].LowerBound = current;
+            m_WheelItems[i].NormalizedFitness = m_WheelItems[i].NormalizedFitness * wheelUnit;
+            current += m_WheelItems[i].NormalizedFitness;
+            m_WheelItems[i].UpperBound = current;
+        }
 
-			// Selects the left parent
-			for (int j = 0; j < wheelItems.Length; j++)
-			{
-				if(wheelItems[j].LowerBound <= leftParent && wheelItems[j].UpperBound >= leftParent)
-				{
-					carPairs[i][0] = wheelItems[j].Id;
-					break;
-				}
-			}
-			// Selects the right parent
-			for (int j = 0; j < wheelItems.Length; j++)
-			{
-				if (wheelItems[j].LowerBound <= rightParent && wheelItems[j].UpperBound >= rightParent)
-				{
-					carPairs[i][0] = wheelItems[j].Id;
-					break;
-				}
-			}
-		}
-		// The parents are selected
-	}
+        // Selects the parents from the "wheel"
+        foreach (int[] carPair in CarPairs)
+        {
+            float leftParent = RandomHelper.NextFloat(0, 1);
+            float rightParent = RandomHelper.NextFloat(0, 1);
+
+            // Selects the left parent
+            for (int j = 0; j < m_WheelItems.Length; j++)
+            {
+                if (m_WheelItems[j].LowerBound <= leftParent && m_WheelItems[j].UpperBound >= leftParent)
+                {
+                    carPair[0] = m_WheelItems[j].Id;
+                    break;
+                }
+            }
+            // Selects the right parent
+            for (int j = 0; j < m_WheelItems.Length; j++)
+            {
+                if (m_WheelItems[j].LowerBound <= rightParent && m_WheelItems[j].UpperBound >= rightParent)
+                {
+                    carPair[0] = m_WheelItems[j].Id;
+                    break;
+                }
+            }
+        }
+        // The parents are selected
+    }
 }
 

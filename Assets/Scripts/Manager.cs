@@ -9,10 +9,8 @@ using System.Xml.Serialization;
 using UnityEngine;
 using UnityEngine.PostProcessing;
 
-
 public class Manager : MonoBehaviour
 {
-
     public struct Car
     {
         public int Id;
@@ -47,8 +45,8 @@ public class Manager : MonoBehaviour
     [HideInInspector] public bool GotOptionValues;
     [HideInInspector] public bool InGame;
     [HideInInspector] public bool ManualControl;
-    [HideInInspector] public bool WasItALoad;
-    [HideInInspector] public UIPrinter MyUIPrinter;
+    [HideInInspector] public bool IsLoad;
+    [HideInInspector] public UIPrinter UiPrinter;
     [HideInInspector] public List<float> MaxFitness = new List<float>();
     [HideInInspector] public List<float> MedianFitness = new List<float>();
     [HideInInspector] public int AliveCount { get; set; }
@@ -63,11 +61,10 @@ public class Manager : MonoBehaviour
     [HideInInspector] public GameObject PlayerCar;
     #endregion
 
-
     #region PRIVATE
-    private GameObject GAGameObject;
-    private GeneticAlgorithm GA;
-    private Queue<GameObject> carPool;
+    private GameObject m_GeneticAlgorithmGameObject;
+    private GeneticAlgorithm m_GeneticAlgorithm;
+    private Queue<GameObject> m_CarPool;
     private bool firstStart = true;
     private bool playerFirstStart = true;
     private CarController playerCarController;
@@ -91,7 +88,7 @@ public class Manager : MonoBehaviour
 
         //Master.Instance.MenuController.SetSeedText(RandomHelper.Seed.ToString());
 
-        MyUIPrinter = Master.Instance.UIStats.GetComponent<UIPrinter>();
+        UiPrinter = Master.Instance.UiStats.GetComponent<UIPrinter>();
 
         Save = new GameSave();
         transparentShader = Shader.Find("Standard (Specular setup)");
@@ -120,15 +117,15 @@ public class Manager : MonoBehaviour
         // Különben a legjobb élő autót
         if (ManualControl)
         {
-            Master.Instance.cameraController.CameraTarget = PlayerCar.transform;
-            MyUIPrinter.FitnessValue = PlayerFitness;
-            MyUIPrinter.ConsoleMessage = string.Empty;
+            Master.Instance.CameraController.CameraTarget = PlayerCar.transform;
+            UiPrinter.FitnessValue = PlayerFitness;
+            UiPrinter.ConsoleMessage = string.Empty;
         }
         else
         {
             BestCarId = GetBestId();
-            MyUIPrinter.FitnessValue = Cars[BestCarId].Fitness;
-            Master.Instance.cameraController.CameraTarget = Cars[BestCarId].Transform;
+            UiPrinter.FitnessValue = Cars[BestCarId].Fitness;
+            Master.Instance.CameraController.CameraTarget = Cars[BestCarId].Transform;
 
             StringBuilder sb = new StringBuilder();
             int carInputsLength = Cars[BestCarId].Inputs.Length;
@@ -136,7 +133,7 @@ public class Manager : MonoBehaviour
             {
                 sb.Append(string.Format("S{0}: {1:0.000}\n", i + 1, Cars[BestCarId].Inputs[i]));
             }
-            MyUIPrinter.ConsoleMessage = sb.ToString();
+            UiPrinter.ConsoleMessage = sb.ToString();
         }
 
     }
@@ -149,7 +146,7 @@ public class Manager : MonoBehaviour
     /// </summary>
     private void InstantiateCars()
     {
-        carPool = new Queue<GameObject>();
+        m_CarPool = new Queue<GameObject>();
         RayHolderRoot = new GameObject("RayHolderDeletable");
         CarHolderRoot = new GameObject("CarHolderDeletable");
         for (int i = 0; i < Configuration.CarCount; i++)
@@ -157,7 +154,7 @@ public class Manager : MonoBehaviour
             GameObject obj = Instantiate(Master.Instance.BlueCarPrefab, transform.position, transform.rotation);
 
             obj.SetActive(false);
-            carPool.Enqueue(obj);
+            m_CarPool.Enqueue(obj);
 
             Cars[i].GameObject = obj;
             Cars[i].CarController = obj.GetComponent<CarController>();
@@ -208,7 +205,7 @@ public class Manager : MonoBehaviour
     /// <returns>Visszatér a spawnolt autó GameObjectjével.</returns>
     public GameObject SpawnFromPool(Vector3 position, Quaternion rotation)
     {
-        GameObject objectToSpawn = carPool.Dequeue();
+        GameObject objectToSpawn = m_CarPool.Dequeue();
         objectToSpawn.GetComponent<CarController>().IsAlive = true;
 
         Rigidbody objectRigidbody = objectToSpawn.GetComponent<Rigidbody>();
@@ -226,7 +223,7 @@ public class Manager : MonoBehaviour
             objectToSpawn.GetComponent<FitnessMeter>().Reset();
         }
 
-        carPool.Enqueue(objectToSpawn);
+        m_CarPool.Enqueue(objectToSpawn);
         return objectToSpawn;
     }
 
@@ -373,9 +370,9 @@ public class Manager : MonoBehaviour
             Configuration.MutationRate = Save.MutationRate;
             Configuration.LayersCount = Save.LayersCount;
             Configuration.NeuronPerLayerCount = Save.NeuronPerLayerCount;
-            
+
             RandomHelper.Seed = Save.Seed;
-            WasItALoad = true;
+            IsLoad = true;
         }
 
         InitGame();
@@ -391,7 +388,7 @@ public class Manager : MonoBehaviour
 
 
         AliveCount = Configuration.CarCount;
-        Master.Instance.cameraController.enabled = false;
+        Master.Instance.CameraController.enabled = false;
         Master.Instance.Camera.GetComponent<PostProcessingBehaviour>().enabled = true;
 
     }
@@ -403,10 +400,10 @@ public class Manager : MonoBehaviour
         InstantiatePlayerCar();
         SpawnCars();
 
-        Master.Instance.UIStats.SetActive(true);
+        Master.Instance.UiStats.SetActive(true);
 
-        Master.Instance.cameraController.CameraTarget = Cars[0].Transform;
-        Master.Instance.cameraController.enabled = true;
+        Master.Instance.CameraController.CameraTarget = Cars[0].Transform;
+        Master.Instance.CameraController.enabled = true;
         // Első spawnolás megtörtént
         firstStart = false;
         InGame = true;
@@ -420,36 +417,36 @@ public class Manager : MonoBehaviour
     private void InitGenetic()
     {
         // Példányosít egy GeneticAlgorithm objektumot
-        GAGameObject = new GameObject();
-        GAGameObject.transform.name = "GeneticAlgorithmDeletable";
+        m_GeneticAlgorithmGameObject = new GameObject();
+        m_GeneticAlgorithmGameObject.transform.name = "GeneticAlgorithmDeletable";
 
         switch (Configuration.SelectionMethod)
         {
             // Tournament selection
             case 0:
-            GAGameObject.AddComponent<GeneticAlgorithmTournament>();
-            GA = GAGameObject.GetComponent<GeneticAlgorithmTournament>();
-            break;
+                m_GeneticAlgorithmGameObject.AddComponent<GeneticAlgorithmTournament>();
+                m_GeneticAlgorithm = m_GeneticAlgorithmGameObject.GetComponent<GeneticAlgorithmTournament>();
+                break;
             // Top 50% selection
             case 1:
-            GAGameObject.AddComponent<GeneticAlgorithmTopHalf>();
-            GA = GAGameObject.GetComponent<GeneticAlgorithmTopHalf>();
-            break;
+                m_GeneticAlgorithmGameObject.AddComponent<GeneticAlgorithmTopHalf>();
+                m_GeneticAlgorithm = m_GeneticAlgorithmGameObject.GetComponent<GeneticAlgorithmTopHalf>();
+                break;
             // Tournament + worst 20% full random
             case 2:
-            GAGameObject.AddComponent<GeneticAlgorithmWorstRandom>();
-            GA = GAGameObject.GetComponent<GeneticAlgorithmWorstRandom>();
-            break;
+                m_GeneticAlgorithmGameObject.AddComponent<GeneticAlgorithmWorstRandom>();
+                m_GeneticAlgorithm = m_GeneticAlgorithmGameObject.GetComponent<GeneticAlgorithmWorstRandom>();
+                break;
             // Roulette wheel selection
             case 3:
-            GAGameObject.AddComponent<GeneticAlgorithmRouletteWheel>();
-            GA = GAGameObject.GetComponent<GeneticAlgorithmRouletteWheel>();
-            break;
+                m_GeneticAlgorithmGameObject.AddComponent<GeneticAlgorithmRouletteWheel>();
+                m_GeneticAlgorithm = m_GeneticAlgorithmGameObject.GetComponent<GeneticAlgorithmRouletteWheel>();
+                break;
             // Tournament selection
             default:
-            GAGameObject.AddComponent<GeneticAlgorithmTournament>();
-            GA = GAGameObject.GetComponent<GeneticAlgorithmTournament>();
-            break;
+                m_GeneticAlgorithmGameObject.AddComponent<GeneticAlgorithmTournament>();
+                m_GeneticAlgorithm = m_GeneticAlgorithmGameObject.GetComponent<GeneticAlgorithmTournament>();
+                break;
         }
 
     }
@@ -459,20 +456,20 @@ public class Manager : MonoBehaviour
         switch (Configuration.TrackNumber)
         {
             case 0:
-            Master.Instance.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
-            break;
+                Master.Instance.MinimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
+                break;
 
             case 1:
-            Master.Instance.minimapCamera.transform.position = new Vector3(-1.0f, 7.0f, -2.5f);
-            break;
+                Master.Instance.MinimapCamera.transform.position = new Vector3(-1.0f, 7.0f, -2.5f);
+                break;
 
             case 2:
-            Master.Instance.minimapCamera.transform.position = new Vector3(10.0f, 7.0f, 5.0f);
-            break;
+                Master.Instance.MinimapCamera.transform.position = new Vector3(10.0f, 7.0f, 5.0f);
+                break;
 
             default:
-            Master.Instance.minimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
-            break;
+                Master.Instance.MinimapCamera.transform.position = new Vector3(-34.0f, 7.0f, 22.8f);
+                break;
         }
 
 
@@ -587,11 +584,11 @@ public class Manager : MonoBehaviour
         RandomHelper.Seed = Save.Seed;
 
         GotOptionValues = true;
-        WasItALoad = true;
+        IsLoad = true;
 
         Master.Instance.StartNewGame(true);
-        Master.Instance.mainMenuCanvas.SetActive(false);
-        Master.Instance.bgLights.SetActive(false);
+        Master.Instance.MainMenuCanvas.SetActive(false);
+        Master.Instance.BgLights.SetActive(false);
 
         ShowPopUp(LocalizationManager.Instance.GetLocalizedValue("popup_game_loaded"));
         Debug.Log(LocalizationManager.Instance.GetLocalizedValue("popup_game_loaded"));
@@ -621,7 +618,7 @@ public class Manager : MonoBehaviour
         }
 
         // Először kiírja a jelenlegi neurálnet adatokat egy tömbbe
-        GA.SaveNeuralNetworks();
+        m_GeneticAlgorithm.SaveNeuralNetworks();
 
         Save.SelectionMethod = Configuration.SelectionMethod;
         Save.MutationChance = Configuration.MutationChance;
@@ -631,7 +628,7 @@ public class Manager : MonoBehaviour
         Save.NeuronPerLayerCount = Configuration.NeuronPerLayerCount;
         Save.Navigator = Configuration.Navigator;
         Save.TrackNumber = Configuration.TrackNumber;
-        Save.SavedCarNetworks = GA.SavedCarNetworks;
+        Save.SavedCarNetworks = m_GeneticAlgorithm.SavedCarNetworks;
         Save.Seed = RandomHelper.Seed;
 
         if (Master.Instance.CreateDemoSave)
@@ -642,7 +639,7 @@ public class Manager : MonoBehaviour
         }
         else
         {
-            Save.GenerationCount = GA.GenerationCount;
+            Save.GenerationCount = m_GeneticAlgorithm.GenerationCount;
             Save.MaxFitness = MaxFitness;
             Save.MedianFitness = MedianFitness;
         }
@@ -695,7 +692,7 @@ public class Manager : MonoBehaviour
 
         StringBuilder sb = new StringBuilder();
 
-        sb.Append("GENERATION\t").Append(MyUIPrinter.GenerationNumber.text).AppendLine();
+        sb.Append("GENERATION\t").Append(UiPrinter.GenerationNumber.text).AppendLine();
         sb.Append("MAP\t").Append(Configuration.TrackNumber).AppendLine();
         sb.Append("NUMBER OF CARS\t").Append(Configuration.CarCount).AppendLine();
         sb.Append("SELECTION METHOD\t").Append(Configuration.SelectionMethod).Append("\t(0: Tournament, 1: Top 50, 2: Tournament + 20% random 3: Roulette wheel)\n");
@@ -842,7 +839,7 @@ public class Manager : MonoBehaviour
             if (InGame)
             {
                 // Ha aktív volt, eltünteti, ha nem volt aktív, előhozza
-                Master.Instance.inGameMenu.SetActive(!Master.Instance.inGameMenu.activeSelf);
+                Master.Instance.InGameMenu.SetActive(!Master.Instance.InGameMenu.activeSelf);
             }
         }
 
@@ -888,7 +885,7 @@ public class Manager : MonoBehaviour
 
     public void ShowPopUp(string message)
     {
-        Master.Instance.popUp.ShowPopUp(message);
+        Master.Instance.PopUpText.ShowPopUp(message);
     }
 
 }

@@ -1,8 +1,6 @@
-﻿
-
-[System.Serializable]
-public class Configuration {
-
+﻿[System.Serializable]
+public class Configuration
+{
     public int CarCount { get; set; }
     public int SelectionMethod { get; set; }
     public int MutationChance { get; set; }
@@ -14,7 +12,5 @@ public class Configuration {
     public bool StopConditionActive { get; set; }
     public int StopGenerationNumber { get; set; }
     public bool DemoMode { get; set; }
-
     public bool IsPopulated { get; set; }
-
 }

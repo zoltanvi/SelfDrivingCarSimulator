@@ -55,7 +55,7 @@ public class UIPrinter : MonoBehaviour
 		m_MedianFitnessList = Master.Instance.Manager.MedianFitness;
 		m_RemainingTime.text = string.Format("{0:0.0} s", Master.Instance.Manager.GlobalTimeLeft);
 		m_FreezeTime.text = string.Format("{0:0.0} s", Master.Instance.Manager.FreezeTimeLeft);
-		if (Master.Instance.Manager.WasItALoad)
+		if (Master.Instance.Manager.IsLoad)
 		{
             if (Master.Instance.CurrentConfiguration.StopConditionActive)
             {

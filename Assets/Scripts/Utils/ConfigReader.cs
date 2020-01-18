@@ -5,7 +5,6 @@ using UnityEngine;
 
 public class ConfigReader
 {
-
     public static List<LocalizationItem> ReadLocalizationData(string filePath)
     {
         List<LocalizationItem> localizationItems = new List<LocalizationItem>();
@@ -25,22 +24,21 @@ public class ConfigReader
                     // Matches to a text between double quotes (second capturing group)
                     // Note: The first and third capturing group matches to the double quote itself!
                     string readValue = Regex.Match(localizationLines[i], "\"(.*)\"").Groups[1].Value;
-                    
+
                     readValue = Regex.Unescape(readValue);
 
-                    if(!string.IsNullOrEmpty(readKey) && !string.IsNullOrEmpty(readValue))
+                    if (!string.IsNullOrEmpty(readKey) && !string.IsNullOrEmpty(readValue))
                     {
                         localizationItems.Add(new LocalizationItem
                         {
-                            key = readKey,
-                            value = readValue
+                            Key = readKey,
+                            Value = readValue
                         });
                     }
                     else
                     {
                         Debug.LogError($"Cannot interpret the following line: {localizationLines[i]}");
                     }
-
                 }
             }
         }

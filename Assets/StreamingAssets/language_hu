@@ -4,7 +4,7 @@ menu_load = "BETÖLTÉS"
 menu_exit = "KILÉPÉS"
 menu_back = "VISSZA"
 menu_dev = "Fejlesztő: Vicze Zoltán"
-menu_version = "v.5.0.3"
+menu_version = "v.5.0.4"
 
 options_number_of_cars = "AUTÓK SZÁMA"
 options_selection_method = "KIVÁLASZTÁSI MÓD"

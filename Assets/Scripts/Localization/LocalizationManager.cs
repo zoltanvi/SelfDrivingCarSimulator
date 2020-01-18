@@ -3,7 +3,8 @@ using UnityEngine;
 using System.IO;
 using System;
 
-public class LocalizationManager : MonoBehaviour {
+public class LocalizationManager : MonoBehaviour
+{
 
     private Dictionary<string, string> m_LocalizedText;
 
@@ -11,19 +12,20 @@ public class LocalizationManager : MonoBehaviour {
     private readonly string missingTextString = "?m?";
 
     public event EventHandler LanguageChangeEvent;
-	void Awake() {
-		
-        if(Instance == null)
+    void Awake()
+    {
+
+        if (Instance == null)
         {
             Instance = this;
         }
-        else if(Instance != this)
+        else if (Instance != this)
         {
             Destroy(gameObject);
         }
 
         DontDestroyOnLoad(gameObject);
-	}
+    }
     private void Start()
     {
         // Default language is english
@@ -39,10 +41,9 @@ public class LocalizationManager : MonoBehaviour {
         {
             List<LocalizationItem> itemList = ConfigReader.ReadLocalizationData(filePath);
 
-
-            for (int i = 0; i < itemList.Count; i++)
+            foreach (var localizationItem in itemList)
             {
-                m_LocalizedText.Add(itemList[i].key, itemList[i].value);
+                m_LocalizedText.Add(localizationItem.Key, localizationItem.Value);
             }
 
             LanguageChangeEvent?.Invoke(this, EventArgs.Empty);
@@ -58,7 +59,7 @@ public class LocalizationManager : MonoBehaviour {
     public string GetLocalizedValue(string key)
     {
         string result;
-        if(!m_LocalizedText.TryGetValue(key, out result))
+        if (!m_LocalizedText.TryGetValue(key, out result))
         {
             result = missingTextString;
         }

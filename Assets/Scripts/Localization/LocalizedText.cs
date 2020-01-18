@@ -1,14 +1,16 @@
 ﻿using UnityEngine;
 using TMPro;
 
-public class LocalizedText : MonoBehaviour {
+public class LocalizedText : MonoBehaviour
+{
 
     public string Key;
 
-	void Start () {
+    void Start()
+    {
         SetText();
         LocalizationManager.Instance.LanguageChangeEvent += OnLanguageChanged;
-	}
+    }
 
     private void OnLanguageChanged(object sender, System.EventArgs e)
     {

@@ -1,6 +1,5 @@
 ﻿using System;
 
-
 [System.Serializable]
 internal class NeuronLayerReLU : NeuronLayer
 {

@@ -1,25 +1,24 @@
 ﻿using System.Collections.Generic;
+using System.Text;
 using UnityEngine;
 
 public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 {
-
 	// A tournament során ennyi autó "versenyzik" egyszerre egymással
-	private int selectionPressure = 3;
-	private int top80;
+	private int m_SelectionPressure = 3;
+	private int m_Top80Percent;
 
 	protected override void Selection()
 	{
-
 		// A kiválasztott autó ID-ket tárolja egy körig
-		List<int> picked = new List<int>();
+		List<int> pickedCarIdList = new List<int>();
 
 		int paired = 0;
 
 		// Az első szülő minden párnál full random
 		for (int i = 0; i < PopulationSize; i++)
 		{
-			carPairs[i][0] = RandomHelper.NextInt(0, PopulationSize - 1);
+			CarPairs[i][0] = RandomHelper.NextInt(0, PopulationSize - 1);
 		}
 
 
@@ -35,48 +34,48 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 			#endregion
 
 			// Amíg van elég versenyző a tournamenten belül (és még kell pár), versenyzők kiválasztása
-			while (tournament.Count >= selectionPressure && paired < PopulationSize)
+			while (tournament.Count >= m_SelectionPressure && paired < PopulationSize)
 			{
 				// A kiválasztottak kiürítése
-				picked.Clear();
+				pickedCarIdList.Clear();
 
 				// Amíg meg nincs mindegyik versenyző
-				while (picked.Count != selectionPressure)
+				while (pickedCarIdList.Count != m_SelectionPressure)
 				{
 					int current = tournament[RandomHelper.NextInt(0, tournament.Count - 1)];
-					if (!picked.Contains(current))
+					if (!pickedCarIdList.Contains(current))
 					{
-						picked.Add(current);
+						pickedCarIdList.Add(current);
 						tournament.Remove(current);
 					}
 				}
 
 				// Párosítás
-				carPairs[paired][1] = GetTournamentBestIndex(picked);
+				CarPairs[paired][1] = GetTournamentBestIndex(pickedCarIdList);
 				paired++;
 			}
 		}
 
 #if UNITY_EDITOR
-		string tmp = "";
-		for (int i = 0; i < carPairs.Length; i++)
-		{
-			tmp += carPairs[i][0] + " :: " + carPairs[i][1] + "\n";
-		}
-		Debug.Log(tmp);
+        StringBuilder sb = new StringBuilder();
+        foreach (var carPair in CarPairs)
+        {
+            sb.Append($"{carPair[0]} :: {carPair[1]} \n");
+        }
+        Debug.Log(sb.ToString());
 #endif
-	}
+    }
 
-	private int GetTournamentBestIndex(List<int> picked)
+	private int GetTournamentBestIndex(List<int> pickedCarIdList)
 	{
 		int bestIndex = int.MinValue;
 		double highestFitness = double.MinValue;
-		foreach (var thispicked in picked)
+		foreach (var pickedCarId in pickedCarIdList)
 		{
 			double currentFitness = 0;
-			foreach (var stat in Stats)
+			foreach (var stat in FitnessRecords)
 			{
-				if (stat.Id == thispicked)
+				if (stat.Id == pickedCarId)
 				{
 					currentFitness = stat.Fitness;
 				}
@@ -84,7 +83,7 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 			if (currentFitness > highestFitness)
 			{
 				highestFitness = currentFitness;
-				bestIndex = thispicked;
+				bestIndex = pickedCarId;
 			}
 		}
 		return bestIndex;
@@ -92,11 +91,9 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 
 	protected override void RecombineAndMutate()
 	{
-		int index;
-		float mutation;
-		float mutationRateMinimum = (100 - MutationRate) / 100;
+        float mutationRateMinimum = (100 - MutationRate) / 100;
 		float mutationRateMaximum = (100 + MutationRate) / 100;
-		top80 = (int)(PopulationSize * 0.8f);
+		m_Top80Percent = (int)(PopulationSize * 0.8f);
 
 		for (int i = 0; i < SavedCarNetworks.Length; i++)    // melyik autó
 		{
@@ -106,23 +103,22 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 				{
 					for (int l = 0; l < SavedCarNetworks[i][j][k].Length; l++) // melyik súlya
 					{
-						if (i == Stats[0].Id)
+						if (i == FitnessRecords[0].Id)
 						{
 							CarNetworks[i].NeuronLayers[j].NeuronWeights[k][l] =
 								SavedCarNetworks[i][j][k][l];
 						}
-						else if (i >= top80)
+						else if (i >= m_Top80Percent)
 						{
 							// Az autók 20%-a újra lesz randomolva minden körben.
 							CarNetworks[i].NeuronLayers[j].NeuronWeights[k][l] = RandomHelper.NextFloat(-1f, 1f);
 						}
 						else
 						{
-
-							mutation = RandomHelper.NextFloat(mutationRateMinimum, mutationRateMaximum);
+							var mutation = RandomHelper.NextFloat(mutationRateMinimum, mutationRateMaximum);
 							// 50% eséllyel örököl az egyik szülőtől.
 							// carPairs[i] a két szülő indexét tartalmazza
-							index = carPairs[i][RandomHelper.NextInt(0, 1)];
+							var index = CarPairs[i][RandomHelper.NextInt(0, 1)];
 
 							// A MutationChance értékétől függően változik a mutáció valószínűsége
 							if (RandomHelper.NextInt(1, 100) <= MutationChance)
@@ -140,11 +136,5 @@ public class GeneticAlgorithmWorstRandom : GeneticAlgorithm
 				}
 			}
 		}
-
-
 	}
-
-
-
-
 }

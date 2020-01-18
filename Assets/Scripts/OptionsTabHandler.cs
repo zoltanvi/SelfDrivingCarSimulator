@@ -3,20 +3,17 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 
-
 public class OptionsTabHandler : MonoBehaviour
 {
     [SerializeField] private GameObject TabPrefab;
     [SerializeField] private Slider TabNumberSlider;
     [SerializeField] private MenuController2 MenuController2;
 
-
     private List<GameObject> m_TabList = new List<GameObject>();
     private int m_TabCount = 0;
     private int m_ActiveTabIndex = 0;
 
     private const int s_TabSize = 100;
-
 
     public int ActiveTabIndex
     {
@@ -54,7 +51,7 @@ public class OptionsTabHandler : MonoBehaviour
                     m_TabList[i].SetActive(true);
                 }
 
-                for (int i = value; i <= Master.MAX_CONFIGURATIONS; i++)
+                for (int i = value; i <= Master.MaxConfigurations; i++)
                 {
                     m_TabList[i].SetActive(false);
                 }
@@ -75,10 +72,10 @@ public class OptionsTabHandler : MonoBehaviour
     {
         TabCount = (int)TabNumberSlider.value;
     }
-    // Use this for initialization
+
     private void Start()
     {
-        for (int i = 0; i <= Master.MAX_CONFIGURATIONS; i++)
+        for (int i = 0; i <= Master.MaxConfigurations; i++)
         {
             GameObject instance = Instantiate(TabPrefab, transform);
             PageTab pageTab = instance.GetComponent<PageTab>();

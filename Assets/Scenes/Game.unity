@@ -4588,7 +4588,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6bca6317894d2d143b81af6e4be181ff, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  ManagerGO: {fileID: 0}
+  ManagerGameObject: {fileID: 0}
   Manager: {fileID: 0}
   MenuController: {fileID: 475030788}
   BlueCarPrefab: {fileID: 1954008003040784, guid: 1b0e2ff3c80fc874b82ad820012d4f21,
@@ -4596,14 +4596,14 @@ MonoBehaviour:
   RedCarPrefab: {fileID: 1931166108372316, guid: 73c49525d14a3e94aa3324351e8231b2,
     type: 2}
   CreateDemoSave: 0
-  UIStats: {fileID: 2079104842}
-  inGameMenu: {fileID: 1742546674}
-  mainMenuCanvas: {fileID: 475030782}
-  bgLights: {fileID: 646688422}
-  minimapCamera: {fileID: 1648970287}
-  cameraController: {fileID: 1405357887}
+  UiStats: {fileID: 2079104842}
+  InGameMenu: {fileID: 1742546674}
+  MainMenuCanvas: {fileID: 475030782}
+  BgLights: {fileID: 646688422}
+  MinimapCamera: {fileID: 1648970287}
+  CameraController: {fileID: 1405357887}
   Camera: {fileID: 1405357882}
-  popUp: {fileID: 402514246}
+  PopUpText: {fileID: 402514246}
   TrackPrefabs:
   - {fileID: 1649514755920574, guid: 00a9137d3d0f5b342bb6128df9298f72, type: 2}
   - {fileID: 1554295981998122, guid: f4d6553140e80954883a33fdc11f88fc, type: 2}
@@ -4638,9 +4638,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 04a8143b61f011941b39e0c1bf898020, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  popUpCanvas: {fileID: 128172654}
-  popUpPanel: {fileID: 597731175}
-  popUpText: {fileID: 329013674}
+  m_PopUpCanvas: {fileID: 128172654}
+  m_PopUpPanel: {fileID: 597731175}
+  m_PopUpText: {fileID: 329013674}
 --- !u!1 &404772000
 GameObject:
   m_ObjectHideFlags: 0
@@ -5709,31 +5709,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d1ddb7252d792f54a8e6a39adf300538, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  selectionMethodDropdown: {fileID: 1188445270}
-  mutationPossibilityDropdown: {fileID: 1404339727}
-  mutationRateDropdown: {fileID: 807286214}
-  numberOfCarsSlider: {fileID: 2081057736}
-  numberOfLayersSlider: {fileID: 303106936}
-  neuronPerLayerSlider: {fileID: 482000758}
-  numberOfSimulationsSlider: {fileID: 916660794}
-  numberOfCars: {fileID: 705342393}
-  numberOfLayers: {fileID: 2119542065}
-  neuronPerLayer: {fileID: 236504017}
-  numberOfSimulations: {fileID: 429860283}
-  tooltipTitle: {fileID: 360209163}
-  tooltipText: {fileID: 846252619}
-  navigatorToggle: {fileID: 269581772}
-  demoModeToggle: {fileID: 2004362369}
-  stopConditionToggle: {fileID: 1429466220}
-  track01Image: {fileID: 894891020}
-  track02Image: {fileID: 241195823}
-  track03Image: {fileID: 1949463499}
-  loadTrack01Image: {fileID: 2107633666}
-  loadTrack02Image: {fileID: 1770847870}
-  loadTrack03Image: {fileID: 1173696754}
-  seedInputField: {fileID: 1001257722}
-  stopGenerationInputField: {fileID: 1049390699}
-  pathInputField: {fileID: 1115548391}
+  m_SelectionMethodDropdown: {fileID: 1188445270}
+  m_MutationPossibilityDropdown: {fileID: 1404339727}
+  m_MutationRateDropdown: {fileID: 807286214}
+  m_NumberOfCarsSlider: {fileID: 2081057736}
+  m_NumberOfLayersSlider: {fileID: 303106936}
+  m_NeuronPerLayerSlider: {fileID: 482000758}
+  m_NumberOfSimulationsSlider: {fileID: 916660794}
+  m_NumberOfCars: {fileID: 705342393}
+  m_NumberOfLayers: {fileID: 2119542065}
+  m_NeuronPerLayer: {fileID: 236504017}
+  m_NumberOfSimulations: {fileID: 429860283}
+  m_TooltipTitle: {fileID: 360209163}
+  m_TooltipText: {fileID: 846252619}
+  m_NavigatorToggle: {fileID: 269581772}
+  m_DemoModeToggle: {fileID: 2004362369}
+  m_StopConditionToggle: {fileID: 1429466220}
+  m_Track01Image: {fileID: 894891020}
+  m_Track02Image: {fileID: 241195823}
+  m_Track03Image: {fileID: 1949463499}
+  m_LoadTrack01Image: {fileID: 2107633666}
+  m_LoadTrack02Image: {fileID: 1770847870}
+  m_LoadTrack03Image: {fileID: 1173696754}
+  m_SeedInputField: {fileID: 1001257722}
+  m_StopGenerationInputField: {fileID: 1049390699}
+  m_PathInputField: {fileID: 1115548391}
 --- !u!1 &481655844
 GameObject:
   m_ObjectHideFlags: 0
@@ -14243,7 +14243,7 @@ GameObject:
   - component: {fileID: 1173696754}
   - component: {fileID: 1173696755}
   m_Layer: 5
-  m_Name: Map03Button
+  m_Name: MapLoad03Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -20220,7 +20220,7 @@ GameObject:
   - component: {fileID: 1770847870}
   - component: {fileID: 1770847871}
   m_Layer: 5
-  m_Name: Map02Button
+  m_Name: MapLoad02Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -23676,7 +23676,7 @@ GameObject:
   - component: {fileID: 2107633666}
   - component: {fileID: 2107633667}
   m_Layer: 5
-  m_Name: Map01Button
+  m_Name: MapLoad01Button
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
