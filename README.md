@@ -1,5 +1,5 @@
 # SelfDrivingCarSimulator
-Self driving car simulator written in Unity, using genetic algorithm and neural networks
+Self driving car simulator written in C#, Unity, using genetic algorithm and neural networks
 
 
 
